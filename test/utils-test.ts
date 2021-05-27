@@ -1,5 +1,5 @@
 import { expect, use } from "chai";
-import { bn, bn18, bn6, bn8, bn9, ether, fmt18, fmt6, fmt8, fmt9, max, zero } from "../src/utils";
+import { bn, bn18, bn6, bn8, bn9, ether, fmt18, fmt6, fmt8, fmt9, max, zero } from "../src";
 import BN from "bn.js";
 import CBN from "chai-bn";
 
