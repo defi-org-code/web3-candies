@@ -1,11 +1,10 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "ES2017",
     "module": "CommonJS",
     "strict": true,
     "esModuleInterop": true,
-    "outDir": "dist",
+    "outDir": "",
     "declaration": true
-  },
-  "include": ["./src", "./test"]
+  }
 }
