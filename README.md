@@ -1,2 +1,1 @@
-# web3-utils
-Common utilities for web3
+# Web3 Extensions
