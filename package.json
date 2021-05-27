@@ -14,9 +14,6 @@
   "homepage": "https://github.com/defi-org-code/web3-extensions#readme",
   "main": "dist/src/index.ts",
   "types": "dist/src/index.d.ts",
-  "files": [
-    "dist/src/**"
-  ],
   "dependencies": {
     "@types/bn.js": "^4.11.6",
     "@types/lodash": "^4.14.170",
