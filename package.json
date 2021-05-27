@@ -12,7 +12,11 @@
     "url": "https://github.com/defi-org-code/web3-extensions/issues"
   },
   "homepage": "https://github.com/defi-org-code/web3-extensions#readme",
-  "main": "src/index.ts",
+  "main": "dist/src/index.ts",
+  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist/src/**"
+  ],
   "dependencies": {
     "@types/bn.js": "^4.11.6",
     "@types/lodash": "^4.14.170",
@@ -34,6 +38,8 @@
     "typescript": "^4.3.2"
   },
   "scripts": {
+    "prettier": "prettier --write '{test,src,contracts,scripts}/**/*.{ts,js,json,sol}'",
+    "pretest": "npm run prettier && tsc",
     "test": "mocha --require ts-node/register 'test/**/*.ts'"
   },
   "prettier": {
