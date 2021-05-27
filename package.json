@@ -1,17 +1,17 @@
 {
-  "name": "web3-utils",
+  "name": "web3-extensions",
   "version": "1.0.0",
   "description": "Common utilities for web3",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/defi-org-code/web3-utils.git"
+    "url": "git+https://github.com/defi-org-code/web3-extensions.git"
   },
   "author": "defi.org",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/defi-org-code/web3-utils/issues"
+    "url": "https://github.com/defi-org-code/web3-extensions/issues"
   },
-  "homepage": "https://github.com/defi-org-code/web3-utils#readme",
+  "homepage": "https://github.com/defi-org-code/web3-extensions#readme",
   "dependencies": {
     "@types/bn.js": "^4.11.6",
     "@types/chai": "^4.2.18",
