@@ -54,7 +54,7 @@
     "web3-parse-receipt-events": "1.x"
   },
   "scripts": {
-    "prettier": "prettier --write '{test,src,contracts,scripts}/**/*.{ts,js,json,sol}'",
+    "prettier": "prettier --write '{contracts,src,test}/**/*.{ts,js,json,sol}'",
     "typechain": "typechain --target=web3-v1 --out-dir=typechain-abi 'abi/**/*.json' && npx hardhat typechain",
     "prebuild": "rm -rf artifacts && rm -rf typechain-hardhat && rm -rf typechain-abi && npm run prettier && npm run typechain",
     "build": "npx hardhat compile && npx solhint 'contracts/**/*.sol' && tsc",
