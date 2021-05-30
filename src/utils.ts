@@ -22,6 +22,13 @@ export function bn18(n: string): BN {
 }
 
 /**
+ * assuming 12 decimals, uncommify (support "1,000")
+ */
+export function bn12(n: string): BN {
+  return bn(Web3.utils.toWei(n.split(",").join(""), "szabo"));
+}
+
+/**
  * assuming 9 decimals (gwei), uncommify (support "1,000")
  */
 export function bn9(n: string): BN {
@@ -47,6 +54,13 @@ export function bn6(e: string): BN {
  */
 export function fmt18(ether: BN | number | string): string {
   return commify(Web3.utils.fromWei(bn(ether), "ether"));
+}
+
+/**
+ * formats from wei, assuming 12 decimals
+ */
+export function fmt12(ether: BN | number | string): string {
+  return commify(Web3.utils.fromWei(bn(ether), "szabo"));
 }
 
 /**
@@ -80,7 +94,7 @@ function commify(num: string) {
     .join(",")
     .value();
 
-  const lower = parts[1]; //_.chain(parts[1]).padEnd(4, "0").truncate({ length: 4, omission: "" }).value();
+  const lower = parts[1];
   if (lower) return `${upper}.${lower}`;
   else return upper;
 }

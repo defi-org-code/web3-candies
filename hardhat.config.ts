@@ -5,7 +5,7 @@ import "hardhat-tracer";
 import "@nomiclabs/hardhat-web3";
 import "@nomiclabs/hardhat-etherscan";
 import { task } from "hardhat/config";
-import { bn18, bscChainId, ethChainId } from "./src";
+import { bn18, bscChainId, ethChainId } from "./src/utils";
 
 task("nothing").setAction(async () => {
   console.log("nothing");
@@ -14,6 +14,9 @@ task("nothing").setAction(async () => {
 export function configFile() {
   return require("./.config.json");
 }
+
+const alchemyUrl = `https://eth-mainnet.alchemyapi.io/v2/${configFile().alchemyKey}`;
+const bscUrl = "https://bsc-dataseed.binance.org";
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -29,7 +32,7 @@ const config: HardhatUserConfig = {
   networks: {
     hardhat: {
       forking: {
-        url: `https://eth-mainnet.alchemyapi.io/v2/${configFile().alchemyKey}`,
+        url: alchemyUrl,
       },
       blockGasLimit: 12e6,
       accounts: {
@@ -38,11 +41,11 @@ const config: HardhatUserConfig = {
     },
     eth: {
       chainId: ethChainId,
-      url: `https://eth-mainnet.alchemyapi.io/v2/${configFile().alchemyKey}`,
+      url: alchemyUrl,
     },
     bsc: {
       chainId: bscChainId,
-      url: "https://bsc-dataseed.binance.org",
+      url: bscUrl,
     },
   },
   typechain: {
