@@ -1,24 +1,7 @@
 import { expect, use } from "chai";
-import {
-  bn,
-  bn12,
-  bn18,
-  bn6,
-  bn8,
-  bn9,
-  erc20,
-  ether,
-  expectRevert,
-  fmt12,
-  fmt18,
-  fmt6,
-  fmt8,
-  fmt9,
-  max,
-  zero,
-} from "../src";
 import BN from "bn.js";
 import CBN from "chai-bn";
+import { bn, bn12, bn18, bn6, bn8, bn9, ether, expectRevert, fmt12, fmt18, fmt6, fmt8, fmt9, max, zero } from "../src";
 
 before(() => {
   use(CBN(BN));

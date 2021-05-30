@@ -17,9 +17,9 @@ describe("Contracts", () => {
   });
 
   it("well known erc20 tokens", async () => {
-    expect(token.options.address).eq(Tokens.eth.WETH.options.address);
-    expect(Tokens.eth.USDC.options.address).not.eq(Tokens.bsc.USDC.options.address);
-    expect(await Tokens.eth.USDC.methods.decimals().call()).bignumber.eq("6");
+    expect(token.options.address).eq(Tokens.eth.WETH().options.address);
+    expect(Tokens.eth.USDC().options.address).not.eq(Tokens.bsc.USDC().options.address);
+    expect(await Tokens.eth.USDC().methods.decimals().call()).bignumber.eq("6");
   });
 
   it("quick deploy compiled artifact", async () => {
@@ -31,11 +31,19 @@ describe("Contracts", () => {
 
   it("WETH and events", async () => {
     await resetNetworkFork();
-    const tx = await Tokens.eth.WETH.methods.deposit().send({ from: await account(), value: bn18("42") });
+    const tx = await Tokens.eth
+      .WETH()
+      .methods.deposit()
+      .send({ from: await account(), value: bn18("42") });
 
-    parseEvents(Tokens.eth.WETH, tx); // needed only for other called contracts
+    parseEvents(Tokens.eth.WETH(), tx); // needed only for other called contracts
 
     expect(tx.events!!.Deposit.returnValues.wad).bignumber.eq(bn18("42"));
-    expect(await Tokens.eth.WETH.methods.balanceOf(await account()).call()).bignumber.eq(bn18("42"));
+    expect(
+      await Tokens.eth
+        .WETH()
+        .methods.balanceOf(await account())
+        .call()
+    ).bignumber.eq(bn18("42"));
   });
 });

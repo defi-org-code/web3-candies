@@ -5,8 +5,7 @@ import "hardhat-tracer";
 import "@nomiclabs/hardhat-web3";
 import "@nomiclabs/hardhat-etherscan";
 import { task } from "hardhat/config";
-import { bn18, bscChainId, ethChainId } from "./src/utils";
-import { deploy } from "./src/deploy";
+import { bn18, bscChainId, ethChainId, deploy } from "./src";
 
 task("deploy").setAction(async () => {
   await deploy("Example", [], 5_000_000, 0, true);
