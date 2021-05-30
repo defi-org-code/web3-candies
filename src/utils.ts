@@ -9,12 +9,6 @@ export const max = "115792089237316195423570985008687907853269984665640564039457
 export const ethChainId = 0x1;
 export const bscChainId = 0x38;
 
-export const secondsPerDay = 60 * 60 * 24;
-export const secondsPerYear = secondsPerDay * 365;
-export const millisPerMinute = 1000 * 60;
-export const millisPerHour = millisPerMinute * 60;
-export const millisPerDay = millisPerHour * 24;
-
 export function bn(n: BN | string | number): BN {
   if (!n) return zero;
   return new BN(n, 10);

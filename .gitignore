@@ -1,3 +1,8 @@
+.config.json
+typechain-abi/
+typechain-hardhat/
+artifacts/
+cache/
 
 # Created by https://www.toptal.com/developers/gitignore/api/node,macos,solidity,sublimetext,intellij+all,soliditytruffle,visualstudiocode
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,macos,solidity,sublimetext,intellij+all,soliditytruffle,visualstudiocode

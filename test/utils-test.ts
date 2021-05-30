@@ -1,5 +1,5 @@
 import { expect, use } from "chai";
-import { bn, bn18, bn6, bn8, bn9, ether, fmt18, fmt6, fmt8, fmt9, max, zero } from "../src/index";
+import { bn, bn18, bn6, bn8, bn9, erc20, ether, expectRevert, fmt18, fmt6, fmt8, fmt9, max, zero } from "../src";
 import BN from "bn.js";
 import CBN from "chai-bn";
 
@@ -47,5 +47,11 @@ describe("utils", () => {
     expect(zero).bignumber.eq(bn(0)).eq("0");
     expect(ether).bignumber.eq(bn18("1"));
     expect(max).bignumber.eq(bn("2").pow(bn("256")).subn(1)); //max 256 bytes value
+  });
+
+  it("expectRevert", async () => {
+    await expectRevert(() => {
+      throw new Error("should catch this otherwise fails");
+    });
   });
 });
