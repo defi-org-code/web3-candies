@@ -15,6 +15,7 @@
   "main": "dist-temp/index.js",
   "types": "dist-temp/index.d.ts",
   "files": [
+    "abi",
     "dist-temp",
     "typechain-abi",
     ".solhint.json",
