@@ -1,7 +1,7 @@
 import BN from "bn.js";
 import CBN from "chai-bn";
 import { expect, use } from "chai";
-import { account, bn18, deployArtifact, erc20, ether, parseEvents, resetNetworkFork, Tokens, web3, zero } from "../src";
+import { account, bn18, deployArtifact, erc20, erc20s, ether, parseEvents, resetNetworkFork, web3, zero } from "../src";
 import { Example } from "../typechain-hardhat/Example";
 
 before(() => {
@@ -17,9 +17,9 @@ describe("Contracts", () => {
   });
 
   it("well known erc20 tokens", async () => {
-    expect(token.options.address).eq(Tokens.eth.WETH().options.address);
-    expect(Tokens.eth.USDC().options.address).not.eq(Tokens.bsc.USDC().options.address);
-    expect(await Tokens.eth.USDC().methods.decimals().call()).bignumber.eq("6");
+    expect(token.options.address).eq(erc20s.eth.WETH().options.address);
+    expect(erc20s.eth.USDC().options.address).not.eq(erc20s.bsc.USDC().options.address);
+    expect(await erc20s.eth.USDC().methods.decimals().call()).bignumber.eq("6");
   });
 
   it("quick deploy compiled artifact", async () => {
@@ -31,16 +31,16 @@ describe("Contracts", () => {
 
   it("WETH and events", async () => {
     await resetNetworkFork();
-    const tx = await Tokens.eth
+    const tx = await erc20s.eth
       .WETH()
       .methods.deposit()
       .send({ from: await account(), value: bn18("42") });
 
-    parseEvents(Tokens.eth.WETH(), tx); // needed only for other called contracts
+    parseEvents(erc20s.eth.WETH(), tx); // needed only for other called contracts
 
     expect(tx.events!!.Deposit.returnValues.wad).bignumber.eq(bn18("42"));
     expect(
-      await Tokens.eth
+      await erc20s.eth
         .WETH()
         .methods.balanceOf(await account())
         .call()

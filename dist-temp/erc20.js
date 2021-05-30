@@ -1,11 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.erc20 = exports.Tokens = void 0;
+exports.erc20 = exports.erc20s = void 0;
 const contracts_1 = require("./contracts");
 const network_1 = require("./network");
 const erc20abi = require("../abi/ERC20.json");
 const wethabi = require("../abi/IWETH.json");
-exports.Tokens = {
+exports.erc20s = {
     eth: {
         WETH: () => erc20("$WETH", "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", wethabi),
         WBTC: () => erc20("$WBTC", "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"),

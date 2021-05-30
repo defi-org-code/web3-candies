@@ -7,7 +7,7 @@ import { IWETH } from "../typechain-abi/IWETH";
 const erc20abi = require("../abi/ERC20.json");
 const wethabi = require("../abi/IWETH.json");
 
-export const Tokens = {
+export const erc20s = {
   eth: {
     WETH: () => erc20<IWETH>("$WETH", "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", wethabi),
     WBTC: () => erc20("$WBTC", "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"),

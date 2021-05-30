@@ -1,6 +1,6 @@
 import { ERC20 } from "../typechain-abi/ERC20";
 import { IWETH } from "../typechain-abi/IWETH";
-export declare const Tokens: {
+export declare const erc20s: {
     eth: {
         WETH: () => ERC20 & IWETH;
         WBTC: () => ERC20;
