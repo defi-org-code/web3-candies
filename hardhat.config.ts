@@ -6,9 +6,10 @@ import "@nomiclabs/hardhat-web3";
 import "@nomiclabs/hardhat-etherscan";
 import { task } from "hardhat/config";
 import { bn18, bscChainId, ethChainId } from "./src/utils";
+import { deploy } from "./src/deploy";
 
-task("nothing").setAction(async () => {
-  console.log("nothing");
+task("deploy").setAction(async () => {
+  await deploy("Example", [], 5_000_000, 0, true);
 });
 
 export function configFile() {
