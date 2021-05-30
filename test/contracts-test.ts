@@ -33,9 +33,9 @@ describe("Contracts", () => {
     await resetNetworkFork();
     const tx = await Tokens.eth.WETH.methods.deposit().send({ from: await account(), value: bn18("42") });
 
-    parseEvents(Tokens.eth.WETH, tx); // needed only for other callled contracts
+    parseEvents(Tokens.eth.WETH, tx); // needed only for other called contracts
 
-    expect(tx.events!!.Deposit.returnValues["wad"]).bignumber.eq(bn18("42"));
+    expect(tx.events!!.Deposit.returnValues.wad).bignumber.eq(bn18("42"));
     expect(await Tokens.eth.WETH.methods.balanceOf(await account()).call()).bignumber.eq(bn18("42"));
   });
 });

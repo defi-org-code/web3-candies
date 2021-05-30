@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { Contract, contract } from "./contracts";
+import { contract } from "./contracts";
 import { tag } from "./network";
 import { ERC20 } from "../typechain-abi/ERC20";
 import { IWETH } from "../typechain-abi/IWETH";
@@ -24,8 +24,9 @@ export const Tokens = {
   },
 };
 
-export function erc20<T extends Contract>(name: string, address: string, extendAbi: any[] = []): ERC20 & T {
-  const result = contract<ERC20 & T>(_.merge([], erc20abi, extendAbi), address);
+export function erc20<T>(name: string, address: string, extendAbi?: any[]): ERC20 & T {
+  const abi = extendAbi ? [...erc20abi, ...extendAbi] : erc20abi;
+  const result = contract<ERC20 & T>(abi, address);
   tag(address, name);
   return result;
 }

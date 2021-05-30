@@ -12,10 +12,10 @@
     "url": "https://github.com/defi-org-code/web3-extensions/issues"
   },
   "homepage": "https://github.com/defi-org-code/web3-extensions#readme",
-  "main": "temp/index.js",
-  "types": "temp/index.d.ts",
+  "main": "dist-temp/src/index.js",
+  "types": "dist-temp/src/index.d.ts",
   "files": [
-    "temp/**",
+    "dist-temp/src",
     "typechain-abi",
     ".solhint.json",
     "tsconfig.json",
@@ -56,7 +56,7 @@
     "prettier": "prettier --write '{test,src,contracts,scripts}/**/*.{ts,js,json,sol}'",
     "typechain": "typechain --target=web3-v1 --out-dir=typechain-abi 'abi/**/*.json' && npx hardhat typechain",
     "prebuild": "rm -rf artifacts && rm -rf typechain-hardhat && rm -rf typechain-abi && npm run prettier && npm run typechain",
-    "build": "npx hardhat compile && npx solhint 'contracts/**/*.sol'",
+    "build": "npx hardhat compile && npx solhint 'contracts/**/*.sol' && tsc",
     "test": "npm run build && npx hardhat test --logs",
     "deploy": "npx hardhat deploy --network $1"
   },
