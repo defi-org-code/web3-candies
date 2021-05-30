@@ -15,7 +15,7 @@
   "main": "dist-temp/index.js",
   "types": "dist-temp/index.d.ts",
   "files": [
-    "dist",
+    "dist-temp",
     "typechain-abi",
     ".solhint.json",
     "tsconfig.json",
