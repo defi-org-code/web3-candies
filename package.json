@@ -12,10 +12,10 @@
     "url": "https://github.com/defi-org-code/web3-extensions/issues"
   },
   "homepage": "https://github.com/defi-org-code/web3-extensions#readme",
-  "main": "dist-temp/src/index.js",
-  "types": "dist-temp/src/index.d.ts",
+  "main": "dist-temp/index.js",
+  "types": "dist-temp/index.d.ts",
   "files": [
-    "dist-temp/src",
+    "dist",
     "typechain-abi",
     ".solhint.json",
     "tsconfig.json",
