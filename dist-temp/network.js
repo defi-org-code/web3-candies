@@ -54,7 +54,7 @@ function impersonate(...address) {
 exports.impersonate = impersonate;
 function resetNetworkFork(blockNumber = getNetworkForkingBlockNumber()) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("resetNetworkFork", blockNumber);
+        console.log("resetNetworkFork", blockNumber || "latest");
         yield hre().network.provider.send("hardhat_reset", [
             {
                 forking: {

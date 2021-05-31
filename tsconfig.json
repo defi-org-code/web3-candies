@@ -2,9 +2,9 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "CommonJS",
+    "outDir": "dist-temp",
     "strict": true,
     "esModuleInterop": true,
-    "outDir": "dist-temp",
     "declaration": true,
     "resolveJsonModule": true
   },

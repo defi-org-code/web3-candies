@@ -36,7 +36,7 @@ export async function impersonate(...address: string[]) {
 }
 
 export async function resetNetworkFork(blockNumber: number = getNetworkForkingBlockNumber()) {
-  console.log("resetNetworkFork", blockNumber);
+  console.log("resetNetworkFork", blockNumber || "latest");
   await hre().network.provider.send("hardhat_reset", [
     {
       forking: {
