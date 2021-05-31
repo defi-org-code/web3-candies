@@ -12,8 +12,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNetworkForkingUrl = exports.getNetworkForkingBlockNumber = exports.mineOneBlock = exports.mineBlocks = exports.resetNetworkFork = exports.impersonate = exports.tag = exports.artifact = exports.account = exports.web3 = exports.hre = void 0;
+exports.getNetworkForkingUrl = exports.getNetworkForkingBlockNumber = exports.mineBlock = exports.mineBlocks = exports.resetNetworkFork = exports.impersonate = exports.tag = exports.artifact = exports.account = exports.web3 = exports.hre = exports.bscChainId = exports.ethChainId = void 0;
 const lodash_1 = __importDefault(require("lodash"));
+exports.ethChainId = 0x1;
+exports.bscChainId = 0x38;
 /**
  * the global hardhat runtime environment
  */
@@ -52,7 +54,7 @@ function impersonate(...address) {
 exports.impersonate = impersonate;
 function resetNetworkFork(blockNumber = getNetworkForkingBlockNumber()) {
     return __awaiter(this, void 0, void 0, function* () {
-        console.log("resetNetworkFork");
+        console.log("resetNetworkFork", blockNumber);
         yield hre().network.provider.send("hardhat_reset", [
             {
                 forking: {
@@ -78,7 +80,7 @@ function mineBlocks(seconds, secondsPerBlock) {
     });
 }
 exports.mineBlocks = mineBlocks;
-function mineOneBlock(seconds) {
+function mineBlock(seconds) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(`mining 1 block and advancing time by ${seconds} seconds`);
         const startBlock = yield web3().eth.getBlock("latest");
@@ -88,7 +90,7 @@ function mineOneBlock(seconds) {
         console.log("was block", startBlock.number, startBlock.timestamp, "now block", nowBlock.number, nowBlock.timestamp);
     });
 }
-exports.mineOneBlock = mineOneBlock;
+exports.mineBlock = mineBlock;
 function getNetworkForkingBlockNumber() {
     return lodash_1.default.get(hre().network.config, "forking.blockNumber");
 }

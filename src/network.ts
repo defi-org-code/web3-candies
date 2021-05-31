@@ -1,6 +1,9 @@
 import _ from "lodash";
 import { Artifact } from "hardhat/types";
 
+export const ethChainId = 0x1;
+export const bscChainId = 0x38;
+
 /**
  * the global hardhat runtime environment
  */
@@ -33,7 +36,7 @@ export async function impersonate(...address: string[]) {
 }
 
 export async function resetNetworkFork(blockNumber: number = getNetworkForkingBlockNumber()) {
-  console.log("resetNetworkFork");
+  console.log("resetNetworkFork", blockNumber);
   await hre().network.provider.send("hardhat_reset", [
     {
       forking: {
@@ -58,7 +61,7 @@ export async function mineBlocks(seconds: number, secondsPerBlock: number) {
   console.log("was block", startBlock.number, startBlock.timestamp, "now block", nowBlock.number, nowBlock.timestamp);
 }
 
-export async function mineOneBlock(seconds: number) {
+export async function mineBlock(seconds: number) {
   console.log(`mining 1 block and advancing time by ${seconds} seconds`);
   const startBlock = await web3().eth.getBlock("latest");
 

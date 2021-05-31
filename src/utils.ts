@@ -6,68 +6,65 @@ export const zero = bn("0");
 export const ether = bn18("1");
 export const max = "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 
-export const ethChainId = 0x1;
-export const bscChainId = 0x38;
-
 export function bn(n: BN | string | number): BN {
   if (!n) return zero;
   return new BN(n, 10);
 }
 
 /**
- * assuming 18 decimals, uncommify (support "1,000")
+ * assuming 18 decimals, uncommafy (support "1,234.567")
  */
-export function bn18(n: string): BN {
-  return bn(Web3.utils.toWei(n.split(",").join(""), "ether"));
+export function bn18(n: string | number): BN {
+  return bn(Web3.utils.toWei(n.toString().split(",").join(""), "ether"));
 }
 
 /**
- * assuming 12 decimals, uncommify (support "1,000")
+ * assuming 12 decimals, uncommafy (support "1,234.567")
  */
-export function bn12(n: string): BN {
-  return bn(Web3.utils.toWei(n.split(",").join(""), "szabo"));
+export function bn12(n: string | number): BN {
+  return bn(Web3.utils.toWei(n.toString().split(",").join(""), "szabo"));
 }
 
 /**
- * assuming 9 decimals (gwei), uncommify (support "1,000")
+ * assuming 9 decimals (gwei), uncommafy (support "1,234.567")
  */
-export function bn9(n: string): BN {
-  return bn(Web3.utils.toWei(n.split(",").join(""), "gwei"));
+export function bn9(n: string | number): BN {
+  return bn(Web3.utils.toWei(n.toString().split(",").join(""), "gwei"));
 }
 
 /**
- * assuming 8 decimals, uncommify (support "1,000")
+ * assuming 8 decimals, uncommafy (support "1,234.567")
  */
-export function bn8(n: string): BN {
+export function bn8(n: string | number): BN {
   return bn9(n).divn(10);
 }
 
 /**
- * assuming 6 decimals, uncommify (support "1,000")
+ * assuming 6 decimals, uncommafy (support "1,234.567")
  */
-export function bn6(e: string): BN {
-  return bn(Web3.utils.toWei(e.split(",").join(""), "lovelace"));
+export function bn6(n: string | number): BN {
+  return bn(Web3.utils.toWei(n.toString().split(",").join(""), "lovelace"));
 }
 
 /**
  * formats from wei, assuming 18 decimals
  */
 export function fmt18(ether: BN | number | string): string {
-  return commify(Web3.utils.fromWei(bn(ether), "ether"));
+  return commafy(Web3.utils.fromWei(bn(ether), "ether"));
 }
 
 /**
  * formats from wei, assuming 12 decimals
  */
 export function fmt12(ether: BN | number | string): string {
-  return commify(Web3.utils.fromWei(bn(ether), "szabo"));
+  return commafy(Web3.utils.fromWei(bn(ether), "szabo"));
 }
 
 /**
  * formats from wei, assuming 9 decimals
  */
 export function fmt9(ether: BN | number | string): string {
-  return commify(Web3.utils.fromWei(bn(ether), "gwei"));
+  return commafy(Web3.utils.fromWei(bn(ether), "gwei"));
 }
 
 /**
@@ -81,10 +78,10 @@ export function fmt8(n: BN | number | string): string {
  * formats from wei, assuming 6 decimals
  */
 export function fmt6(ether: BN | number | string): string {
-  return commify(Web3.utils.fromWei(bn(ether), "lovelace"));
+  return commafy(Web3.utils.fromWei(bn(ether), "lovelace"));
 }
 
-function commify(num: string) {
+function commafy(num: string) {
   const parts = _.split(num, ".");
   const upper = _.chain(parts[0].split(""))
     .reverse()

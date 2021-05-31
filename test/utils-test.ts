@@ -12,17 +12,17 @@ describe("utils", () => {
     expect(bn(1).toString()).eq("1");
     expect(bn(1)).bignumber.eq("1");
 
-    expect(bn18("1")).bignumber.eq("1000000000000000000");
-    expect(bn12("1")).bignumber.eq("1000000000000");
-    expect(bn6("1").toString()).eq("1000000");
-    expect(bn6("1")).bignumber.eq("1000000");
-    expect(bn6("0.1")).bignumber.eq("100000");
+    expect(bn18("1")).bignumber.eq(bn18(1)).eq("1000000000000000000");
+    expect(bn12("1")).bignumber.eq(bn12(1)).eq("1000000000000");
+    expect(bn6("1").toString()).eq(bn6(1).toString()).eq("1000000");
+    expect(bn6("1")).bignumber.eq(bn6(1)).eq("1000000");
+    expect(bn6("0.1")).bignumber.eq(bn6(0.1)).eq("100000");
 
-    expect(bn8("1").toString()).eq("100000000");
-    expect(bn8("1")).bignumber.eq(bn("100000000")).gt(bn6("1"));
+    expect(bn8("1").toString()).eq(bn8(1).toString()).eq("100000000");
+    expect(bn8("1")).bignumber.eq(bn8(1)).eq(bn("100000000")).gt(bn6("1"));
 
-    expect(bn9("1").toString()).eq("1000000000");
-    expect(bn9("1")).bignumber.eq(bn("1000000000")).gt(bn6("1"));
+    expect(bn9("1").toString()).eq(bn9(1).toString()).eq("1000000000");
+    expect(bn9("1")).bignumber.eq(bn9(1)).eq(bn("1000000000")).gt(bn6("1"));
   });
 
   it("uncommify before parsing", async () => {

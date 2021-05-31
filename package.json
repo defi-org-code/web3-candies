@@ -1,17 +1,17 @@
 {
-  "name": "web3-extensions",
+  "name": "web3-candies",
   "version": "1.0.0",
   "description": "Common utilities for web3",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/defi-org-code/web3-extensions.git"
+    "url": "git+https://github.com/defi-org-code/web3-candies.git"
   },
   "author": "defi.org",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/defi-org-code/web3-extensions/issues"
+    "url": "https://github.com/defi-org-code/web3-candies/issues"
   },
-  "homepage": "https://github.com/defi-org-code/web3-extensions#readme",
+  "homepage": "https://github.com/defi-org-code/web3-candies#readme",
   "main": "dist-temp/index.js",
   "types": "dist-temp/index.d.ts",
   "files": [

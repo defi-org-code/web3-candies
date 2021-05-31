@@ -2,29 +2,27 @@ import BN from "bn.js";
 export declare const zero: BN;
 export declare const ether: BN;
 export declare const max = "115792089237316195423570985008687907853269984665640564039457584007913129639935";
-export declare const ethChainId = 1;
-export declare const bscChainId = 56;
 export declare function bn(n: BN | string | number): BN;
 /**
- * assuming 18 decimals, uncommify (support "1,000")
+ * assuming 18 decimals, uncommafy (support "1,234.567")
  */
-export declare function bn18(n: string): BN;
+export declare function bn18(n: string | number): BN;
 /**
- * assuming 12 decimals, uncommify (support "1,000")
+ * assuming 12 decimals, uncommafy (support "1,234.567")
  */
-export declare function bn12(n: string): BN;
+export declare function bn12(n: string | number): BN;
 /**
- * assuming 9 decimals (gwei), uncommify (support "1,000")
+ * assuming 9 decimals (gwei), uncommafy (support "1,234.567")
  */
-export declare function bn9(n: string): BN;
+export declare function bn9(n: string | number): BN;
 /**
- * assuming 8 decimals, uncommify (support "1,000")
+ * assuming 8 decimals, uncommafy (support "1,234.567")
  */
-export declare function bn8(n: string): BN;
+export declare function bn8(n: string | number): BN;
 /**
- * assuming 6 decimals, uncommify (support "1,000")
+ * assuming 6 decimals, uncommafy (support "1,234.567")
  */
-export declare function bn6(e: string): BN;
+export declare function bn6(n: string | number): BN;
 /**
  * formats from wei, assuming 18 decimals
  */

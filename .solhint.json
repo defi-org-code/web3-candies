@@ -3,8 +3,6 @@
   "rules": {
     "compiler-version": ["error", "0.8.4"],
     "func-visibility": ["warn", { "ignoreConstructors": true }],
-    "ordering": "warn",
-    "private-vars-leading-underscore": "warn",
     "modifier-name-mixedcase": "warn",
     "func-param-name-mixedcase": "warn",
     "constructor-syntax": "warn",
