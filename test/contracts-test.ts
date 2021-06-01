@@ -1,14 +1,14 @@
-import BN from "bn.js";
-import CBN from "chai-bn";
 import { expect, use } from "chai";
 import { account, bn18, deployArtifact, erc20, erc20s, ether, parseEvents, resetNetworkFork, web3, zero } from "../src";
 import { Example } from "../typechain-hardhat/Example";
-
-before(() => {
-  use(CBN(BN));
-});
+import CBN from "chai-bn";
+import BN from "bn.js";
 
 describe("Contracts", () => {
+  before(() => {
+    use(CBN(BN));
+  });
+
   const token = erc20("WETH", "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2");
 
   it("erc20", async () => {

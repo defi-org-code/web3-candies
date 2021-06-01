@@ -3,10 +3,12 @@ import { CallOptions, Contract as ContractOrig, ContractOptions, SendOptions } f
 import { BaseContract, BlockType } from "@typechain/web3-v1/static/types";
 import { AbiItem } from "web3-utils";
 import { artifact, tag, web3 } from "./network";
+import { BlockTransactionString } from "web3-eth";
 
 export type Contract = ContractOrig | BaseContract;
 export type Options = CallOptions | SendOptions | ContractOptions;
 export type BlockNumber = BlockType;
+export type BlockInfo = BlockTransactionString & { timestamp: number };
 export type Receipt = TransactionReceipt;
 export type Abi = AbiItem | AbiItem[];
 
