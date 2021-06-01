@@ -1,5 +1,7 @@
 import _ from "lodash";
-import { Artifact } from "hardhat/types";
+import { Artifact, HardhatRuntimeEnvironment } from "hardhat/types";
+import Web3 from "web3";
+import { bn } from "./utils";
 
 export const ethChainId = 0x1;
 export const bscChainId = 0x38;
@@ -7,14 +9,14 @@ export const bscChainId = 0x38;
 /**
  * the global hardhat runtime environment
  */
-export function hre() {
+export function hre(): HardhatRuntimeEnvironment & { web3: Web3 } {
   return require("hardhat");
 }
 
 /**
  * hardhat injected web3 instance
  */
-export function web3() {
+export function web3(): Web3 {
   return hre().web3;
 }
 
@@ -27,7 +29,7 @@ export function artifact(name: string): Artifact {
 }
 
 export function tag(address: string, name: string) {
-  if (hre().tracer) hre().tracer.nameTags[address] = name;
+  if ((hre() as any).tracer) (hre() as any).tracer.nameTags[address] = name;
 }
 
 export async function impersonate(...address: string[]) {
@@ -36,7 +38,7 @@ export async function impersonate(...address: string[]) {
 }
 
 export async function resetNetworkFork(blockNumber: number = getNetworkForkingBlockNumber()) {
-  console.log("resetNetworkFork", blockNumber || "latest");
+  console.log("resetNetworkFork to", blockNumber || "latest");
   await hre().network.provider.send("hardhat_reset", [
     {
       forking: {
@@ -52,9 +54,10 @@ export async function mineBlocks(seconds: number, secondsPerBlock: number) {
   console.log(`mining blocks in a loop and advancing time by ${seconds} seconds, ${secondsPerBlock} seconds per block`);
 
   const startBlock = await web3().eth.getBlock("latest");
+  const startTime = bn(startBlock.timestamp).toNumber();
   for (let i = 0; i < Math.round(seconds / secondsPerBlock); i++) {
     await hre().network.provider.send("evm_increaseTime", [secondsPerBlock]);
-    await hre().network.provider.send("evm_mine", [1 + startBlock.timestamp + secondsPerBlock * i]);
+    await hre().network.provider.send("evm_mine", [1 + startTime + secondsPerBlock * i]);
   }
 
   const nowBlock = await web3().eth.getBlock("latest");
@@ -64,18 +67,19 @@ export async function mineBlocks(seconds: number, secondsPerBlock: number) {
 export async function mineBlock(seconds: number) {
   console.log(`mining 1 block and advancing time by ${seconds} seconds`);
   const startBlock = await web3().eth.getBlock("latest");
+  const startTime = bn(startBlock.timestamp).toNumber();
 
   await hre().network.provider.send("evm_increaseTime", [seconds]);
-  await hre().network.provider.send("evm_mine", [startBlock.timestamp + seconds]);
+  await hre().network.provider.send("evm_mine", [startTime + seconds]);
 
   const nowBlock = await web3().eth.getBlock("latest");
   console.log("was block", startBlock.number, startBlock.timestamp, "now block", nowBlock.number, nowBlock.timestamp);
 }
 
-export function getNetworkForkingBlockNumber() {
+export function getNetworkForkingBlockNumber(): number {
   return _.get(hre().network.config, "forking.blockNumber");
 }
 
-export function getNetworkForkingUrl() {
+export function getNetworkForkingUrl(): string {
   return _.get(hre().network.config, "forking.url");
 }

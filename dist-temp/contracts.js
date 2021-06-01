@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseEvents = exports.deployArtifact = exports.contract = void 0;
 const network_1 = require("./network");
-function contract(abi, address = "", options) {
+function contract(abi, address, options) {
     const c = new (network_1.web3().eth.Contract)(abi, address, options);
     c.handleRevert = true;
     return c;
@@ -20,7 +20,7 @@ exports.contract = contract;
 function deployArtifact(contractName, opts, constructorArgs) {
     return __awaiter(this, void 0, void 0, function* () {
         const _artifact = network_1.artifact(contractName);
-        const deployed = yield contract(_artifact.abi)
+        const deployed = yield contract(_artifact.abi, "")
             .deploy({ data: _artifact.bytecode, arguments: constructorArgs })
             .send(opts);
         console.log("deployed", contractName, deployed.options.address, "deployer", opts.from);

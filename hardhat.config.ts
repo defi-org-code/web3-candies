@@ -1,9 +1,9 @@
 import { HardhatUserConfig } from "hardhat/types";
 import "@typechain/hardhat";
-import "hardhat-gas-reporter";
-import "hardhat-tracer";
 import "@nomiclabs/hardhat-web3";
 import "@nomiclabs/hardhat-etherscan";
+import "hardhat-tracer";
+import "hardhat-gas-reporter";
 import { task } from "hardhat/config";
 import { bn18, bscChainId, ethChainId, deploy } from "./src";
 
