@@ -76,8 +76,8 @@ export async function mineBlocks(seconds: number, secondsPerBlock: number) {
   console.log(`mining blocks in a loop and advancing time by ${seconds} seconds, ${secondsPerBlock} seconds per block`);
 
   const startBlock = await block();
-  const startTime = startBlock.timestamp + 1;
-  for (let i = 0; i < Math.round(seconds / secondsPerBlock); i++) {
+  const startTime = startBlock.timestamp;
+  for (let i = 1; i <= Math.round(seconds / secondsPerBlock); i++) {
     await hre().network.provider.send("evm_increaseTime", [secondsPerBlock]);
     await hre().network.provider.send("evm_mine", [startTime + secondsPerBlock * i]);
   }

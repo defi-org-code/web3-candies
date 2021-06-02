@@ -16,6 +16,10 @@ describe("Contracts", () => {
     expect(total).bignumber.gt(zero);
   });
 
+  it("erc20 has name", async () => {
+    expect(token.name).eq("WETH");
+  });
+
   it("well known erc20 tokens", async () => {
     expect(token.options.address).eq(erc20s.eth.WETH().options.address);
     expect(erc20s.eth.USDC().options.address).not.eq(erc20s.bsc.USDC().options.address);

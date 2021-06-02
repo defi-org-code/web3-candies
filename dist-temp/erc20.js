@@ -24,6 +24,7 @@ exports.erc20s = {
 function erc20(name, address, extendAbi) {
     const abi = extendAbi ? [...erc20abi, ...extendAbi] : erc20abi;
     const result = contracts_1.contract(abi, address);
+    result.name = name;
     network_1.tag(address, name);
     return result;
 }

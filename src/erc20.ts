@@ -7,6 +7,8 @@ import { IWETH } from "../typechain-abi/IWETH";
 const erc20abi = require("../abi/ERC20.json");
 const wethabi = require("../abi/IWETH.json");
 
+type Named = { name: string };
+
 export const erc20s = {
   eth: {
     WETH: () => erc20<IWETH>("$WETH", "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", wethabi),
@@ -25,9 +27,10 @@ export const erc20s = {
   },
 };
 
-export function erc20<T>(name: string, address: string, extendAbi?: any[]): ERC20 & T {
+export function erc20<T>(name: string, address: string, extendAbi?: any[]): ERC20 & Named & T {
   const abi = extendAbi ? [...erc20abi, ...extendAbi] : erc20abi;
-  const result = contract<ERC20 & T>(abi, address);
+  const result = contract<ERC20 & Named & T>(abi, address);
+  result.name = name;
   tag(address, name);
   return result;
 }

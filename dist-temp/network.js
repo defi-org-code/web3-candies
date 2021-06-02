@@ -96,8 +96,8 @@ function mineBlocks(seconds, secondsPerBlock) {
     return __awaiter(this, void 0, void 0, function* () {
         console.log(`mining blocks in a loop and advancing time by ${seconds} seconds, ${secondsPerBlock} seconds per block`);
         const startBlock = yield block();
-        const startTime = startBlock.timestamp + 1;
-        for (let i = 0; i < Math.round(seconds / secondsPerBlock); i++) {
+        const startTime = startBlock.timestamp;
+        for (let i = 1; i <= Math.round(seconds / secondsPerBlock); i++) {
             yield hre().network.provider.send("evm_increaseTime", [secondsPerBlock]);
             yield hre().network.provider.send("evm_mine", [startTime + secondsPerBlock * i]);
         }
