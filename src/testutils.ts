@@ -1,3 +1,11 @@
+import BN from "bn.js";
+import { expect, use } from "chai";
+import CBN from "chai-bn";
+
+export function useChaiBN() {
+  use(CBN(BN));
+}
+
 export async function expectRevert(fn: () => any) {
   let err: Error | null = null;
   try {
@@ -5,5 +13,5 @@ export async function expectRevert(fn: () => any) {
   } catch (e) {
     err = e;
   }
-  require("chai").expect(!!err, "expected to revert").true;
+  expect(!!err, "expected to revert").true;
 }

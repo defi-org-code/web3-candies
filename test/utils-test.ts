@@ -1,13 +1,26 @@
-import { expect, use } from "chai";
-import { bn, bn12, bn18, bn6, bn8, bn9, ether, expectRevert, fmt12, fmt18, fmt6, fmt8, fmt9, max, zero } from "../src";
-import CBN from "chai-bn";
-import BN from "bn.js";
+import { expect } from "chai";
+import {
+  useChaiBN,
+  bn,
+  bn12,
+  bn18,
+  bn6,
+  bn8,
+  bn9,
+  ether,
+  expectRevert,
+  fmt12,
+  fmt18,
+  fmt6,
+  fmt8,
+  fmt9,
+  max,
+  zero,
+} from "../src";
+
+useChaiBN();
 
 describe("utils", () => {
-  before(() => {
-    use(CBN(BN));
-  });
-
   it("bn", async () => {
     expect(bn(1).toString()).eq("1");
     expect(bn(1)).bignumber.eq("1");

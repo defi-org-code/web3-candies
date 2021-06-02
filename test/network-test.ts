@@ -1,14 +1,22 @@
-import CBN from "chai-bn";
-import BN from "bn.js";
-import { expect, use } from "chai";
-import { artifact, mineBlock, mineBlocks, account, bn, hre, resetNetworkFork, web3, zero, block } from "../src";
-import { estimatedBlockNumber } from "../dist-temp";
+import { expect } from "chai";
+import {
+  account,
+  artifact,
+  block,
+  bn,
+  estimatedBlockNumber,
+  hre,
+  mineBlock,
+  mineBlocks,
+  resetNetworkFork,
+  web3,
+  useChaiBN,
+  zero,
+} from "../src";
+
+useChaiBN();
 
 describe("network", () => {
-  before(() => {
-    use(CBN(BN));
-  });
-
   it("hardhat + web3", async () => {
     expect(hre().web3.utils.keccak256("foo")).eq(web3().utils.keccak256("foo"));
 

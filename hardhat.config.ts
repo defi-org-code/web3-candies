@@ -5,9 +5,14 @@ import "@nomiclabs/hardhat-etherscan";
 import "hardhat-tracer";
 import "hardhat-gas-reporter";
 import { task } from "hardhat/config";
-import { bn18, bscChainId, ethChainId, deploy } from "./src";
+import { bn18, bscChainId, deploy, ethChainId } from "./src";
+import { account, ether, web3 } from "./dist-temp";
 
 task("deploy").setAction(async () => {
+  const ac = web3().eth.accounts.create();
+  console.log("pk:", ac.privateKey);
+  await web3().eth.sendTransaction({ from: await account(), to: ac.address, value: ether });
+
   await deploy("Example", [], 5_000_000, 0, true);
 });
 
