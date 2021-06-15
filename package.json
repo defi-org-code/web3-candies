@@ -23,10 +23,7 @@
     "hardhat.config.ts"
   ],
   "peerDependencies": {
-    "@nomiclabs/hardhat-etherscan": "2.x",
-    "@nomiclabs/hardhat-web3": "2.x",
     "@openzeppelin/contracts": "4.x",
-    "@typechain/hardhat": "2.x",
     "@typechain/web3-v1": "3.x",
     "@types/bn.js": "4.x",
     "@types/chai": "4.x",
@@ -37,9 +34,6 @@
     "bn.js": "4.x",
     "chai": "4.x",
     "chai-bn": "0.2.x",
-    "hardhat": "2.x",
-    "hardhat-gas-reporter": "1.x",
-    "hardhat-tracer": "*",
     "lodash": "4.x",
     "mocha": "8.x",
     "prettier": "2.x",
@@ -52,6 +46,14 @@
     "typescript": "4.x",
     "web3": "1.x",
     "web3-parse-receipt-events": "1.x"
+  },
+  "optionalDependencies": {
+    "@nomiclabs/hardhat-etherscan": "2.x",
+    "@nomiclabs/hardhat-web3": "2.x",
+    "@typechain/hardhat": "2.x",
+    "hardhat": "2.x",
+    "hardhat-gas-reporter": "1.x",
+    "hardhat-tracer": "*"
   },
   "scripts": {
     "prettier": "prettier --write '{contracts,src,test}/**/*.{ts,js,json,sol}'",

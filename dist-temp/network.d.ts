@@ -1,18 +1,13 @@
-import { Artifact, HardhatRuntimeEnvironment } from "hardhat/types";
 import Web3 from "web3";
 import { BlockInfo, BlockNumber } from "./contracts";
+import type { Artifact } from "hardhat/types";
 export declare const ethChainId = 1;
 export declare const bscChainId = 56;
 /**
- * the global hardhat runtime environment
- */
-export declare function hre(): HardhatRuntimeEnvironment & {
-    web3: Web3;
-};
-/**
- * hardhat injected web3 instance
+ * hardhat injected web3 instance, or the global singleton
  */
 export declare function web3(): Web3;
+export declare function setWeb3Instance(web3: Web3): void;
 export declare function account(num?: number): Promise<string>;
 export declare function artifact(name: string): Artifact;
 export declare function tag(address: string, name: string): void;

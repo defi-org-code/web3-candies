@@ -1,7 +1,7 @@
 import BN from "bn.js";
 import path from "path";
 import prompts from "prompts";
-import { hre, web3 } from "./network";
+import { web3 } from "./network";
 import { bn9, fmt18, fmt9 } from "./utils";
 import { execSync } from "child_process";
 import { deployArtifact } from "./contracts";
@@ -56,7 +56,7 @@ export async function deploy(
 
   if (uploadSources) {
     console.log("uploading sources to etherscan...");
-    await hre().run("verify:verify", {
+    await require("hardhat").run("verify:verify", {
       address: address,
       constructorArguments: constructorArgs,
     });

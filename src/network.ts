@@ -1,7 +1,7 @@
 import _ from "lodash";
-import { Artifact, HardhatRuntimeEnvironment } from "hardhat/types";
 import Web3 from "web3";
 import { BlockInfo, BlockNumber } from "./contracts";
+import type { Artifact, HardhatRuntimeEnvironment } from "hardhat/types";
 
 export const ethChainId = 0x1;
 export const bscChainId = 0x38;
@@ -9,15 +9,23 @@ export const bscChainId = 0x38;
 /**
  * the global hardhat runtime environment
  */
-export function hre(): HardhatRuntimeEnvironment & { web3: Web3 } {
+function hre(): HardhatRuntimeEnvironment & { web3: Web3 } {
   return require("hardhat");
 }
 
 /**
- * hardhat injected web3 instance
+ * hardhat injected web3 instance, or the global singleton
  */
 export function web3(): Web3 {
-  return hre().web3;
+  if (web3GlobalSingleton) return web3GlobalSingleton;
+  web3GlobalSingleton = hre().web3;
+  return web3GlobalSingleton;
+}
+
+let web3GlobalSingleton: Web3;
+
+export function setWeb3Instance(web3: Web3) {
+  web3GlobalSingleton = web3;
 }
 
 export async function account(num: number = 0): Promise<string> {

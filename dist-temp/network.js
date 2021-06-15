@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mineBlock = exports.mineBlocks = exports.estimatedBlockNumber = exports.block = exports.getNetworkForkingUrl = exports.getNetworkForkingBlockNumber = exports.resetNetworkFork = exports.impersonate = exports.tag = exports.artifact = exports.account = exports.web3 = exports.hre = exports.bscChainId = exports.ethChainId = void 0;
+exports.mineBlock = exports.mineBlocks = exports.estimatedBlockNumber = exports.block = exports.getNetworkForkingUrl = exports.getNetworkForkingBlockNumber = exports.resetNetworkFork = exports.impersonate = exports.tag = exports.artifact = exports.account = exports.setWeb3Instance = exports.web3 = exports.bscChainId = exports.ethChainId = void 0;
 const lodash_1 = __importDefault(require("lodash"));
 exports.ethChainId = 0x1;
 exports.bscChainId = 0x38;
@@ -22,14 +22,21 @@ exports.bscChainId = 0x38;
 function hre() {
     return require("hardhat");
 }
-exports.hre = hre;
 /**
- * hardhat injected web3 instance
+ * hardhat injected web3 instance, or the global singleton
  */
 function web3() {
-    return hre().web3;
+    if (web3GlobalSingleton)
+        return web3GlobalSingleton;
+    web3GlobalSingleton = hre().web3;
+    return web3GlobalSingleton;
 }
 exports.web3 = web3;
+let web3GlobalSingleton;
+function setWeb3Instance(web3) {
+    web3GlobalSingleton = web3;
+}
+exports.setWeb3Instance = setWeb3Instance;
 function account(num = 0) {
     return __awaiter(this, void 0, void 0, function* () {
         return (yield web3().eth.getAccounts())[num];

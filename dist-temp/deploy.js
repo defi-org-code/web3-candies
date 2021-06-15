@@ -42,7 +42,7 @@ function deploy(contractName, constructorArgs, gasLimit, initialETH, uploadSourc
         child_process_1.execSync(`mv ${backup} ${backup}/../${timestamp}-${address}`);
         if (uploadSources) {
             console.log("uploading sources to etherscan...");
-            yield network_1.hre().run("verify:verify", {
+            yield require("hardhat").run("verify:verify", {
                 address: address,
                 constructorArguments: constructorArgs,
             });

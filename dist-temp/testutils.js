@@ -17,7 +17,6 @@ const bn_js_1 = __importDefault(require("bn.js"));
 const chai_1 = require("chai");
 const chai_bn_1 = __importDefault(require("chai-bn"));
 function useChaiBN() {
-    console.log("wut");
     chai_1.use(chai_bn_1.default(bn_js_1.default));
 }
 exports.useChaiBN = useChaiBN;

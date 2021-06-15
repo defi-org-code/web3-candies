@@ -2,8 +2,8 @@ import { TransactionReceipt } from "web3-core";
 import { CallOptions, Contract as ContractOrig, ContractOptions, SendOptions } from "web3-eth-contract";
 import { BaseContract, BlockType } from "@typechain/web3-v1/static/types";
 import { AbiItem } from "web3-utils";
-import { artifact, tag, web3 } from "./network";
 import { BlockTransactionString } from "web3-eth";
+import { artifact, tag, web3 } from "./network";
 
 export type Contract = ContractOrig | BaseContract;
 export type Options = CallOptions | SendOptions | ContractOptions;

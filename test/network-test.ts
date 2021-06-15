@@ -5,7 +5,6 @@ import {
   block,
   bn,
   estimatedBlockNumber,
-  hre,
   mineBlock,
   mineBlocks,
   resetNetworkFork,
@@ -18,7 +17,7 @@ useChaiBN();
 
 describe("network", () => {
   it("hardhat + web3", async () => {
-    expect(hre().web3.utils.keccak256("foo")).eq(web3().utils.keccak256("foo"));
+    expect(require("hardhat").web3.utils.keccak256("foo")).eq(web3().utils.keccak256("foo"));
 
     expect(await account()).eq(await account(0));
 
