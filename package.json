@@ -1,5 +1,5 @@
 {
-  "name": "web3-candies",
+  "name": "@defi.org/web3-candies",
   "version": "1.0.0",
   "description": "Common utilities for web3",
   "repository": {
@@ -38,7 +38,7 @@
     "chai-bn": "*",
     "fs-extra": "10.x",
     "lodash": "4.x",
-    "mocha": "*",
+    "mocha": "9.x",
     "node-fetch": "2.x",
     "prettier": "2.x",
     "prettier-plugin-solidity": "*",
@@ -69,5 +69,8 @@
   },
   "prettier": {
     "printWidth": 120
+  },
+  "directories": {
+    "test": "test"
   }
 }
