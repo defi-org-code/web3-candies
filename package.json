@@ -12,11 +12,11 @@
     "url": "https://github.com/defi-org-code/web3-candies/issues"
   },
   "homepage": "https://github.com/defi-org-code/web3-candies#readme",
-  "main": "dist-temp/index.js",
-  "types": "dist-temp/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
     "abi",
-    "dist-temp",
+    "dist",
     "typechain-abi",
     ".solhint.json",
     "tsconfig.json",
