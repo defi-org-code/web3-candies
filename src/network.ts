@@ -94,11 +94,11 @@ export async function mineBlocks(seconds: number, secondsPerBlock: number) {
     "was: block",
     startBlock.number,
     "timestamp",
-    startBlock.timestamp,
+    new Date(Number(startBlock.timestamp) * 1000),
     "now: block",
     nowBlock.number,
     "timestamp",
-    nowBlock.timestamp
+    new Date(Number(nowBlock.timestamp) * 1000)
   );
   return nowBlock;
 }
@@ -115,11 +115,11 @@ export async function mineBlock(seconds: number) {
     "was: block",
     startBlock.number,
     "timestamp",
-    startBlock.timestamp,
+    new Date(Number(startBlock.timestamp) * 1000),
     "now: block",
     nowBlock.number,
     "timestamp",
-    nowBlock.timestamp
+    new Date(Number(nowBlock.timestamp) * 1000)
   );
   return nowBlock;
 }

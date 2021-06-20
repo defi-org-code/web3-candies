@@ -109,7 +109,7 @@ function mineBlocks(seconds, secondsPerBlock) {
             yield hre().network.provider.send("evm_mine", [startTime + secondsPerBlock * i]);
         }
         const nowBlock = yield block();
-        console.log("was: block", startBlock.number, "timestamp", startBlock.timestamp, "now: block", nowBlock.number, "timestamp", nowBlock.timestamp);
+        console.log("was: block", startBlock.number, "timestamp", new Date(Number(startBlock.timestamp) * 1000), "now: block", nowBlock.number, "timestamp", new Date(Number(nowBlock.timestamp) * 1000));
         return nowBlock;
     });
 }
@@ -121,7 +121,7 @@ function mineBlock(seconds) {
         yield hre().network.provider.send("evm_increaseTime", [seconds]);
         yield hre().network.provider.send("evm_mine", [startBlock.timestamp + seconds]);
         const nowBlock = yield block();
-        console.log("was: block", startBlock.number, "timestamp", startBlock.timestamp, "now: block", nowBlock.number, "timestamp", nowBlock.timestamp);
+        console.log("was: block", startBlock.number, "timestamp", new Date(Number(startBlock.timestamp) * 1000), "now: block", nowBlock.number, "timestamp", new Date(Number(nowBlock.timestamp) * 1000));
         return nowBlock;
     });
 }
