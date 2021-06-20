@@ -4,17 +4,12 @@
 
 ## Installation
 
-In `package.json`:
+`npm install --save web3-candies`
 
-```json
-{
-  "dependencies": {
-    "web3-candies": "git+https://github.com/defi-org-code/web3-candies.git"
-  }
-}
-```
+if not using hardhat:
+`npm install --save web3-candies --no-optional` to skip optional hardhat dependencies.
 
-Example:
+## Usage example
 
 ```typescript
 import { bn18, fmt18, ether, erc20s, erc20, account, max } from "web3-candies";
