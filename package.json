@@ -22,7 +22,7 @@
     "tsconfig.json",
     "hardhat.config.ts"
   ],
-  "peerDependencies": {
+  "dependencies": {
     "@openzeppelin/contracts": "4.x",
     "@typechain/web3-v1": "3.x",
     "@types/bn.js": "*",
