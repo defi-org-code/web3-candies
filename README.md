@@ -1,13 +1,18 @@
 # Web3 Candies 🍬🍭🍦
 
-> Sweet web3 + hardhat development stack
+> Sweet Web3 + TypeScript + HardHat (optional) development stack
 
 ## Installation
 
 `npm install --save web3-candies`
 
-if not using hardhat:
-`npm install --save web3-candies --no-optional` to skip optional hardhat dependencies.
+**If not using hardhat**, to skip the optional hardhat dependencies:
+
+Before installing, add `.npmrc` file to your project with the contents:
+```
+omit[] = optional
+optional = false
+```
 
 ## Usage example
 
@@ -66,6 +71,7 @@ await myToken.methods.approve(other, max).send({ from: owner }); // approve max 
 ### test utils
 
 - `expectRevert`: expects given fn to revert
+- `useChaiBN`: use bn.js in chai tests assertions, ex. `expect(ether).bignumber.gt(zero)`
 
 ### peerDependencies
 

@@ -28,45 +28,45 @@ export default {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 200
-      }
-    }
+        runs: 200,
+      },
+    },
   },
   defaultNetwork: "hardhat",
   networks: {
     hardhat: {
       forking: {
-        url: alchemyUrl
+        url: alchemyUrl,
       },
       blockGasLimit: 12e6,
       accounts: {
-        accountsBalance: bn18("1,000,000").toString()
-      }
+        accountsBalance: bn18("1,000,000").toString(),
+      },
     },
     eth: {
       chainId: ethChainId,
-      url: alchemyUrl
+      url: alchemyUrl,
     },
     bsc: {
       chainId: bscChainId,
-      url: bscUrl
-    }
+      url: bscUrl,
+    },
   },
   typechain: {
     outDir: "typechain-hardhat",
-    target: "web3-v1"
+    target: "web3-v1",
   },
   mocha: {
     timeout: 500_000,
     retries: 1,
-    bail: true
+    bail: true,
   },
   gasReporter: {
     currency: "USD",
     coinmarketcap: configFile().coinmarketcapKey,
-    showTimeSpent: true
+    showTimeSpent: true,
   },
   etherscan: {
-    apiKey: configFile().etherscanKey
-  }
+    apiKey: configFile().etherscanKey,
+  },
 } as HardhatUserConfig;
