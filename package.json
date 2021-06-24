@@ -65,7 +65,8 @@
     "prebuild": "rm -rf artifacts && rm -rf typechain-hardhat && rm -rf typechain-abi && npm run prettier && npm run typechain",
     "build": "npx hardhat compile && npx solhint 'contracts/**/*.sol' && tsc",
     "test": "npm run build && npx hardhat test --logs",
-    "deploy": "npx hardhat deploy --network $1"
+    "deploy": "npx hardhat deploy --network $1",
+    "upload": "npm publish --access public"
   },
   "prettier": {
     "printWidth": 120
