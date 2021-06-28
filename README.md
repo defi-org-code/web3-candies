@@ -4,7 +4,7 @@
 
 ## Installation
 
-`npm install --save web3-candies`
+`npm install --save @defi.org/web3-candies`
 
 **If not using hardhat**, to skip the optional hardhat dependencies:
 
@@ -17,7 +17,7 @@ optional = false
 ## Usage example
 
 ```typescript
-import { bn18, fmt18, ether, erc20s, erc20, account, max } from "web3-candies";
+import { bn18, fmt18, ether, erc20s, erc20, account, max } from "@defi.org/web3-candies";
 
 const x = bn18("1,000.1234"); // x = "1000123400000000000000" [bn.js object representing wei, parsed with 18 decimals]
 console.log(x.gt(ether)); // true
