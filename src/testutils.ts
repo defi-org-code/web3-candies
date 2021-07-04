@@ -1,6 +1,7 @@
 import BN from "bn.js";
 import { expect, use } from "chai";
 import CBN from "chai-bn";
+export * from "chai-bn";
 
 export function useChaiBN() {
   use(CBN(BN));
