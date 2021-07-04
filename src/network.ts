@@ -9,7 +9,7 @@ export const bscChainId = 0x38;
 /**
  * the global hardhat runtime environment
  */
-function hre(): HardhatRuntimeEnvironment & { web3: Web3 } {
+export function hre(): HardhatRuntimeEnvironment & { web3: Web3 } {
   return require("hardhat");
 }
 
