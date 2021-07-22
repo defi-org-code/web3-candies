@@ -83,13 +83,12 @@ export function fmt6(ether: BN | number | string): string {
 
 function commafy(num: string) {
   const parts = _.split(num, ".");
-  const upper = _.chain(parts[0].split(""))
+  const upper = _(parts[0].split(""))
     .reverse()
     .chunk(3)
     .map((c) => c.reverse().join(""))
     .reverse()
-    .join(",")
-    .value();
+    .join(",");
 
   const lower = parts[1];
   if (lower) return `${upper}.${lower}`;

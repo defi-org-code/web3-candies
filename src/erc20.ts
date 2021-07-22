@@ -1,13 +1,13 @@
 import _ from "lodash";
-import { contract } from "./contracts";
+import { Abi, contract } from "./contracts";
 import { tag } from "./network";
 import { ERC20 } from "../typechain-abi/ERC20";
 import { IWETH } from "../typechain-abi/IWETH";
 
-const erc20abi = require("../abi/ERC20.json");
-const wethabi = require("../abi/IWETH.json");
+export const erc20abi = require("../abi/ERC20.json") as Abi;
+const wethabi = require("../abi/IWETH.json") as Abi;
 
-type Named = { name: string; address: string };
+export type IERC20 = ERC20 & { name: string; address: string; abi: Abi };
 
 export const erc20s = {
   eth: {
@@ -27,12 +27,12 @@ export const erc20s = {
   },
 };
 
-export function erc20<T>(name: string, address: string, extendAbi?: any[]): ERC20 & Named & T {
+export function erc20<T>(name: string, address: string, extendAbi?: Abi): IERC20 & T {
   const abi = extendAbi ? [...erc20abi, ...extendAbi] : erc20abi;
-  const result = contract<ERC20 & Named & T>(abi, address);
+  const result = contract<IERC20 & T>(abi, address);
   result.name = name;
   result.address = address;
-  if (address != result.options.address) throw new Error("unknown address");
+  result.abi = abi;
   tag(address, name);
   return result;
 }

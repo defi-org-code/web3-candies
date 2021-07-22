@@ -32,6 +32,10 @@ describe("Contracts", () => {
     expect(token.options.address).eq(erc20s.eth.WETH().options.address);
     expect(erc20s.eth.USDC().options.address).not.eq(erc20s.bsc.USDC().options.address);
     expect(await erc20s.eth.USDC().methods.decimals().call()).bignumber.eq("6");
+    const a = await account();
+    expect(await erc20s.eth.DAI().methods.allowance(a, a).call()).bignumber.zero;
+    expect(await erc20s.eth.USDT().methods.allowance(a, a).call()).bignumber.zero;
+    expect(await erc20s.eth.WBTC().methods.allowance(a, a).call()).bignumber.zero;
   });
 
   it("quick deploy compiled artifact", async () => {
