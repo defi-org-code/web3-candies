@@ -28,7 +28,7 @@ export function web3(): Web3 {
 
 let web3GlobalSingleton: Web3;
 
-export function setWeb3Instance(web3: Web3) {
+export function setWeb3Instance(web3: any) {
   web3GlobalSingleton = web3;
 }
 
