@@ -18,7 +18,11 @@ export function hre(): HardhatRuntimeEnvironment & { web3: Web3 } {
  */
 export function web3(): Web3 {
   if (web3GlobalSingleton) return web3GlobalSingleton;
-  web3GlobalSingleton = hre().web3;
+  try {
+    web3GlobalSingleton = hre().web3;
+  } catch (e) {}
+  if (!web3GlobalSingleton)
+    throw new Error(`web3 undefined! call "setWeb3Instance" or install optional HardHat dependency`);
   return web3GlobalSingleton;
 }
 
