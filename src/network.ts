@@ -1,7 +1,7 @@
 import _ from "lodash";
 import Web3 from "web3";
 import { BlockInfo, BlockNumber } from "./contracts";
-import type { Artifact, HardhatRuntimeEnvironment } from "hardhat/types";
+import type { Artifact, HardhatRuntimeEnvironment } from "./hardhat/types";
 
 export const ethChainId = 0x1;
 export const bscChainId = 0x38;
