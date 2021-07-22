@@ -7,7 +7,7 @@ import { IWETH } from "../typechain-abi/IWETH";
 const erc20abi = require("../abi/ERC20.json");
 const wethabi = require("../abi/IWETH.json");
 
-type Named = { name: string };
+type Named = { name: string; address: string };
 
 export const erc20s = {
   eth: {
@@ -31,6 +31,8 @@ export function erc20<T>(name: string, address: string, extendAbi?: any[]): ERC2
   const abi = extendAbi ? [...erc20abi, ...extendAbi] : erc20abi;
   const result = contract<ERC20 & Named & T>(abi, address);
   result.name = name;
+  result.address = address;
+  if (address != result.options.address) throw new Error("unknown address");
   tag(address, name);
   return result;
 }
