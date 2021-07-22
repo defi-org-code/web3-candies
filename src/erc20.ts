@@ -1,8 +1,8 @@
 import _ from "lodash";
 import { Abi, contract } from "./contracts";
-import { tag } from "./network";
 import { ERC20 } from "../typechain-abi/ERC20";
 import { IWETH } from "../typechain-abi/IWETH";
+import { tag } from "./hardhat";
 
 export const erc20abi = require("../abi/ERC20.json") as Abi;
 const wethabi = require("../abi/IWETH.json") as Abi;
