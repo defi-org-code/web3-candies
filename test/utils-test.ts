@@ -16,6 +16,8 @@ import {
   fmt9,
   max,
   zero,
+  to6,
+  to18,
 } from "../src";
 
 useChaiBN();
@@ -70,5 +72,21 @@ describe("utils", () => {
     await expectRevert(() => {
       throw new Error("should catch this otherwise fails");
     });
+  });
+
+  it("to6 decimals", async () => {
+    expect(to6(100, 2)).bignumber.eq(bn6(1));
+    expect(to6("1000", "3")).bignumber.eq(bn6(1));
+    expect(to6(bn("1000"), bn("3"))).bignumber.eq(bn6(1));
+    expect(to6(bn6("1"), 6)).bignumber.eq(bn6(1));
+    expect(to6(bn9("1"), 9)).bignumber.eq(bn6(1));
+  });
+
+  it("to18 decimals", async () => {
+    expect(to18(100, 2)).bignumber.eq(bn18(1));
+    expect(to18("1000", "3")).bignumber.eq(bn18(1));
+    expect(to18(bn("1000"), bn("3"))).bignumber.eq(bn18(1));
+    expect(to18(bn6("1"), 6)).bignumber.eq(bn18(1));
+    expect(to18(bn9("1"), 9)).bignumber.eq(bn18(1));
   });
 });

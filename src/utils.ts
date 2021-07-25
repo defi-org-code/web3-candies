@@ -8,7 +8,8 @@ export const max = "115792089237316195423570985008687907853269984665640564039457
 
 export function bn(n: BN | string | number): BN {
   if (!n) return zero;
-  return new BN(n, 10);
+  else if (n instanceof BN) return n;
+  else return new BN(n, 10);
 }
 
 /**
@@ -81,7 +82,51 @@ export function fmt6(ether: BN | number | string): string {
   return commafy(Web3.utils.fromWei(bn(ether), "lovelace"));
 }
 
-function commafy(num: string) {
+/**
+ * converts to 6 decimal number
+ */
+export function to6(n: BN | number | string, decimals: BN | number | string): BN {
+  return convertDecimals(bn(n), bn(decimals), bn(6));
+}
+
+/**
+ * converts to 8 decimal number
+ */
+export function to8(n: BN | number | string, decimals: BN | number | string): BN {
+  return convertDecimals(bn(n), bn(decimals), bn(8));
+}
+
+/**
+ * converts to 9 decimal number
+ */
+export function to9(n: BN | number | string, decimals: BN | number | string): BN {
+  return convertDecimals(bn(n), bn(decimals), bn(9));
+}
+
+/**
+ * converts to 12 decimal number
+ */
+export function to12(n: BN | number | string, decimals: BN | number | string): BN {
+  return convertDecimals(bn(n), bn(decimals), bn(12));
+}
+
+/**
+ * converts to 18 decimal number
+ */
+export function to18(n: BN | number | string, decimals: BN | number | string): BN {
+  return convertDecimals(bn(n), bn(decimals), bn(18));
+}
+
+/**
+ * increase or decrease `n` percision from `decimals` to `targetDecimals`
+ */
+export function convertDecimals(n: BN, decimals: BN, targetDecimals: BN) {
+  return decimals.gt(targetDecimals)
+    ? n.div(bn(10).pow(decimals.sub(targetDecimals)))
+    : n.mul(bn(10).pow(targetDecimals.sub(decimals)));
+}
+
+export function commafy(num: string) {
   const parts = _.split(num, ".");
   const upper = _(parts[0].split(""))
     .reverse()
