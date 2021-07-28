@@ -83,35 +83,21 @@ export function fmt6(ether: BN | number | string): string {
 }
 
 /**
- * converts to 6 decimal number
+ * converts to 3 decimal number, losing percision
+ */
+export function to3(n: BN | number | string, decimals: BN | number | string): BN {
+  return convertDecimals(bn(n), bn(decimals), bn(3));
+}
+
+/**
+ * converts to 6 decimal number, maybe losing percision
  */
 export function to6(n: BN | number | string, decimals: BN | number | string): BN {
   return convertDecimals(bn(n), bn(decimals), bn(6));
 }
 
 /**
- * converts to 8 decimal number
- */
-export function to8(n: BN | number | string, decimals: BN | number | string): BN {
-  return convertDecimals(bn(n), bn(decimals), bn(8));
-}
-
-/**
- * converts to 9 decimal number
- */
-export function to9(n: BN | number | string, decimals: BN | number | string): BN {
-  return convertDecimals(bn(n), bn(decimals), bn(9));
-}
-
-/**
- * converts to 12 decimal number
- */
-export function to12(n: BN | number | string, decimals: BN | number | string): BN {
-  return convertDecimals(bn(n), bn(decimals), bn(12));
-}
-
-/**
- * converts to 18 decimal number
+ * converts to 18 decimal number, maybe losing percision
  */
 export function to18(n: BN | number | string, decimals: BN | number | string): BN {
   return convertDecimals(bn(n), bn(decimals), bn(18));
@@ -122,7 +108,7 @@ export function to18(n: BN | number | string, decimals: BN | number | string): B
  */
 export function convertDecimals(n: BN, decimals: BN, targetDecimals: BN) {
   return decimals.gt(targetDecimals)
-    ? n.div(bn(10).pow(decimals.sub(targetDecimals)))
+    ? n.divRound(bn(10).pow(decimals.sub(targetDecimals)))
     : n.mul(bn(10).pow(targetDecimals.sub(decimals)));
 }
 

@@ -35,7 +35,7 @@
     "@types/prompts": "2.x",
     "bn.js": "5.x",
     "chai": "4.x",
-    "chai-bn": "git+https://github.com/defi-org-code/chai-bn.git",
+    "chai-bn": "0.x",
     "fs-extra": "10.x",
     "lodash": "4.x",
     "mocha": "9.x",
