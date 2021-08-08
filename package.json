@@ -36,7 +36,6 @@
     "bn.js": "5.x",
     "chai": "4.x",
     "chai-bn": "0.x",
-    "ethereum-block-by-date": "1.x",
     "fs-extra": "10.x",
     "lodash": "4.x",
     "mocha": "9.x",

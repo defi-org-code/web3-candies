@@ -8,12 +8,10 @@ import {
   mineBlock,
   mineBlocks,
   resetNetworkFork,
-  web3,
   useChaiBN,
+  web3,
   zero,
-  blockNumberByDate,
 } from "../src";
-import { blockNumbersEveryDate } from "../dist";
 
 useChaiBN();
 
@@ -59,17 +57,5 @@ describe("network", () => {
 
     expect(await estimatedBlockNumber(Date.now(), 10)).eq(now.number);
     expect(await estimatedBlockNumber(Date.now() - 10_000, 10)).eq(now.number - 1);
-  });
-
-  it("first block of the year", async () => {
-    const startOfYear = new Date(Date.UTC(2021, 0));
-    const result = await blockNumberByDate(startOfYear);
-    const results = await blockNumbersEveryDate("years", startOfYear, startOfYear);
-    expect(results).length(1);
-    expect(results[0]).deep.eq(result);
-
-    expect(result.block).eq(11565019);
-    expect(result.timestamp).eq(1609459200);
-    expect(result.date).eq("2021-01-01T00:00:00Z");
   });
 });
