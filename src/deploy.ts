@@ -24,7 +24,7 @@ export async function deploy(
   gasLimit: number,
   initialETH: BN | string | number,
   uploadSources: boolean
-) {
+): Promise<string> {
   const timestamp = new Date().getTime();
   const deployer = await askDeployer();
   const gasPrice = await askGasPrice();
@@ -63,6 +63,8 @@ export async function deploy(
   }
 
   console.log("done");
+
+  return address;
 }
 
 export async function askAddress(message: string): Promise<string> {

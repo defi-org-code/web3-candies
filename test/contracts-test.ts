@@ -12,7 +12,7 @@ import {
   web3,
   zero,
 } from "../src";
-import { Example } from "../typechain-hardhat/Example";
+import type { Example } from "../typechain-hardhat/Example";
 
 useChaiBN();
 

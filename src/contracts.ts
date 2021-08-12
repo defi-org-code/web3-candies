@@ -1,8 +1,8 @@
-import { TransactionReceipt } from "web3-core";
-import { CallOptions, Contract as ContractOrig, ContractOptions, SendOptions } from "web3-eth-contract";
-import { BaseContract, BlockType } from "@typechain/web3-v1/static/types";
-import { AbiItem } from "web3-utils";
-import { BlockTransactionString } from "web3-eth";
+import type { CallOptions, Contract as ContractOrig, ContractOptions, SendOptions } from "web3-eth-contract";
+import type { BaseContract, BlockType } from "@typechain/web3-v1/static/types";
+import type { TransactionReceipt } from "web3-core";
+import type { AbiItem } from "web3-utils";
+import type { BlockTransactionString } from "web3-eth";
 import { web3 } from "./network";
 import { artifact, tag } from "./hardhat";
 
