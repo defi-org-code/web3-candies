@@ -12,7 +12,7 @@ task("deploy").setAction(async () => {
   console.log("pk:", ac.privateKey);
   await web3().eth.sendTransaction({ from: await account(), to: ac.address, value: ether });
 
-  await deploy("Example", [], 5_000_000, 0, true);
+  await deploy("Example", [], 5_000_000, 0, true, 1);
 });
 
 export function configFile() {
@@ -58,8 +58,7 @@ export default {
   },
   mocha: {
     timeout: 500_000,
-    retries: 1,
-    bail: true,
+    retries: 0,
   },
   gasReporter: {
     currency: "USD",

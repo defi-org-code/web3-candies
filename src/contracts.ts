@@ -22,12 +22,21 @@ export function contract<T extends Contract>(abi: Abi, address: string, options?
 export async function deployArtifact<T extends Contract>(
   contractName: string,
   opts: SendOptions,
-  constructorArgs?: any[]
+  constructorArgs?: any[],
+  waitForConfirmations: number = 0
 ): Promise<T> {
+  console.log("deploying", contractName);
   const _artifact = artifact(contractName);
-  const deployed = await contract<T>(_artifact.abi, "")
-    .deploy({ data: _artifact.bytecode, arguments: constructorArgs })
-    .send(opts);
+  const tx = contract<T>(_artifact.abi, "").deploy({ data: _artifact.bytecode, arguments: constructorArgs }).send(opts);
+
+  if (waitForConfirmations) {
+    console.log("waiting for confirmations...");
+    await new Promise<void>((res) => waitConfirmations(tx, res, waitForConfirmations));
+  } else {
+    console.log("not waiting for confirmations");
+  }
+
+  const deployed = await tx;
   console.log("deployed", contractName, deployed.options.address, "deployer", opts.from);
   tag(deployed.options.address, contractName);
   return contract<T>(_artifact.abi, deployed.options.address, deployed.options);
@@ -35,4 +44,15 @@ export async function deployArtifact<T extends Contract>(
 
 export function parseEvents(c: Contract, tx: TransactionReceipt) {
   require("web3-parse-receipt-events")(c.options.jsonInterface, c.options.address, tx);
+}
+
+function waitConfirmations(tx: any, res: () => void, requiredConfirms: number) {
+  tx.once("confirmation", (confNumber: number, receipt: Receipt, blockHash: string) => {
+    console.log("confirmed", confNumber, "blocks", receipt.blockNumber, blockHash);
+    if (confNumber >= requiredConfirms) {
+      res();
+    } else {
+      waitConfirmations(tx, res, requiredConfirms);
+    }
+  });
 }

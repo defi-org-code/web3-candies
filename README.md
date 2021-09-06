@@ -9,6 +9,7 @@
 **If not using hardhat**, to skip the optional hardhat dependencies:
 
 Before installing, add `.npmrc` file to your project with the contents:
+
 ```
 omit[] = optional
 optional = false
@@ -54,6 +55,7 @@ await myToken.methods.approve(other, max).send({ from: owner }); // approve max 
 - `deployArtifact(...)`: quickly deploy a compiled contract, for ex from tests
 - `parseEvents`: parse tx receipt events
 - `deploy(...)`: deployment script with prompts and confirmations, saves deployments locally, optionally uploads sources to etherscan
+- `etherscanVerify(...)`: verify sources for previously deployed contracts
 
 ### network utils
 
@@ -77,3 +79,11 @@ await myToken.methods.approve(other, max).send({ from: owner }); // approve max 
 
 - Default (recommended) Web3 + Hardhat development dependencies are installed
   - Use the bundled tsconfig, solhint, and other project files as a starting point
+
+### How to manually verify sources in Etherscan in case of an error during deploy?
+
+- First, try running `etherscanVerify`
+- After running `deploy` script, the `deployments` artifact backup should hold build-info json with all the metadata required
+- Alternatively, after compiling with hardhat, `./artifacts/build-info` should have this json
+- Extract the object under `input`: this is the Solidity standard-json-input required by Etherscan
+- Additionally, constructor arguments should be sent abi-encoded to Etherscan, this is printed during the deploy script

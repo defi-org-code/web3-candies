@@ -9,6 +9,9 @@ const wethabi = require("../abi/IWETH.json") as Abi;
 
 export type IERC20 = ERC20 & { name: string; address: string; abi: Abi };
 
+/**
+ * to extend: `const myerc20s = _.merge({}, erc20s, { eth: ...})`
+ */
 export const erc20s = {
   eth: {
     WETH: () => erc20<IWETH>("$WETH", "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", wethabi),

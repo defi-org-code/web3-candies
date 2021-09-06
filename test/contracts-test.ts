@@ -2,13 +2,14 @@ import { expect } from "chai";
 import {
   account,
   bn18,
-  useChaiBN,
   deployArtifact,
   erc20,
   erc20s,
   ether,
+  mineBlocks,
   parseEvents,
   resetNetworkFork,
+  useChaiBN,
   web3,
   zero,
 } from "../src";
@@ -40,7 +41,11 @@ describe("Contracts", () => {
 
   it("quick deploy compiled artifact", async () => {
     expect(await web3().eth.getBalance(await account())).bignumber.gt(ether);
-    const deployed = await deployArtifact<Example>("Example", { from: await account() });
+    const deployed = await deployArtifact<Example>("Example", { from: await account() }, [
+      123,
+      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      [456],
+    ]);
     expect(deployed.options.address).not.empty;
     expect(await deployed.methods.deployer().call()).eq(await account());
   });
@@ -54,12 +59,28 @@ describe("Contracts", () => {
 
     parseEvents(erc20s.eth.WETH(), tx); // needed only for other called contracts
 
-    expect(tx.events!!.Deposit.returnValues.wad).bignumber.eq(bn18("42"));
+    expect(tx.events!.Deposit.returnValues.wad).bignumber.eq(bn18("42"));
     expect(
       await erc20s.eth
         .WETH()
         .methods.balanceOf(await account())
         .call()
     ).bignumber.eq(bn18("42"));
+  });
+
+  it("deploy wait for confirmations", async () => {
+    const promise = deployArtifact(
+      "Example",
+      { from: await account() },
+      [123, "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", [456]],
+      3
+    );
+
+    await web3().eth.subscribe("pendingTransactions"); // must wait for the deploy to actually be sent
+    await mineBlocks(60, 1);
+    web3().eth.clearSubscriptions(() => {});
+
+    const result = await promise;
+    expect(result.options.address).not.empty;
   });
 });

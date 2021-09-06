@@ -5,6 +5,7 @@ import { web3 } from "./network";
 import { bn9, fmt18, fmt9 } from "./utils";
 import { execSync } from "child_process";
 import { deployArtifact } from "./contracts";
+import { AbiItem } from "web3-utils";
 
 export type DeployParams = {
   chainId: number;
@@ -20,10 +21,11 @@ export type DeployParams = {
 
 export async function deploy(
   contractName: string,
-  constructorArgs: string[],
+  constructorArgs: any[],
   gasLimit: number,
   initialETH: BN | string | number,
-  uploadSources: boolean
+  uploadSources: boolean,
+  waitForConfirmations: number
 ): Promise<string> {
   const timestamp = new Date().getTime();
   const deployer = await askDeployer();
@@ -48,18 +50,20 @@ export async function deploy(
   const result = await deployArtifact(
     contractName,
     { from: deployer, gas: gasLimit, gasPrice: gasPrice.toString(), value: initialETH },
-    constructorArgs
+    constructorArgs,
+    waitForConfirmations
   );
   const address = result.options.address;
 
   execSync(`mv ${backup} ${backup}/../${timestamp}-${address}`);
 
+  console.log(
+    "constructor args abi-encoded:",
+    abiEncodedConstructorArgs(result.options.jsonInterface, constructorArgs)
+  );
+
   if (uploadSources) {
-    console.log("uploading sources to etherscan...");
-    await require("hardhat").run("verify:verify", {
-      address: address,
-      constructorArguments: constructorArgs,
-    });
+    await etherscanVerify(address, constructorArgs);
   }
 
   console.log("done");
@@ -76,6 +80,20 @@ export async function askAddress(message: string): Promise<string> {
   });
   if (!address) throw new Error("aborted");
   return address.toString();
+}
+
+export async function etherscanVerify(address: string, constructorArgs: any[]) {
+  console.log("uploading sources to etherscan...");
+  await require("hardhat").run("verify:verify", {
+    address: address,
+    constructorArguments: constructorArgs,
+  });
+}
+
+export function abiEncodedConstructorArgs(abi: AbiItem[], constructorArgs: any[]) {
+  if (!constructorArgs.length) return "";
+  const ctrAbi = abi.find((i) => i.type == "constructor");
+  return web3().eth.abi.encodeFunctionCall(ctrAbi!, constructorArgs);
 }
 
 function backupArtifacts(timestamp: number) {
