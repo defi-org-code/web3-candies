@@ -22,4 +22,9 @@ contract Example is ERC20("Example", "EX") {
         require(foo > 0 && bar != address(0) && s.a > 0, "testing constructor args");
         deployer = msg.sender;
     }
+
+    function assertNotZero(uint256 n) external pure returns (uint256) {
+        require(n > 0, "n should not be zero");
+        return n;
+    }
 }

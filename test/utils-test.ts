@@ -87,12 +87,6 @@ describe("utils", () => {
     expect(to18(bn9("1"), 9)).bignumber.eq(bn18(1));
   });
 
-  it("expectRevert", async () => {
-    await expectRevert(() => {
-      throw new Error("should catch this otherwise fails");
-    }, "should catch this");
-  });
-
   it("sqrt", async () => {
     expect(sqrt(zero)).bignumber.zero;
     expect(sqrt(bn(1))).bignumber.eq(bn(1));
@@ -103,18 +97,5 @@ describe("utils", () => {
     expect(sqrt(bn(9))).bignumber.eq(bn(3));
     expect(sqrt(bn(100))).bignumber.eq(bn(10));
     expect(sqrt(bn(123456789).sqr())).bignumber.eq(bn(123456789));
-  });
-
-  it("throttle & sleep", async () => {
-    class Foo {
-      i = 0;
-      bar = throttle(this, 1, async () => this.i++);
-    }
-    const foo = new Foo();
-    expect(await foo.bar()).to.eq(0);
-    expect(await foo.bar()).to.eq(0);
-    expect(await foo.bar()).to.eq(0);
-    await sleep(1);
-    expect(await foo.bar()).to.gt(0);
   });
 });

@@ -8,6 +8,7 @@ export function useChaiBN() {
 }
 
 export async function expectRevert(fn: () => any, withError: string) {
+  expect(withError.trim(), "must provide expected error message").to.not.be.empty;
   let err: Error | null = null;
   try {
     await fn();
@@ -15,5 +16,5 @@ export async function expectRevert(fn: () => any, withError: string) {
     err = e;
   }
   expect(!!err, `expected to revert with '${withError}'`).to.be.true;
-  expect(err!.message).contains(withError);
+  expect(err!.message).to.include(withError);
 }

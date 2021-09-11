@@ -6,6 +6,7 @@ import {
   erc20,
   erc20s,
   ether,
+  expectRevert,
   mineBlocks,
   parseEvents,
   resetNetworkFork,
@@ -19,7 +20,6 @@ useChaiBN();
 
 describe("Contracts", () => {
   const token = erc20("WETH", "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2");
-
   it("erc20", async () => {
     const total = await token.methods.totalSupply().call();
     expect(total).bignumber.gt(zero);
@@ -41,11 +41,7 @@ describe("Contracts", () => {
 
   it("quick deploy compiled artifact", async () => {
     expect(await web3().eth.getBalance(await account())).bignumber.gt(ether);
-    const deployed = await deployArtifact<Example>("Example", { from: await account() }, [
-      123,
-      "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
-      [456],
-    ]);
+    const deployed = await deployArtifact<Example>("Example", { from: await account() }, [123, token.address, [456]]);
     expect(deployed.options.address).not.empty;
     expect(await deployed.methods.deployer().call()).eq(await account());
   });
@@ -82,5 +78,11 @@ describe("Contracts", () => {
 
     const result = await promise;
     expect(result.options.address).not.empty;
+  });
+
+  it("expectRevert", async () => {
+    const c = await deployArtifact<Example>("Example", { from: await account() }, [123, token.address, [456]]);
+    expect(await c.methods.assertNotZero("123").call()).bignumber.eq("123");
+    await expectRevert(() => c.methods.assertNotZero(zero).call(), "n should not be zero");
   });
 });
