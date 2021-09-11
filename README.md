@@ -41,39 +41,54 @@ await myToken.methods.approve(other, max).send({ from: owner }); // approve max 
 - `bn`: convert `string|number|bn` to `bn.js` object
 - `bn6, bn8, bn9, bn12, bn18`: convert human readable `string|number` to `bn.js` object, handling commas and decimals
 - `fmt6, fmt8, fmt9, fmt12, fmt18`: convert `bn.js` object to human readable `string`, handling commas and decimals
-- `zero, ether, max`: hardcoded useful values
+- `to18, to6, to3`: convert to decimals, losing percision
+- `zero, ether, maxUint256`: hardcoded useful values
+- `sqrt`: compute square root
 
 ### ERC20
 
 - `erc20s.eth...`: well known Ethereum ERC20 contracts
 - `erc20s.bsc...`: well known BinanceSmartChain ERC20 contracts
-- `erc20<T>(...)`: web3 ERC20 contract, with optional additional abi
+- `erc20<T>(...)`: web3 ERC20 contract, with optional extending abi to merge
 
 ### contract utils
 
 - `contract<T>(...)`: create web3 Contract instance, supporting types
 - `deployArtifact(...)`: quickly deploy a compiled contract, for ex from tests
 - `parseEvents`: parse tx receipt events
-- `deploy(...)`: deployment script with prompts and confirmations, saves deployments locally, optionally uploads sources to etherscan
+- `deploy(...)`: deployment script with prompts and confirmations, saves deployment artifacts locally, waits for confirmations, optionally uploads sources to etherscan
 - `etherscanVerify(...)`: verify sources for previously deployed contracts
 
 ### network utils
 
-- `hre()`, `web3()`: the globally accesible singletons
+- `web3()`: the globally accesible singleton. call `setWeb3Instance(web3)` if needed
 - `ethChainId`, `bscChainId`: constants
 - `account`: alias for web3.accounts
-- `artifact`: read compiled artifact
+- `block`: alias for web3.getBlock, with parsed timestamp
+- `estimatedBlockNumber`: estimate block number by timestamp
+
+### hardhat utils
+
+- `hre()`: the globally accessible singleton
 - `tag`: tag address for use with hre.tracer in logs
+- `artifact`: read compiled artifact
 - `impersonate`: impersonate accounts
 - `resetNetworkFork`: resets the fork, with optional blockNumber
+- `getNetworkForkingBlockNumber`, `getNetworkForkingUrl`: read hardhat config
 - `mineBlocks`: mine blocks in a loop, simulating chain progression with timestamps
 - `mineBlock`: mine a single block with the given timestamp
-- `getNetworkForkingBlockNumber`, `getNetworkForkingUrl`: read hardhat config
 
 ### test utils
 
-- `expectRevert`: expects given fn to revert
-- `useChaiBN`: use bn.js in chai tests assertions, ex. `expect(ether).bignumber.gt(zero)`
+- `useChaiBN()`: use bn.js in chai tests assertions, ex. `expect(ether).bignumber.gt(zero)`
+- `expectRevert`: expects given fn to revert, containing reason string
+
+### timing utils
+
+- `throttle(this, seconds, fn)`: sugar for lodash throttle
+- `sleep`: async sleep seconds
+- `keepTrying`: keep trying to invoke fn catching and logging exceptions, with 1 sec sleep between invocations
+- `preventMacSleep`: runs a shell subprocess that prevents macbooks from sleeping
 
 ### peerDependencies
 
