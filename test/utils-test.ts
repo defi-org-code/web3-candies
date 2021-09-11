@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import {
-  useChaiBN,
   bn,
   bn12,
   bn18,
@@ -14,10 +13,14 @@ import {
   fmt6,
   fmt8,
   fmt9,
-  max,
-  zero,
-  to6,
+  maxUint256,
+  sleep,
+  sqrt,
+  throttle,
   to18,
+  to6,
+  useChaiBN,
+  zero,
 } from "../src";
 
 useChaiBN();
@@ -65,13 +68,7 @@ describe("utils", () => {
   it("constants", async () => {
     expect(zero).bignumber.eq(bn(0)).eq("0");
     expect(ether).bignumber.eq(bn18("1"));
-    expect(max).bignumber.eq(bn("2").pow(bn("256")).subn(1)); //max 256 bytes value
-  });
-
-  it("expectRevert", async () => {
-    await expectRevert(() => {
-      throw new Error("should catch this otherwise fails");
-    });
+    expect(maxUint256).bignumber.eq(bn("2").pow(bn("256")).subn(1)); //max 256 bytes value
   });
 
   it("to6 decimals", async () => {
@@ -88,5 +85,36 @@ describe("utils", () => {
     expect(to18(bn("1000"), bn("3"))).bignumber.eq(bn18(1));
     expect(to18(bn6("1"), 6)).bignumber.eq(bn18(1));
     expect(to18(bn9("1"), 9)).bignumber.eq(bn18(1));
+  });
+
+  it("expectRevert", async () => {
+    await expectRevert(() => {
+      throw new Error("should catch this otherwise fails");
+    }, "should catch this");
+  });
+
+  it("sqrt", async () => {
+    expect(sqrt(zero)).bignumber.zero;
+    expect(sqrt(bn(1))).bignumber.eq(bn(1));
+    expect(sqrt(bn(2))).bignumber.eq(bn(1));
+    expect(sqrt(bn(3))).bignumber.eq(bn(1));
+    expect(sqrt(bn(4))).bignumber.eq(bn(2));
+    expect(sqrt(bn(5))).bignumber.eq(bn(2));
+    expect(sqrt(bn(9))).bignumber.eq(bn(3));
+    expect(sqrt(bn(100))).bignumber.eq(bn(10));
+    expect(sqrt(bn(123456789).sqr())).bignumber.eq(bn(123456789));
+  });
+
+  it("throttle & sleep", async () => {
+    class Foo {
+      i = 0;
+      bar = throttle(this, 1, async () => this.i++);
+    }
+    const foo = new Foo();
+    expect(await foo.bar()).to.eq(0);
+    expect(await foo.bar()).to.eq(0);
+    expect(await foo.bar()).to.eq(0);
+    await sleep(1);
+    expect(await foo.bar()).to.gt(0);
   });
 });

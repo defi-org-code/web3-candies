@@ -4,7 +4,7 @@ import _ from "lodash";
 
 export const zero = bn("0");
 export const ether = bn18("1");
-export const max = "115792089237316195423570985008687907853269984665640564039457584007913129639935";
+export const maxUint256 = "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 
 export function bn(n: BN | string | number): BN {
   if (!n) return zero;
@@ -112,6 +112,9 @@ export function convertDecimals(n: BN, decimals: BN, targetDecimals: BN) {
     : n.mul(bn(10).pow(targetDecimals.sub(decimals)));
 }
 
+/**
+ * converts to human-readble formatted number string (123,456.789)
+ */
 export function commafy(num: string) {
   const parts = _.split(num, ".");
   const upper = _(parts[0].split(""))
@@ -124,4 +127,61 @@ export function commafy(num: string) {
   const lower = parts[1];
   if (lower) return `${upper}.${lower}`;
   else return upper;
+}
+
+/**
+ * https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Babylonian_method
+ * @returns square root of n, using the Babylonian method
+ */
+export function sqrt(n: BN) {
+  if (n.isZero()) return zero;
+  if (n.lt(bn(3))) return bn(1);
+
+  const two = bn(2);
+  let result = n;
+  let x = n.div(two).add(bn(1));
+
+  while (x.lt(result)) {
+    result = x;
+    x = n.div(x).add(x).div(two);
+  }
+
+  return result;
+}
+
+export function throttle<T>(self: any, seconds: number, fn: () => Promise<T>) {
+  return _.bind(_.throttle(fn, seconds * 1000), self);
+}
+
+export async function sleep(seconds: number) {
+  return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+}
+
+/**
+ * keep invoking fn, catching and loggin errors, sleeping 1 second between invocations, until successful
+ */
+export async function keepTrying<T>(fn: () => Promise<T>): Promise<T> {
+  do {
+    try {
+      return await fn();
+    } catch (e) {
+      console.error(e);
+      await sleep(1);
+    }
+  } while (true);
+}
+
+/**
+ * runs a shell command thats keeps macbooks from sleeping duing invocation of fn
+ * automatically killing the spawned process on exit
+ */
+export async function preventMacSleep(fn: () => void) {
+  const caffeinate = require("child_process").exec("caffeinate -dimsu");
+  const kill = () => caffeinate.kill("SIGABRT");
+  process.on("exit", kill);
+  try {
+    await fn();
+  } finally {
+    kill();
+  }
 }

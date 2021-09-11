@@ -7,12 +7,13 @@ export function useChaiBN() {
   use(CBN(BN));
 }
 
-export async function expectRevert(fn: () => any) {
+export async function expectRevert(fn: () => any, withError: string) {
   let err: Error | null = null;
   try {
     await fn();
   } catch (e) {
     err = e;
   }
-  expect(!!err, "expected to revert").true;
+  expect(!!err, `expected to revert with '${withError}'`).to.be.true;
+  expect(err!.message).contains(withError);
 }
