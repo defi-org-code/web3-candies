@@ -29,7 +29,7 @@ const owner = await account(); // web3 test account [0]
 await erc20s.eth.WETH().methods.balanceOf(owner).call(); // WETH balance of
 
 const myToken = erc20("foo", myTokenAddress); // web3 instantiated ERC20 Contract tagged as 'foo' in logs
-await myToken.methods.approve(other, max).send({ from: owner }); // approve max uint value for other to spend
+await myToken.methods.approve(other, maxUint256).send({ from: owner }); // approve max uint value for other to spend
 ```
 
 ## Sweets included
