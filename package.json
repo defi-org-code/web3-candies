@@ -62,8 +62,8 @@
   "scripts": {
     "prettier": "prettier --write '{contracts,src,test}/**/*.{ts,js,json,sol}'",
     "typechain": "typechain --target=web3-v1 --out-dir=typechain-abi 'abi/**/*.json' && npx hardhat typechain",
-    "prebuild": "rm -rf artifacts && rm -rf typechain-hardhat && rm -rf typechain-abi && npm run prettier && npm run typechain",
-    "build": "npx hardhat compile && npx solhint 'contracts/**/*.sol' && tsc",
+    "prebuild": "rm -rf artifacts && rm -rf typechain-hardhat && rm -rf typechain-abi && rm -rf ./dist && npm run prettier && npm run typechain",
+    "build": "npx hardhat compile && npx solhint 'contracts/**/*.sol' && tsc && cp -rf ./src/hardhat ./dist/hardhat",
     "test": "npm run build && npx hardhat test --logs",
     "deploy": "npx hardhat deploy --network $1",
     "upload": "npm publish --access public"

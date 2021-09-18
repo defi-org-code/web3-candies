@@ -58,6 +58,7 @@ await myToken.methods.approve(other, max).send({ from: owner }); // approve max 
 - `parseEvents`: parse tx receipt events
 - `deploy(...)`: deployment script with prompts and confirmations, saves deployment artifacts locally, waits for confirmations, optionally uploads sources to etherscan
 - `etherscanVerify(...)`: verify sources for previously deployed contracts
+- `waitForTxConfirmations`: pass tx object to wait for tx confirmations
 
 ### network utils
 

@@ -22,6 +22,7 @@ import {
   useChaiBN,
   zero,
 } from "../src";
+import { to3 } from "../dist";
 
 useChaiBN();
 
@@ -69,6 +70,13 @@ describe("utils", () => {
     expect(zero).bignumber.eq(bn(0)).eq("0");
     expect(ether).bignumber.eq(bn18("1"));
     expect(maxUint256).bignumber.eq(bn("2").pow(bn("256")).subn(1)); //max 256 bytes value
+  });
+
+  it("to3 decimals", async () => {
+    expect(to3(100, 2)).bignumber.eq("1000");
+    expect(to3("1000", "3")).bignumber.eq("1000");
+    expect(to3(bn("1000"), bn("3"))).bignumber.eq("1000");
+    expect(to3(bn18("1234"), 18)).bignumber.eq("1234000");
   });
 
   it("to6 decimals", async () => {

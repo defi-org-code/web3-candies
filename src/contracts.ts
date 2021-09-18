@@ -30,8 +30,7 @@ export async function deployArtifact<T extends Contract>(
   const tx = contract<T>(_artifact.abi, "").deploy({ data: _artifact.bytecode, arguments: constructorArgs }).send(opts);
 
   if (waitForConfirmations) {
-    console.log("waiting for confirmations...");
-    await new Promise<void>((res) => waitConfirmations(tx, res, waitForConfirmations));
+    await waitForTxConfirmations(tx, waitForConfirmations);
   } else {
     console.log("not waiting for confirmations");
   }
@@ -44,6 +43,12 @@ export async function deployArtifact<T extends Contract>(
 
 export function parseEvents(c: Contract, tx: TransactionReceipt) {
   require("web3-parse-receipt-events")(c.options.jsonInterface, c.options.address, tx);
+}
+
+export async function waitForTxConfirmations(tx: any, confirmations: number) {
+  console.log(`waiting for ${confirmations} confirmations...`);
+  await new Promise<void>((res) => waitConfirmations(tx, res, confirmations));
+  return await tx;
 }
 
 function waitConfirmations(tx: any, res: () => void, requiredConfirms: number) {
