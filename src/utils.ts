@@ -86,30 +86,34 @@ export function fmt6(ether: BN | number | string): string {
  * converts to 3 decimal number, losing percision
  */
 export function to3(n: BN | number | string, decimals: BN | number | string): BN {
-  return convertDecimals(bn(n), bn(decimals), bn(3));
+  return convertDecimals(n, decimals, 3);
 }
 
 /**
  * converts to 6 decimal number, maybe losing percision
  */
 export function to6(n: BN | number | string, decimals: BN | number | string): BN {
-  return convertDecimals(bn(n), bn(decimals), bn(6));
+  return convertDecimals(n, decimals, 6);
 }
 
 /**
  * converts to 18 decimal number, maybe losing percision
  */
 export function to18(n: BN | number | string, decimals: BN | number | string): BN {
-  return convertDecimals(bn(n), bn(decimals), bn(18));
+  return convertDecimals(n, decimals, 18);
 }
 
 /**
  * increase or decrease `n` percision from `decimals` to `targetDecimals`
  */
-export function convertDecimals(n: BN, decimals: BN, targetDecimals: BN) {
-  return decimals.gt(targetDecimals)
-    ? n.divRound(bn(10).pow(decimals.sub(targetDecimals)))
-    : n.mul(bn(10).pow(targetDecimals.sub(decimals)));
+export function convertDecimals(
+  n: BN | number | string,
+  decimals: BN | number | string,
+  targetDecimals: BN | number | string
+) {
+  return bn(decimals).gt(bn(targetDecimals))
+    ? bn(n).divRound(bn(10).pow(bn(decimals).sub(bn(targetDecimals))))
+    : bn(n).mul(bn(10).pow(bn(targetDecimals).sub(bn(decimals))));
 }
 
 /**
