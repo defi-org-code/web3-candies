@@ -5,8 +5,7 @@ import "@nomiclabs/hardhat-etherscan";
 import "hardhat-tracer";
 import "hardhat-gas-reporter";
 import { task } from "hardhat/config";
-import { account, bn18, bscChainId, ethChainId, ether, web3 } from "./src";
-import { deploy } from "./src/deploy";
+import { account, bn18, bscChainId, deploy, ethChainId, ether, web3 } from "./src";
 
 task("deploy").setAction(async () => {
   const ac = web3().eth.accounts.create();
