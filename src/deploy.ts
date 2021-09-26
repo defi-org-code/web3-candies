@@ -1,6 +1,5 @@
 import BN from "bn.js";
 import path from "path";
-import prompts from "prompts";
 import { web3 } from "./network";
 import { bn9, fmt18, fmt9 } from "./utils";
 import { execSync } from "child_process";
@@ -73,11 +72,11 @@ export async function deploy(
 }
 
 export async function askAddress(message: string): Promise<string> {
-  const { address } = await prompts({
+  const { address } = await require("prompts")({
     type: "text",
     name: "address",
     message,
-    validate: (s) => web3().utils.isAddress(s),
+    validate: (s: any) => web3().utils.isAddress(s),
   });
   if (!address) throw new Error("aborted");
   return address.toString();
@@ -111,7 +110,7 @@ function backupArtifacts(timestamp: number) {
 }
 
 async function askDeployer() {
-  const { privateKey } = await prompts({
+  const { privateKey } = await require("prompts")({
     type: "password",
     name: "privateKey",
     message: "burner deployer private key with some ETH",
@@ -124,11 +123,11 @@ async function askDeployer() {
 }
 
 async function askGasPrice() {
-  const { gas } = await prompts({
+  const { gas } = await require("prompts")({
     type: "number",
     name: "gas",
     message: "gas price in gwei",
-    validate: (s) => !!parseInt(s),
+    validate: (s: any) => !!parseInt(s),
   });
   return bn9(gas.toString());
 }
@@ -136,7 +135,7 @@ async function askGasPrice() {
 async function confirm(params: DeployParams) {
   console.log("DEPLOYING!");
   console.log(params);
-  const { ok } = await prompts({
+  const { ok } = await require("prompts")({
     type: "confirm",
     name: "ok",
     message: "ALL OK?",
