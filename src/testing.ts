@@ -12,7 +12,7 @@ export async function expectRevert(fn: () => any, withError: string) {
   let err: Error | null = null;
   try {
     await fn();
-  } catch (e) {
+  } catch (e: any) {
     err = e;
   }
   expect(!!err, `expected to revert with '${withError}'`).to.be.true;
