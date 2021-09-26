@@ -8,6 +8,7 @@ export const erc20abi = require("../abi/ERC20.json") as Abi;
 const wethabi = require("../abi/IWETH.json") as Abi;
 
 export type IERC20 = ERC20 & { name: string; address: string; abi: Abi };
+export type Token = IERC20;
 
 /**
  * to extend: `const myerc20s = _.merge({}, erc20s, { eth: ...})`

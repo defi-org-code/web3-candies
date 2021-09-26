@@ -84,10 +84,15 @@ export async function askAddress(message: string): Promise<string> {
 
 export async function etherscanVerify(address: string, constructorArgs: any[]) {
   console.log("uploading sources to etherscan...");
-  await require("hardhat").run("verify:verify", {
-    address: address,
-    constructorArguments: constructorArgs,
-  });
+  try {
+    const hh = require("hardhat");
+    await hh.run("verify:verify", {
+      address: address,
+      constructorArguments: constructorArgs,
+    });
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 export function abiEncodedConstructorArgs(abi: AbiItem[], constructorArgs: any[]) {
