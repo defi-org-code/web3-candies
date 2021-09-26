@@ -49,9 +49,7 @@
     "typechain": "5.x",
     "typescript": "4.x",
     "web3": "1.x",
-    "web3-parse-receipt-events": "1.x"
-  },
-  "optionalDependencies": {
+    "web3-parse-receipt-events": "1.x",
     "@nomiclabs/hardhat-etherscan": "2.x",
     "@nomiclabs/hardhat-web3": "2.x",
     "@typechain/hardhat": "2.x",
