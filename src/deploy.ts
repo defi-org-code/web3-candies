@@ -6,6 +6,7 @@ import { bn9, fmt18, fmt9 } from "./utils";
 import { execSync } from "child_process";
 import { deployArtifact } from "./contracts";
 import { AbiItem } from "web3-utils";
+import { hre } from "./hardhat";
 
 export type DeployParams = {
   chainId: number;
@@ -85,11 +86,11 @@ export async function askAddress(message: string): Promise<string> {
 export async function etherscanVerify(address: string, constructorArgs: any[]) {
   console.log("uploading sources to etherscan...");
   try {
-    const hh = require("hardhat");
-    await hh.run("verify:verify", {
+    const r = hre().run("verify:verify", {
       address: address,
       constructorArguments: constructorArgs,
     });
+    await r;
   } catch (e) {
     console.error(e);
   }
