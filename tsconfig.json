@@ -7,8 +7,7 @@
     "strict": true,
     "esModuleInterop": true,
     "declaration": true,
-    "resolveJsonModule": true,
-    "importsNotUsedAsValues": "preserve"
+    "resolveJsonModule": true
   },
   "include": ["src"]
 }
