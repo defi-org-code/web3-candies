@@ -49,9 +49,7 @@
     "typechain": "5.x",
     "typescript": "4.x",
     "web3": "1.x",
-    "web3-parse-receipt-events": "1.x"
-  },
-  "optionalDependencies": {
+    "web3-parse-receipt-events": "1.x",
     "@nomiclabs/hardhat-etherscan": "2.x",
     "@nomiclabs/hardhat-web3": "2.x",
     "@typechain/hardhat": "2.x",
@@ -59,6 +57,7 @@
     "hardhat-gas-reporter": "1.x",
     "hardhat-tracer": "latest"
   },
+  "optionalDependencies": {},
   "scripts": {
     "prettier": "prettier --write '{contracts,src,test}/**/*.{ts,js,json,sol}'",
     "typechain": "typechain --target=web3-v1 --out-dir=typechain-abi 'abi/**/*.json' && npx hardhat typechain",
