@@ -4,5 +4,4 @@ export * from "./network";
 export * from "./contracts";
 export * from "./erc20";
 export * from "./timing";
-export * from "./deploy";
 export * from "./hardhat";

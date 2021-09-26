@@ -56,9 +56,9 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 - `contract<T>(...)`: create web3 Contract instance, supporting types
 - `deployArtifact(...)`: quickly deploy a compiled contract, for ex from tests
 - `parseEvents`: parse tx receipt events
-- `deploy(...)`: deployment script with prompts and confirmations, saves deployment artifacts locally, waits for confirmations, optionally uploads sources to etherscan
 - `etherscanVerify(...)`: verify sources for previously deployed contracts
 - `waitForTxConfirmations`: pass tx object to wait for tx confirmations
+- `src/deploy(...)`: deployment script with prompts and confirmations, saves deployment artifacts locally, waits for confirmations, optionally uploads sources to etherscan
 
 ### network utils
 
