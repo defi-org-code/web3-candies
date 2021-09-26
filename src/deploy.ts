@@ -6,6 +6,7 @@ import { execSync } from "child_process";
 import { deployArtifact } from "./contracts";
 import { AbiItem } from "web3-utils";
 import { hre } from "./hardhat";
+import prompts from "prompts";
 
 export type DeployParams = {
   chainId: number;
@@ -72,7 +73,7 @@ export async function deploy(
 }
 
 export async function askAddress(message: string): Promise<string> {
-  const { address } = await require("prompts")({
+  const { address } = await prompts({
     type: "text",
     name: "address",
     message,
@@ -84,15 +85,10 @@ export async function askAddress(message: string): Promise<string> {
 
 export async function etherscanVerify(address: string, constructorArgs: any[]) {
   console.log("uploading sources to etherscan...");
-  try {
-    const r = hre().run("verify:verify", {
-      address: address,
-      constructorArguments: constructorArgs,
-    });
-    await r;
-  } catch (e) {
-    console.error(e);
-  }
+  await hre().run("verify:verify", {
+    address: address,
+    constructorArguments: constructorArgs,
+  });
 }
 
 export function abiEncodedConstructorArgs(abi: AbiItem[], constructorArgs: any[]) {
@@ -110,7 +106,7 @@ function backupArtifacts(timestamp: number) {
 }
 
 async function askDeployer() {
-  const { privateKey } = await require("prompts")({
+  const { privateKey } = await prompts({
     type: "password",
     name: "privateKey",
     message: "burner deployer private key with some ETH",
@@ -123,7 +119,7 @@ async function askDeployer() {
 }
 
 async function askGasPrice() {
-  const { gas } = await require("prompts")({
+  const { gas } = await prompts({
     type: "number",
     name: "gas",
     message: "gas price in gwei",
@@ -135,7 +131,7 @@ async function askGasPrice() {
 async function confirm(params: DeployParams) {
   console.log("DEPLOYING!");
   console.log(params);
-  const { ok } = await require("prompts")({
+  const { ok } = await prompts({
     type: "confirm",
     name: "ok",
     message: "ALL OK?",

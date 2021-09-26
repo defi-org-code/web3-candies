@@ -55,9 +55,9 @@
     "@typechain/hardhat": "2.x",
     "hardhat": "2.x",
     "hardhat-gas-reporter": "1.x",
-    "hardhat-tracer": "latest"
+    "hardhat-tracer": "latest",
+    "readline": "1.x"
   },
-  "optionalDependencies": {},
   "scripts": {
     "prettier": "prettier --write '{contracts,src,test}/**/*.{ts,js,json,sol}'",
     "typechain": "typechain --target=web3-v1 --out-dir=typechain-abi 'abi/**/*.json' && npx hardhat typechain",
