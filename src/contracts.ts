@@ -4,7 +4,6 @@ import type { TransactionReceipt } from "web3-core";
 import type { AbiItem } from "web3-utils";
 import type { BlockTransactionString } from "web3-eth";
 import { web3 } from "./network";
-import { artifact, tag } from "./hardhat";
 
 export type Contract = ContractOrig | BaseContract;
 export type Options = CallOptions | SendOptions | ContractOptions;
@@ -17,28 +16,6 @@ export function contract<T extends Contract>(abi: Abi, address: string, options?
   const c = new (web3().eth.Contract)(abi, address, options) as T;
   c.handleRevert = true;
   return c;
-}
-
-export async function deployArtifact<T extends Contract>(
-  contractName: string,
-  opts: SendOptions,
-  constructorArgs?: any[],
-  waitForConfirmations: number = 0
-): Promise<T> {
-  console.log("deploying", contractName);
-  const _artifact = artifact(contractName);
-  const tx = contract<T>(_artifact.abi, "").deploy({ data: _artifact.bytecode, arguments: constructorArgs }).send(opts);
-
-  if (waitForConfirmations) {
-    await waitForTxConfirmations(tx, waitForConfirmations);
-  } else {
-    console.log("not waiting for confirmations");
-  }
-
-  const deployed = await tx;
-  console.log("deployed", contractName, deployed.options.address, "deployer", opts.from);
-  tag(deployed.options.address, contractName);
-  return contract<T>(_artifact.abi, deployed.options.address, deployed.options);
 }
 
 export function parseEvents(c: Contract, tx: TransactionReceipt) {

@@ -19,6 +19,7 @@ optional = false
 
 ```typescript
 import { bn18, fmt18, ether, erc20s, erc20, account, max } from "@defi.org/web3-candies";
+import { resetNetworkFork } from "@defi.org/web3-candies/src/hardhat"; // to allow hardhat dependencies to be optional
 
 const x = bn18("1,000.1234"); // x = "1000123400000000000000" [bn.js object representing wei, parsed with 18 decimals]
 console.log(x.gt(ether)); // true
@@ -28,7 +29,7 @@ const owner = await account(); // web3 test account [0]
 
 await erc20s.eth.WETH().methods.balanceOf(owner).call(); // WETH balance of
 
-const myToken = erc20("foo", myTokenAddress); // web3 instantiated ERC20 Contract tagged as 'foo' in logs
+const myToken = erc20("foo", myTokenAddress); // web3 instantiated ERC20 Contract
 await myToken.methods.approve(other, maxUint256).send({ from: owner }); // approve max uint value for other to spend
 ```
 
@@ -58,7 +59,6 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 - `parseEvents`: parse tx receipt events
 - `etherscanVerify(...)`: verify sources for previously deployed contracts
 - `waitForTxConfirmations`: pass tx object to wait for tx confirmations
-- `src/deploy(...)`: deployment script with prompts and confirmations, saves deployment artifacts locally, waits for confirmations, optionally uploads sources to etherscan
 
 ### network utils
 
@@ -70,6 +70,9 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 
 ### hardhat utils
 
+> to allow hh to be optional, import from '@defi.org/web3-candies/src/hardhat'
+
+- `src/hardhat/deploy`: deployment script with prompts and confirmations, saves deployment artifacts locally, waits for confirmations, optionally uploads sources to etherscan
 - `hre()`: the globally accessible singleton
 - `tag`: tag address for use with hre.tracer in logs
 - `artifact`: read compiled artifact

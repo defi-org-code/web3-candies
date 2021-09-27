@@ -1,5 +1,6 @@
 import { expect } from "chai";
-import { account, artifact, block, bn, estimatedBlockNumber, resetNetworkFork, useChaiBN, web3, zero } from "../src";
+import { account, block, bn, estimatedBlockNumber, useChaiBN, web3, zero } from "../src";
+import { artifact, resetNetworkFork } from "../src/hardhat";
 
 useChaiBN();
 

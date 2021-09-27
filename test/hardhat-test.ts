@@ -1,9 +1,26 @@
 import { expect } from "chai";
-import { useChaiBN, web3, mineBlock, mineBlocks } from "../src";
+import { account, erc20s, ether, useChaiBN, web3 } from "../src";
+import { deployArtifact, mineBlock, mineBlocks, hre } from "../src/hardhat";
+import type { Example } from "../typechain-hardhat/Example";
 
 useChaiBN();
 
 describe("hardhat", () => {
+  it("hardhat env", async () => {
+    expect(web3().version).eq(hre().web3.version);
+  });
+
+  it("quick deploy compiled artifact", async () => {
+    expect(await web3().eth.getBalance(await account())).bignumber.gt(ether);
+    const deployed = await deployArtifact<Example>("Example", { from: await account() }, [
+      123,
+      erc20s.eth.WETH().address,
+      [456],
+    ]);
+    expect(deployed.options.address).not.empty;
+    expect(await deployed.methods.deployer().call()).eq(await account());
+  });
+
   it("mine block", async () => {
     const startBlock = await web3().eth.getBlock("latest");
     await mineBlock(1);

@@ -7,22 +7,19 @@ import {
   bn8,
   bn9,
   ether,
-  expectRevert,
   fmt12,
   fmt18,
   fmt6,
   fmt8,
   fmt9,
   maxUint256,
-  sleep,
   sqrt,
-  throttle,
   to18,
+  to3,
   to6,
   useChaiBN,
   zero,
 } from "../src";
-import { to3 } from "../dist";
 
 useChaiBN();
 

@@ -1,7 +1,9 @@
-import type { Artifact, HardhatRuntimeEnvironment } from "./hardhat/types";
+import type { Artifact, HardhatRuntimeEnvironment } from "./types";
 import Web3 from "web3";
 import _ from "lodash";
-import { block, web3 } from "./network";
+import { block, web3 } from "../network";
+import { contract, Contract, waitForTxConfirmations } from "../contracts";
+import { SendOptions } from "web3-eth-contract";
 
 /**
  * the global hardhat runtime environment
@@ -94,4 +96,26 @@ export async function mineBlock(seconds: number) {
     new Date(Number(nowBlock.timestamp) * 1000)
   );
   return nowBlock;
+}
+
+export async function deployArtifact<T extends Contract>(
+  contractName: string,
+  opts: SendOptions,
+  constructorArgs?: any[],
+  waitForConfirmations: number = 0
+): Promise<T> {
+  console.log("deploying", contractName);
+  const _artifact = artifact(contractName);
+  const tx = contract<T>(_artifact.abi, "").deploy({ data: _artifact.bytecode, arguments: constructorArgs }).send(opts);
+
+  if (waitForConfirmations) {
+    await waitForTxConfirmations(tx, waitForConfirmations);
+  } else {
+    console.log("not waiting for confirmations");
+  }
+
+  const deployed = await tx;
+  console.log("deployed", contractName, deployed.options.address, "deployer", opts.from);
+  tag(deployed.options.address, contractName);
+  return contract<T>(_artifact.abi, deployed.options.address, deployed.options);
 }

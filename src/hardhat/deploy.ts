@@ -1,11 +1,10 @@
 import BN from "bn.js";
 import path from "path";
-import { web3 } from "./network";
-import { bn9, fmt18, fmt9 } from "./utils";
+import { web3 } from "../network";
+import { bn9, fmt18, fmt9 } from "../utils";
 import { execSync } from "child_process";
-import { deployArtifact } from "./contracts";
 import { AbiItem } from "web3-utils";
-import { hre } from "./hardhat";
+import { deployArtifact, hre } from "./index";
 import prompts from "prompts";
 
 export type DeployParams = {

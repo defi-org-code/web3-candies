@@ -1,7 +1,6 @@
 import _ from "lodash";
 import Web3 from "web3";
 import { BlockInfo, BlockNumber } from "./contracts";
-import { hre } from "./hardhat";
 
 export const ethChainId = 0x1;
 export const bscChainId = 0x38;
@@ -12,7 +11,7 @@ export const bscChainId = 0x38;
 export function web3(): Web3 {
   if (web3Instance) return web3Instance;
   try {
-    web3Instance = hre().web3;
+    if (process.env.NODE) web3Instance = eval("require")("hardhat").web3;
   } catch (ignore) {}
   if (!web3Instance) throw new Error(`web3 undefined! call "setWeb3Instance" or install optional HardHat dependency`);
   return web3Instance;

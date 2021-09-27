@@ -1,8 +1,6 @@
-import _ from "lodash";
 import type { ERC20 } from "../typechain-abi/ERC20";
 import type { IWETH } from "../typechain-abi/IWETH";
 import { Abi, contract } from "./contracts";
-import { tag } from "./hardhat";
 
 export const erc20abi = require("../abi/ERC20.json") as Abi;
 const wethabi = require("../abi/IWETH.json") as Abi;
@@ -37,6 +35,5 @@ export function erc20<T>(name: string, address: string, extendAbi?: Abi): IERC20
   result.name = name;
   result.address = address;
   result.abi = abi;
-  tag(address, name);
   return result;
 }

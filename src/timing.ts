@@ -27,7 +27,9 @@ export async function keepTrying<T>(fn: () => Promise<T>): Promise<T> {
  * automatically killing the spawned process on exit
  */
 export async function preventMacSleep<T>(fn: () => Promise<T>) {
-  const caffeinate = require("child_process").exec("caffeinate -dimsu");
+  if (!process.env.NODE) throw new Error("should only be called from node.js");
+
+  const caffeinate = eval("require")("child_process").exec("caffeinate -dimsu");
   const kill = () => caffeinate.kill("SIGABRT");
   process.on("exit", kill);
   try {
