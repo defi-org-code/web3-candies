@@ -19,7 +19,7 @@ optional = false
 
 ```typescript
 import { bn18, fmt18, ether, erc20s, erc20, account, max } from "@defi.org/web3-candies";
-import { resetNetworkFork } from "@defi.org/web3-candies/src/hardhat"; // to allow hardhat dependencies to be optional
+import { resetNetworkFork } from "@defi.org/web3-candies/dist/hardhat"; // to allow hardhat dependencies to be optional
 
 const x = bn18("1,000.1234"); // x = "1000123400000000000000" [bn.js object representing wei, parsed with 18 decimals]
 console.log(x.gt(ether)); // true
@@ -70,9 +70,9 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 
 ### hardhat utils
 
-> to allow hh to be optional, import from '@defi.org/web3-candies/src/hardhat'
+> to allow hh to be optional, import from '@defi.org/web3-candies/dist/hardhat'
 
-- `src/hardhat/deploy`: deployment script with prompts and confirmations, saves deployment artifacts locally, waits for confirmations, optionally uploads sources to etherscan
+- `dist/hardhat/deploy`: deployment script with prompts and confirmations, saves deployment artifacts locally, waits for confirmations, optionally uploads sources to etherscan
 - `hre()`: the globally accessible singleton
 - `tag`: tag address for use with hre.tracer in logs
 - `artifact`: read compiled artifact
