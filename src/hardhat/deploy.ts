@@ -14,7 +14,8 @@ export type DeployParams = {
   contractName: string;
   args: string[];
   gasLimit: number;
-  gasPrice: string;
+  maxFeePerGas: string;
+  maxPriorityFeePerGas: string;
   initialETH: string;
   uploadSources: boolean;
 };
@@ -29,7 +30,8 @@ export async function deploy(
 ): Promise<string> {
   const timestamp = new Date().getTime();
   const deployer = await askDeployer();
-  const gasPrice = await askGasPrice();
+
+  const { maxFeePerGas, maxPriorityFeePerGas } = await askFees();
 
   const params: DeployParams = {
     chainId: await web3().eth.getChainId(),
@@ -38,7 +40,9 @@ export async function deploy(
     contractName,
     args: constructorArgs,
     gasLimit,
-    gasPrice: fmt9(gasPrice),
+
+    maxPriorityFeePerGas: fmt9(maxPriorityFeePerGas),
+    maxFeePerGas: fmt9(maxFeePerGas),
     initialETH: fmt18(initialETH),
     uploadSources,
   };
@@ -49,7 +53,7 @@ export async function deploy(
 
   const result = await deployArtifact(
     contractName,
-    { from: deployer, gas: gasLimit, gasPrice: gasPrice.toString(), value: initialETH },
+    { from: deployer, gas: gasLimit, maxFeePerGas, maxPriorityFeePerGas, value: initialETH },
     constructorArgs,
     waitForConfirmations
   );
@@ -117,14 +121,22 @@ async function askDeployer() {
   return account.address as string;
 }
 
-async function askGasPrice() {
-  const { gas } = await prompts({
-    type: "number",
-    name: "gas",
-    message: "gas price in gwei",
-    validate: (s: any) => !!parseInt(s),
-  });
-  return bn9(gas.toString());
+async function askFees() {
+  const { maxPriorityFeePerGas, maxFeePerGas } = await prompts([
+    {
+      type: "number",
+      name: "maxPriorityFeePerGas",
+      message: "max priority fee (tip) in gwei",
+      validate: (s: any) => !!parseInt(s),
+    },
+    {
+      type: "number",
+      name: "maxFeePerGas",
+      message: "max total fees in gwei",
+      validate: (s: any) => !!parseInt(s),
+    },
+  ]);
+  return { maxPriorityFeePerGas: bn9(maxPriorityFeePerGas.toString()), maxFeePerGas: bn9(maxFeePerGas.toString()) };
 }
 
 async function confirm(params: DeployParams) {

@@ -2,7 +2,7 @@ import type { Artifact, HardhatRuntimeEnvironment } from "./types";
 import Web3 from "web3";
 import _ from "lodash";
 import { block, web3 } from "../network";
-import { contract, Contract, waitForTxConfirmations } from "../contracts";
+import { contract, Contract, Options, waitForTxConfirmations } from "../contracts";
 import { SendOptions } from "web3-eth-contract";
 
 /**
@@ -100,13 +100,15 @@ export async function mineBlock(seconds: number) {
 
 export async function deployArtifact<T extends Contract>(
   contractName: string,
-  opts: SendOptions,
+  opts: Options & { from: string },
   constructorArgs?: any[],
   waitForConfirmations: number = 0
 ): Promise<T> {
   console.log("deploying", contractName);
   const _artifact = artifact(contractName);
-  const tx = contract<T>(_artifact.abi, "").deploy({ data: _artifact.bytecode, arguments: constructorArgs }).send(opts);
+  const tx = contract<T>(_artifact.abi, "")
+    .deploy({ data: _artifact.bytecode, arguments: constructorArgs })
+    .send(opts as any);
 
   if (waitForConfirmations) {
     await waitForTxConfirmations(tx, waitForConfirmations);

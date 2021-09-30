@@ -4,9 +4,14 @@ import type { TransactionReceipt } from "web3-core";
 import type { AbiItem } from "web3-utils";
 import type { BlockTransactionString } from "web3-eth";
 import { web3 } from "./network";
+import BN from "bn.js";
 
 export type Contract = ContractOrig | BaseContract;
-export type Options = CallOptions | SendOptions | ContractOptions;
+export type Options =
+  | CallOptions
+  | SendOptions
+  | ContractOptions
+  | { maxFeePerGas?: BN | string | number; maxPriorityFeePerGas?: BN | string | number };
 export type BlockNumber = BlockType;
 export type BlockInfo = BlockTransactionString & { timestamp: number };
 export type Receipt = TransactionReceipt;
