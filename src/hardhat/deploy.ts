@@ -40,9 +40,8 @@ export async function deploy(
     contractName,
     args: constructorArgs,
     gasLimit,
-
-    maxPriorityFeePerGas: fmt9(maxPriorityFeePerGas),
-    maxFeePerGas: fmt9(maxFeePerGas),
+    maxPriorityFeePerGas: fmt9(maxPriorityFeePerGas) + " gwei",
+    maxFeePerGas: fmt9(maxFeePerGas) + " gwei",
     initialETH: fmt18(initialETH),
     uploadSources,
   };
