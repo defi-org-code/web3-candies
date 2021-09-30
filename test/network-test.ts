@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { account, block, bn, estimatedBlockNumber, useChaiBN, web3, zero } from "../src";
+import { account, block, bn, estimatedBlockNumber, getNetwork, useChaiBN, web3, zero } from "../src";
 import { artifact, resetNetworkFork } from "../src/hardhat";
 
 useChaiBN();
@@ -28,5 +28,11 @@ describe("network", () => {
     const now = await block();
     expect(await estimatedBlockNumber(Date.now(), 10)).eq(now.number);
     expect(await estimatedBlockNumber(Date.now() - 10_000, 10)).eq(now.number - 1);
+  });
+
+  it("network", async () => {
+    const network = await getNetwork();
+    expect(network.id).eq(31337);
+    expect(network.name).eq("unknown");
   });
 });

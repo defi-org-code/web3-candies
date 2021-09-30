@@ -5,7 +5,7 @@ import "@nomiclabs/hardhat-etherscan";
 import "hardhat-tracer";
 import "hardhat-gas-reporter";
 import { task } from "hardhat/config";
-import { account, bn18, bscChainId, ethChainId, ether, web3 } from "./src";
+import { account, bn18, ether, networks, web3 } from "./src";
 import { deploy } from "./src/hardhat/deploy";
 
 task("deploy").setAction(async () => {
@@ -45,11 +45,11 @@ export default {
       },
     },
     eth: {
-      chainId: ethChainId,
+      chainId: networks.eth.id,
       url: alchemyUrl,
     },
     bsc: {
-      chainId: bscChainId,
+      chainId: networks.bsc.id,
       url: bscUrl,
     },
   },

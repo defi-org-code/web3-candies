@@ -29,9 +29,9 @@ export const erc20s = {
   },
 };
 
-export function erc20<T>(name: string, address: string, extendAbi?: Abi): IERC20 & T {
+export function erc20<T>(name: string, address: string, extendAbi?: Abi): Token & T {
   const abi = extendAbi ? [...erc20abi, ...extendAbi] : erc20abi;
-  const result = contract<IERC20 & T>(abi, address);
+  const result = contract<Token & T>(abi, address);
   result.name = name;
   result.address = address;
   result.abi = abi;

@@ -63,6 +63,7 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 ### network utils
 
 - `web3()`: the globally accesible singleton. call `setWeb3Instance(web3)` if needed
+- `getNetwork()`: returns network object with id, name
 - `ethChainId`, `bscChainId`: constants
 - `account`: alias for web3.accounts
 - `block`: alias for web3.getBlock, with parsed timestamp

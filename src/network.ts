@@ -2,8 +2,13 @@ import _ from "lodash";
 import Web3 from "web3";
 import { BlockInfo, BlockNumber } from "./contracts";
 
-export const ethChainId = 0x1;
-export const bscChainId = 0x38;
+export type Network = { id: number; name: string };
+
+export const networks = {
+  eth: { id: 0x1, name: "Ethereum" } as Network,
+  bsc: { id: 0x38, name: "BinanceSmartChain" } as Network,
+  poly: { id: 0x89, name: "Polygon" } as Network,
+};
 
 /**
  * hardhat injected web3 instance, or the global singleton
@@ -25,6 +30,11 @@ export function setWeb3Instance(web3: any) {
 
 export async function account(num: number = 0): Promise<string> {
   return (await web3().eth.getAccounts())[num];
+}
+
+export async function getNetwork(): Promise<Network> {
+  const id = await web3().eth.net.getId();
+  return _.find(_.values(networks), (n) => n.id == id) || { id, name: "unknown" };
 }
 
 export async function block(blockHashOrBlockNumber?: BlockNumber | string): Promise<BlockInfo> {
