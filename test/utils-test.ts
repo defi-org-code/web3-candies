@@ -103,4 +103,9 @@ describe("utils", () => {
     expect(sqrt(bn(100))).bignumber.eq(bn(10));
     expect(sqrt(bn(123456789).sqr())).bignumber.eq(bn(123456789));
   });
+
+  it("supports different bases", async () => {
+    expect(bn("ff", 16)).bignumber.eq("255");
+    expect(bn("0xff", 16)).bignumber.eq("255");
+  });
 });

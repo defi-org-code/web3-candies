@@ -6,10 +6,11 @@ export const zero = bn("0");
 export const ether = bn18("1");
 export const maxUint256 = "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 
-export function bn(n: BN | string | number): BN {
+export function bn(n: BN | string | number, base = 10): BN {
   if (!n) return zero;
   else if (n instanceof BN) return n;
-  else return new BN(n, 10);
+  else if (base == 16 && typeof n == "string") return new BN(Web3.utils.stripHexPrefix(n), base);
+  else return new BN(n, base);
 }
 
 /**
