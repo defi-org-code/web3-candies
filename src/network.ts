@@ -2,12 +2,15 @@ import _ from "lodash";
 import Web3 from "web3";
 import { BlockInfo, BlockNumber } from "./contracts";
 
-export type Network = { id: number; name: string };
+export type Network = { id: number; name: string; shortname: string };
 
+/**
+ * to extend: `const mynetworks = _.merge({}, networks, { eth: { foo: 123 }})`
+ */
 export const networks = {
-  eth: { id: 0x1, name: "Ethereum" } as Network,
-  bsc: { id: 0x38, name: "BinanceSmartChain" } as Network,
-  poly: { id: 0x89, name: "Polygon" } as Network,
+  eth: { id: 0x1, name: "Ethereum", shortname: "eth" } as Network,
+  bsc: { id: 0x38, name: "BinanceSmartChain", shortname: "bsc" } as Network,
+  poly: { id: 0x89, name: "Polygon", shortname: "poly" } as Network,
 };
 
 /**
@@ -34,7 +37,7 @@ export async function account(num: number = 0): Promise<string> {
 
 export async function getNetwork(): Promise<Network> {
   const id = await web3().eth.net.getId();
-  return _.find(_.values(networks), (n) => n.id == id) || { id, name: "unknown" };
+  return _.find(_.values(networks), (n) => n.id == id) || { id, name: "unknown", shortname: "unknown" };
 }
 
 export async function block(blockHashOrBlockNumber?: BlockNumber | string): Promise<BlockInfo> {

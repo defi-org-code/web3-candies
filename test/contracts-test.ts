@@ -1,7 +1,8 @@
 import { expect } from "chai";
-import { account, bn18, erc20, erc20s, expectRevert, parseEvents, useChaiBN, web3, zero } from "../src";
+import { account, bn18, erc20, erc20s, expectRevert, parseEvents, useChaiBN, web3, zero, networks } from "../src";
 import { deployArtifact, mineBlocks, resetNetworkFork } from "../src/hardhat";
 import type { Example } from "../typechain-hardhat/Example";
+import * as _ from "lodash";
 
 useChaiBN();
 
@@ -25,6 +26,8 @@ describe("Contracts", () => {
     expect(await erc20s.eth.DAI().methods.allowance(a, a).call()).bignumber.zero;
     expect(await erc20s.eth.USDT().methods.allowance(a, a).call()).bignumber.zero;
     expect(await erc20s.eth.WBTC().methods.allowance(a, a).call()).bignumber.zero;
+
+    expect(_.get(erc20s, [networks.eth.shortname, "USDC"])().options.address).eq(erc20s.eth.USDC().options.address);
   });
 
   it("WETH and events", async () => {

@@ -34,5 +34,6 @@ describe("network", () => {
     const network = await getNetwork();
     expect(network.id).eq(31337);
     expect(network.name).eq("unknown");
+    expect(network.shortname).eq("unknown");
   });
 });
