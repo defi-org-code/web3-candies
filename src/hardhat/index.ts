@@ -20,7 +20,10 @@ export function hre(): HardhatRuntimeEnvironment & { web3: Web3 } {
  */
 export function tag(address: string, name: string) {
   try {
-    if ((hre() as any).tracer) (hre() as any).tracer.nameTags[address] = name;
+    if ((hre() as any).tracer) {
+      (hre() as any).tracer.nameTags[address] = name;
+      console.log("tag", address, "as", name);
+    }
   } catch (ignore) {}
 }
 

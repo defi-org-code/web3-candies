@@ -35,5 +35,12 @@ export function erc20<T>(name: string, address: string, extendAbi?: Abi): Token 
   result.name = name;
   result.address = address;
   result.abi = abi;
+  tryTag(address, name);
   return result;
+}
+
+function tryTag(address: string, name: string) {
+  try {
+    if (process.env.NODE) eval("require")("./hardhat").tag(address, name);
+  } catch (ignore) {}
 }
