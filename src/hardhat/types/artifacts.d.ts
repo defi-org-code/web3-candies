@@ -72,12 +72,7 @@ export interface Artifacts {
    * @param input The compiler input.
    * @param output The compiler output.
    */
-  saveBuildInfo(
-    solcVersion: string,
-    solcLongVersion: string,
-    input: CompilerInput,
-    output: CompilerOutput
-  ): Promise<string>;
+  saveBuildInfo(solcVersion: string, solcLongVersion: string, input: CompilerInput, output: CompilerOutput): Promise<string>;
 }
 /**
  * An artifact representing the compilation output of a contract.

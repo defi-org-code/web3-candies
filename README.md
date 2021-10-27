@@ -46,11 +46,12 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 - `zero, ether, maxUint256`: hardcoded useful values
 - `sqrt`: compute square root
 
-### ERC20
+### ERC20 & well known contracts
 
 - `erc20s.eth...`: well known Ethereum ERC20 contracts
 - `erc20s.bsc...`: well known BinanceSmartChain ERC20 contracts
 - `erc20<T>(...)`: web3 ERC20 contract, with optional extending abi to merge
+- `contracts.eth...`: well known contract instances
 
 ### contract utils
 

@@ -24,9 +24,7 @@ export interface HardhatNetworkUserConfig {
   loggingEnabled?: boolean;
   forking?: HardhatNetworkForkingUserConfig;
 }
-export declare type HardhatNetworkAccountsUserConfig =
-  | HardhatNetworkAccountUserConfig[]
-  | HardhatNetworkHDAccountsUserConfig;
+export declare type HardhatNetworkAccountsUserConfig = HardhatNetworkAccountUserConfig[] | HardhatNetworkHDAccountsUserConfig;
 export interface HardhatNetworkAccountUserConfig {
   privateKey: string;
   balance: string;

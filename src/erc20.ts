@@ -1,9 +1,10 @@
+import { Abi, contract } from "./contracts";
 import type { ERC20 } from "../typechain-abi/ERC20";
 import type { IWETH } from "../typechain-abi/IWETH";
-import { Abi, contract } from "./contracts";
-
-export const erc20abi = require("../abi/ERC20.json") as Abi;
-const wethabi = require("../abi/IWETH.json") as Abi;
+import type { PancakeswapLPAbi } from "../typechain-abi/PancakeswapLPAbi";
+import type { AlpacaIBAlpaca } from "../typechain-abi/AlpacaIBAlpaca";
+import type { PancakeswapRouterAbi } from "../typechain-abi/PancakeswapRouterAbi";
+import type { PancakeswapMasterchefAbi } from "../typechain-abi/PancakeswapMasterchefAbi";
 
 export type IERC20 = ERC20 & { name: string; address: string; abi: Abi };
 export type Token = IERC20;
@@ -13,21 +14,78 @@ export type Token = IERC20;
  */
 export const erc20s = {
   eth: {
-    WETH: () => erc20<IWETH>("$WETH", "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", wethabi),
+    // ---- base assets ----
+    WETH: () => erc20<IWETH>("$WETH", "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", require("../abi/IWETH.json")),
     WBTC: () => erc20("$WBTC", "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"),
     USDC: () => erc20("$USDC", "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"),
     USDT: () => erc20("$USDT", "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
     DAI: () => erc20("$DAI", "0x6B175474E89094C44Da98b954EedeAC495271d0F"),
+
+    // ---- bluechip ----
+    ORBS: () => erc20("$ORBS", "0xff56Cc6b1E6dEd347aA0B7676C85AB0B3D08B0FA"),
+    OneInch: () => erc20("$1INCH", "0x111111111117dC0aa78b770fA6A738034120C302"),
   },
 
   bsc: {
-    WBNB: () => erc20<IWETH>("$WBNB", "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", wethabi),
+    // ---- base assets ----
+    WBNB: () => erc20<IWETH>("$WBNB", "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", require("../abi/IWETH.json")),
     BTCB: () => erc20("$BTCB", "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c"),
     USDC: () => erc20("$USDC", "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d"),
     USDT: () => erc20("$USDT", "0x55d398326f99059fF775485246999027B3197955"),
     BUSD: () => erc20("$BUSD", "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56"),
+
+    // ---- bluechip ----
+    ORBS: () => erc20("$ORBS", "0xeBd49b26169e1b52c04cFd19FCf289405dF55F80"),
+
+    // ---- pancakeswap ----
+    CAKE: () => erc20("$CAKE", "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"),
+    Pancakeswap_LP_BUSD_BNB: () =>
+      erc20<PancakeswapLPAbi>("Pancakeswap LP: BUSD/BNB", "0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16", require("../abi/pancakeswap/PancakeswapLPAbi.json")),
+    Pancakeswap_LP_CAKE_BNB: () =>
+      erc20<PancakeswapLPAbi>("Pancakeswap LP: CAKE/BNB", "0x0eD7e52944161450477ee417DE9Cd3a859b14fD0", require("../abi/pancakeswap/PancakeswapLPAbi.json")),
+    Pancakeswap_LP_ORBS_BUSD: () =>
+      erc20<PancakeswapLPAbi>("Pancakeswap LP: ORBS/BUSD", "0xB87b857670A44356f2b70337E0F218713D2378e8", require("../abi/pancakeswap/PancakeswapLPAbi.json")),
+
+    // ---- alpaca ----
+    ALPACA: () => erc20("$ALPACA", "0x8F0528cE5eF7B51152A59745bEfDD91D97091d2F"),
+    Alpaca_ibALPACA: () => erc20<AlpacaIBAlpaca>("Alpaca: ibALPACA", "0xf1bE8ecC990cBcb90e166b71E368299f0116d421", require("../abi/alpaca/AlpacaIBAlpaca.json")),
+    Alpaca_ibETH: () => erc20<AlpacaIBAlpaca>("Alpaca: ibETH", "0xbfF4a34A4644a113E8200D7F1D79b3555f723AfE", require("../abi/alpaca/AlpacaIBAlpaca.json")),
+    Alpaca_ibBNB: () => erc20<AlpacaIBAlpaca>("Alpaca: ibBNB", "0xd7D069493685A581d27824Fc46EdA46B7EfC0063", require("../abi/alpaca/AlpacaIBAlpaca.json")),
+  },
+
+  poly: {
+    // ---- base assets ----
+    WMATIC: () => erc20("$WMATIC", "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"),
+    WBTC: () => erc20("$WBTC", "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6"),
+    USDC: () => erc20("$USDC", "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"),
+    USDT: () => erc20("$USDT", "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"),
+    DAI: () => erc20("$DAI", "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063"),
+    WETH: () => erc20("$WETH", "0x7ceB23fD6bC0adD59E62ac25578270cFf1b9f619"),
+    WBNB: () => erc20("$WBNB", "0x3BA4c387f786bFEE076A58914F5Bd38d668B42c3"),
+    BUSD: () => erc20("$BUSD", "0xdAb529f40E671A1D4bF91361c21bf9f0C9712ab7"),
+
+    // ---- bluechip ----
+    ORBS: () => erc20("$ORBS", "0x614389EaAE0A6821DC49062D56BDA3d9d45Fa2ff"),
+
+    // ---- aave ----
+    Aave_MATIC: () => erc20("AAVE: MATIC", "0x8dF3aad3a84da6b69A4DA8aeC3eA40d9091B2Ac4"),
   },
 };
+
+/**
+ * to extend: `const mycontracts = _.merge({}, contracts, { eth: ...})`
+ */
+export const contracts = {
+  eth: {},
+  bsc: {
+    // ---- pancakeswap ----
+    Pancakeswap_Router: () => contract<PancakeswapRouterAbi>(require("../abi/pancakeswap/PancakeswapRouterAbi.json"), "0x10ED43C718714eb63d5aA57B78B54704E256024E"),
+    Pancakeswap_Masterchef: () => contract<PancakeswapMasterchefAbi>(require("../abi/pancakeswap/PancakeswapMasterChefAbi.json"), "0x73feaa1eE314F8c655E354234017bE2193C9E24E"),
+  },
+  poly: {},
+};
+
+export const erc20abi = require("../abi/ERC20.json") as Abi;
 
 export function erc20<T>(name: string, address: string, extendAbi?: Abi): Token & T {
   const abi = extendAbi ? [...erc20abi, ...extendAbi] : erc20abi;

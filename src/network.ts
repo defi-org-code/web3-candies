@@ -8,10 +8,10 @@ export type Network = { id: number; name: string; shortname: string };
  * to extend: `const mynetworks = _.merge({}, networks, { eth: { foo: 123 }})`
  */
 export const networks = {
-  eth: { id: 0x1, name: "Ethereum", shortname: "eth" } as Network,
-  bsc: { id: 0x38, name: "BinanceSmartChain", shortname: "bsc" } as Network,
-  poly: { id: 0x89, name: "Polygon", shortname: "poly" } as Network,
-};
+  eth: { id: 0x1, name: "Ethereum", shortname: "eth" },
+  bsc: { id: 0x38, name: "BinanceSmartChain", shortname: "bsc" },
+  poly: { id: 0x89, name: "Polygon", shortname: "poly" },
+} as Record<string, Network>;
 
 /**
  * hardhat injected web3 instance, or the global singleton

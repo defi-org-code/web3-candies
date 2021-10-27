@@ -13,11 +13,11 @@ describe("hardhat", () => {
 
   it("quick deploy compiled artifact", async () => {
     expect(await web3().eth.getBalance(await account())).bignumber.gt(ether);
-    const deployed = await deployArtifact<Example>(
-      "Example",
-      { from: await account(), maxFeePerGas: bn9(100), maxPriorityFeePerGas: bn9(5) },
-      [123, erc20s.eth.WETH().address, [456]]
-    );
+    const deployed = await deployArtifact<Example>("Example", { from: await account(), maxFeePerGas: bn9(100), maxPriorityFeePerGas: bn9(5) }, [
+      123,
+      erc20s.eth.WETH().address,
+      [456],
+    ]);
     expect(deployed.options.address).not.empty;
     expect(await deployed.methods.deployer().call()).eq(await account());
   });

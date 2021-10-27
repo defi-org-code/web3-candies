@@ -60,10 +60,7 @@ export async function deploy(
 
   execSync(`mv ${backup} ${backup}/../${timestamp}-${address}`);
 
-  console.log(
-    "constructor args abi-encoded:",
-    abiEncodedConstructorArgs(result.options.jsonInterface, constructorArgs)
-  );
+  console.log("constructor args abi-encoded:", abiEncodedConstructorArgs(result.options.jsonInterface, constructorArgs));
 
   if (uploadSources) {
     await etherscanVerify(address, constructorArgs);

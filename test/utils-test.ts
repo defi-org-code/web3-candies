@@ -1,25 +1,5 @@
 import { expect } from "chai";
-import {
-  bn,
-  bn12,
-  bn18,
-  bn6,
-  bn8,
-  bn9,
-  ether,
-  fmt12,
-  fmt18,
-  fmt6,
-  fmt8,
-  fmt9,
-  maxUint256,
-  sqrt,
-  to18,
-  to3,
-  to6,
-  useChaiBN,
-  zero,
-} from "../src";
+import { bn, bn12, bn18, bn6, bn8, bn9, ether, fmt12, fmt18, fmt6, fmt8, fmt9, maxUint256, sqrt, to18, to3, to6, useChaiBN, zero } from "../src";
 
 useChaiBN();
 

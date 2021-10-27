@@ -107,14 +107,8 @@ export function to18(n: BN | number | string, decimals: BN | number | string): B
 /**
  * increase or decrease `n` percision from `decimals` to `targetDecimals`
  */
-export function convertDecimals(
-  n: BN | number | string,
-  decimals: BN | number | string,
-  targetDecimals: BN | number | string
-) {
-  return bn(decimals).gt(bn(targetDecimals))
-    ? bn(n).divRound(bn(10).pow(bn(decimals).sub(bn(targetDecimals))))
-    : bn(n).mul(bn(10).pow(bn(targetDecimals).sub(bn(decimals))));
+export function convertDecimals(n: BN | number | string, decimals: BN | number | string, targetDecimals: BN | number | string) {
+  return bn(decimals).gt(bn(targetDecimals)) ? bn(n).divRound(bn(10).pow(bn(decimals).sub(bn(targetDecimals)))) : bn(n).mul(bn(10).pow(bn(targetDecimals).sub(bn(decimals))));
 }
 
 /**

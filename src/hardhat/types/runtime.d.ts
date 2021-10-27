@@ -40,27 +40,10 @@ export interface ConfigurableTaskDefinition {
   setAction(action: ActionType<TaskArguments>): this;
   addParam<T>(name: string, description?: string, defaultValue?: T, type?: ArgumentType<T>, isOptional?: boolean): this;
   addOptionalParam<T>(name: string, description?: string, defaultValue?: T, type?: ArgumentType<T>): this;
-  addPositionalParam<T>(
-    name: string,
-    description?: string,
-    defaultValue?: T,
-    type?: ArgumentType<T>,
-    isOptional?: boolean
-  ): this;
+  addPositionalParam<T>(name: string, description?: string, defaultValue?: T, type?: ArgumentType<T>, isOptional?: boolean): this;
   addOptionalPositionalParam<T>(name: string, description?: string, defaultValue?: T, type?: ArgumentType<T>): this;
-  addVariadicPositionalParam<T>(
-    name: string,
-    description?: string,
-    defaultValue?: T[],
-    type?: ArgumentType<T>,
-    isOptional?: boolean
-  ): this;
-  addOptionalVariadicPositionalParam<T>(
-    name: string,
-    description?: string,
-    defaultValue?: T[],
-    type?: ArgumentType<T>
-  ): this;
+  addVariadicPositionalParam<T>(name: string, description?: string, defaultValue?: T[], type?: ArgumentType<T>, isOptional?: boolean): this;
+  addOptionalVariadicPositionalParam<T>(name: string, description?: string, defaultValue?: T[], type?: ArgumentType<T>): this;
   addFlag(name: string, description?: string): this;
 }
 export interface ParamDefinition<T> {
@@ -109,11 +92,7 @@ export interface RunSuperFunction<ArgT extends TaskArguments> {
   (taskArguments?: ArgT): Promise<any>;
   isDefined: boolean;
 }
-export declare type ActionType<ArgsT extends TaskArguments> = (
-  taskArgs: ArgsT,
-  env: HardhatRuntimeEnvironment,
-  runSuper: RunSuperFunction<ArgsT>
-) => Promise<any>;
+export declare type ActionType<ArgsT extends TaskArguments> = (taskArgs: ArgsT, env: HardhatRuntimeEnvironment, runSuper: RunSuperFunction<ArgsT>) => Promise<any>;
 export interface HardhatArguments {
   network?: string;
   showStackTraces: boolean;
