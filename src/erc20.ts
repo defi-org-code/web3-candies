@@ -80,7 +80,7 @@ export const contracts = {
   bsc: {
     // ---- pancakeswap ----
     Pancakeswap_Router: () => contract<PancakeswapRouterAbi>(require("../abi/pancakeswap/PancakeswapRouterAbi.json"), "0x10ED43C718714eb63d5aA57B78B54704E256024E"),
-    Pancakeswap_Masterchef: () => contract<PancakeswapMasterchefAbi>(require("../abi/pancakeswap/PancakeswapMasterChefAbi.json"), "0x73feaa1eE314F8c655E354234017bE2193C9E24E"),
+    Pancakeswap_Masterchef: () => contract<PancakeswapMasterchefAbi>(require("../abi/pancakeswap/PancakeswapMasterchefAbi.json"), "0x73feaa1eE314F8c655E354234017bE2193C9E24E"),
   },
   poly: {},
 };
