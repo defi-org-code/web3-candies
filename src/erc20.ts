@@ -24,6 +24,15 @@ export const erc20s = {
     // ---- bluechip ----
     ORBS: () => erc20("$ORBS", "0xff56Cc6b1E6dEd347aA0B7676C85AB0B3D08B0FA"),
     OneInch: () => erc20("$1INCH", "0x111111111117dC0aa78b770fA6A738034120C302"),
+
+    // ---- aave ----
+    AAVE: () => erc20("$AAVE", "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9"),
+    Aave_stkAAVE: () => erc20("$stkAAVE", "0x4da27a545c0c5B758a6BA100e3a049001de870f5"),
+    Aave_aUSDC: () => erc20("Aave aUSDC", "0xBcca60bB61934080951369a648Fb03DF4F96263C"),
+
+    // ---- compound ----
+    COMP: () => erc20("$COMP", "0xc00e94Cb662C3520282E6f5717214004A7f26888"),
+    Compound_cUSDC: () => erc20("Compound cUSDC", "0x39AA39c021dfbaE8faC545936693aC917d5E7563"),
   },
 
   bsc: {
