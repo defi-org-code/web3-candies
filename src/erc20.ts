@@ -39,18 +39,15 @@ export const erc20s = {
 
     // ---- pancakeswap ----
     CAKE: () => erc20("$CAKE", "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"),
-    Pancakeswap_LP_BUSD_BNB: () =>
-      erc20<PancakeswapLPAbi>("Pancakeswap LP: BUSD/BNB", "0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16", require("../abi/pancakeswap/PancakeswapLPAbi.json")),
-    Pancakeswap_LP_CAKE_BNB: () =>
-      erc20<PancakeswapLPAbi>("Pancakeswap LP: CAKE/BNB", "0x0eD7e52944161450477ee417DE9Cd3a859b14fD0", require("../abi/pancakeswap/PancakeswapLPAbi.json")),
-    Pancakeswap_LP_ORBS_BUSD: () =>
-      erc20<PancakeswapLPAbi>("Pancakeswap LP: ORBS/BUSD", "0xB87b857670A44356f2b70337E0F218713D2378e8", require("../abi/pancakeswap/PancakeswapLPAbi.json")),
+    Pancakeswap_LP_BUSD_BNB: () => erc20<PancakeswapLPAbi>("Pancakeswap LP: BUSD/BNB", "0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16", require("../abi/PancakeswapLPAbi.json")),
+    Pancakeswap_LP_CAKE_BNB: () => erc20<PancakeswapLPAbi>("Pancakeswap LP: CAKE/BNB", "0x0eD7e52944161450477ee417DE9Cd3a859b14fD0", require("../abi/PancakeswapLPAbi.json")),
+    Pancakeswap_LP_ORBS_BUSD: () => erc20<PancakeswapLPAbi>("Pancakeswap LP: ORBS/BUSD", "0xB87b857670A44356f2b70337E0F218713D2378e8", require("../abi/PancakeswapLPAbi.json")),
 
     // ---- alpaca ----
     ALPACA: () => erc20("$ALPACA", "0x8F0528cE5eF7B51152A59745bEfDD91D97091d2F"),
-    Alpaca_ibALPACA: () => erc20<AlpacaIBAlpaca>("Alpaca: ibALPACA", "0xf1bE8ecC990cBcb90e166b71E368299f0116d421", require("../abi/alpaca/AlpacaIBAlpaca.json")),
-    Alpaca_ibETH: () => erc20<AlpacaIBAlpaca>("Alpaca: ibETH", "0xbfF4a34A4644a113E8200D7F1D79b3555f723AfE", require("../abi/alpaca/AlpacaIBAlpaca.json")),
-    Alpaca_ibBNB: () => erc20<AlpacaIBAlpaca>("Alpaca: ibBNB", "0xd7D069493685A581d27824Fc46EdA46B7EfC0063", require("../abi/alpaca/AlpacaIBAlpaca.json")),
+    Alpaca_ibALPACA: () => erc20<AlpacaIBAlpaca>("Alpaca: ibALPACA", "0xf1bE8ecC990cBcb90e166b71E368299f0116d421", require("../abi/AlpacaIBAlpaca.json")),
+    Alpaca_ibETH: () => erc20<AlpacaIBAlpaca>("Alpaca: ibETH", "0xbfF4a34A4644a113E8200D7F1D79b3555f723AfE", require("../abi/AlpacaIBAlpaca.json")),
+    Alpaca_ibBNB: () => erc20<AlpacaIBAlpaca>("Alpaca: ibBNB", "0xd7D069493685A581d27824Fc46EdA46B7EfC0063", require("../abi/AlpacaIBAlpaca.json")),
   },
 
   poly: {
@@ -79,8 +76,8 @@ export const contracts = {
   eth: {},
   bsc: {
     // ---- pancakeswap ----
-    Pancakeswap_Router: () => contract<PancakeswapRouterAbi>(require("../abi/pancakeswap/PancakeswapRouterAbi.json"), "0x10ED43C718714eb63d5aA57B78B54704E256024E"),
-    Pancakeswap_Masterchef: () => contract<PancakeswapMasterchefAbi>(require("../abi/pancakeswap/PancakeswapMasterchefAbi.json"), "0x73feaa1eE314F8c655E354234017bE2193C9E24E"),
+    Pancakeswap_Router: () => contract<PancakeswapRouterAbi>(require("../abi/PancakeswapRouterAbi.json"), "0x10ED43C718714eb63d5aA57B78B54704E256024E"),
+    Pancakeswap_Masterchef: () => contract<PancakeswapMasterchefAbi>(require("../abi/PancakeswapMasterchefAbi.json"), "0x73feaa1eE314F8c655E354234017bE2193C9E24E"),
   },
   poly: {},
 };
