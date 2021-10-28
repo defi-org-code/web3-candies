@@ -5,6 +5,7 @@ import type { PancakeswapLPAbi } from "../typechain-abi/PancakeswapLPAbi";
 import type { AlpacaIBAlpaca } from "../typechain-abi/AlpacaIBAlpaca";
 import type { PancakeswapRouterAbi } from "../typechain-abi/PancakeswapRouterAbi";
 import type { PancakeswapMasterchefAbi } from "../typechain-abi/PancakeswapMasterchefAbi";
+import type { AaveSAAVEAbi } from "../typechain-abi/AaveSAAVEAbi";
 
 export type IERC20 = ERC20 & { name: string; address: string; abi: Abi };
 export type Token = IERC20;
@@ -27,7 +28,7 @@ export const erc20s = {
 
     // ---- aave ----
     AAVE: () => erc20("$AAVE", "0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9"),
-    Aave_stkAAVE: () => erc20("$stkAAVE", "0x4da27a545c0c5B758a6BA100e3a049001de870f5"),
+    Aave_stkAAVE: () => erc20<AaveSAAVEAbi>("$stkAAVE", "0x4da27a545c0c5B758a6BA100e3a049001de870f5", require("../abi/AaveSAAVEAbi.json")),
     Aave_aUSDC: () => erc20("Aave aUSDC", "0xBcca60bB61934080951369a648Fb03DF4F96263C"),
 
     // ---- compound ----
