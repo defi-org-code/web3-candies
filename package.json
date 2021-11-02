@@ -55,9 +55,11 @@
     "node-fetch": "3.x",
     "ts-node": "10.x",
     "prompts": "2.x",
+    "solidity-coverage": "^0.8.0-beta.0",
     "hardhat": "2.x",
     "hardhat-gas-reporter": "1.x",
-    "hardhat-tracer": "latest"
+    "hardhat-tracer": "latest",
+    "hardhat-spdx-license-identifier": "2.x"
   },
   "scripts": {
     "prettier": "prettier --write '{contracts,src,test}/**/*.{ts,js,json,sol}'",
@@ -65,6 +67,7 @@
     "prebuild": "rm -rf artifacts dist && npm run prettier && npm run typechain",
     "build": "npx hardhat compile && npx solhint 'contracts/**/*.sol' && tsc && cp -r src/hardhat/types dist/hardhat/types",
     "test": "npm run build && npx hardhat test --logs",
+    "coverage": "npx hardhat coverage",
     "deploy": "npx hardhat deploy --network $1",
     "upload": "npm publish --access public"
   },

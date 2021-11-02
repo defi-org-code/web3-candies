@@ -4,6 +4,8 @@ import "@nomiclabs/hardhat-web3";
 import "@nomiclabs/hardhat-etherscan";
 import "hardhat-tracer";
 import "hardhat-gas-reporter";
+import "solidity-coverage";
+import "hardhat-spdx-license-identifier";
 import { task } from "hardhat/config";
 import { account, bn18, erc20s, ether, networks, web3 } from "./src";
 import { deploy } from "./src/hardhat/deploy";
