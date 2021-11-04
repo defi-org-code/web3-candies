@@ -6,7 +6,7 @@ import type { AlpacaIBAlpaca } from "../typechain-abi/AlpacaIBAlpaca";
 import type { PancakeswapRouterAbi } from "../typechain-abi/PancakeswapRouterAbi";
 import type { PancakeswapMasterchefAbi } from "../typechain-abi/PancakeswapMasterchefAbi";
 import type { AaveSAAVEAbi } from "../typechain-abi/AaveSAAVEAbi";
-import type { CompoundCUSDC } from "../typechain-abi/CompoundCUSDC";
+import type { CompoundCToken } from "../typechain-abi/CompoundCToken";
 
 export type IERC20 = ERC20 & { name: string; address: string; abi: Abi };
 export type Token = IERC20;
@@ -34,7 +34,7 @@ export const erc20s = {
 
     // ---- compound ----
     COMP: () => erc20("$COMP", "0xc00e94Cb662C3520282E6f5717214004A7f26888"),
-    Compound_cUSDC: () => erc20<CompoundCUSDC>("Compound cUSDC", "0x39AA39c021dfbaE8faC545936693aC917d5E7563", require("../abi/CompoundCUSDC.json")),
+    Compound_cUSDC: () => erc20<CompoundCToken>("Compound cUSDC", "0x39AA39c021dfbaE8faC545936693aC917d5E7563", require("../abi/CompoundCToken.json")),
   },
 
   bsc: {
