@@ -6,6 +6,14 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
+contract Example2 {
+    event ExampleEvent(string foo);
+
+    function testEvent() public {
+        emit ExampleEvent("bar");
+    }
+}
+
 contract Example is ERC20("Example", "EX") {
     struct S {
         uint256 a;
@@ -26,5 +34,10 @@ contract Example is ERC20("Example", "EX") {
     function assertNotZero(uint256 n) external pure returns (uint256) {
         require(n > 0, "n should not be zero");
         return n;
+    }
+
+    function testInnerEvent() external {
+        Example2 e = new Example2();
+        e.testEvent();
     }
 }
