@@ -3,6 +3,7 @@ import Web3 from "web3";
 import _ from "lodash";
 import { block, web3 } from "../network";
 import { contract, Contract, Options, waitForTxConfirmations } from "../contracts";
+const debug = require("debug")("web3-candies");
 
 /**
  * the global hardhat runtime environment
@@ -31,12 +32,12 @@ export function artifact(name: string): Artifact {
 }
 
 export async function impersonate(...address: string[]) {
-  console.log("impersonating", ...address);
+  debug("impersonating", ...address);
   await hre().network.provider.send("hardhat_impersonateAccount", [...address]);
 }
 
 export async function resetNetworkFork(blockNumber: number = getNetworkForkingBlockNumber()) {
-  console.log("resetNetworkFork to", blockNumber || "latest");
+  debug("resetNetworkFork to", blockNumber || "latest");
   await hre().network.provider.send("hardhat_reset", [
     {
       forking: {
@@ -45,19 +46,19 @@ export async function resetNetworkFork(blockNumber: number = getNetworkForkingBl
       },
     },
   ]);
-  console.log("now block", await web3().eth.getBlockNumber());
+  debug("now block", await web3().eth.getBlockNumber());
 }
 
 export function getNetworkForkingBlockNumber(): number {
-  return _.get(hre().network.config, "forking.blockNumber");
+  return _.get(hre().network.config, ["forking", "blockNumber"]);
 }
 
 export function getNetworkForkingUrl(): string {
-  return _.get(hre().network.config, "forking.url");
+  return _.get(hre().network.config, ["forking", "url"]);
 }
 
 export async function mineBlocks(seconds: number, secondsPerBlock: number) {
-  console.log(`mining blocks in a loop and advancing time by ${seconds} seconds, ${secondsPerBlock} seconds per block`);
+  debug(`mining blocks in a loop and advancing time by ${seconds} seconds, ${secondsPerBlock} seconds per block`);
 
   const startBlock = await block();
   for (let i = 1; i <= Math.round(seconds / secondsPerBlock); i++) {
@@ -66,7 +67,7 @@ export async function mineBlocks(seconds: number, secondsPerBlock: number) {
   }
 
   const nowBlock = await block();
-  console.log(
+  debug(
     "was: block",
     startBlock.number,
     "timestamp",
@@ -80,13 +81,13 @@ export async function mineBlocks(seconds: number, secondsPerBlock: number) {
 }
 
 export async function mineBlock(seconds: number) {
-  console.log(`mining 1 block and advancing time by ${seconds} seconds`);
+  debug(`mining 1 block and advancing time by ${seconds} seconds`);
   const startBlock = await block();
   await hre().network.provider.send("evm_increaseTime", [seconds]);
   await hre().network.provider.send("evm_mine");
 
   const nowBlock = await block();
-  console.log(
+  debug(
     "was: block",
     startBlock.number,
     "timestamp",
@@ -105,18 +106,18 @@ export async function deployArtifact<T extends Contract>(
   constructorArgs?: any[],
   waitForConfirmations: number = 0
 ): Promise<T> {
-  console.log("deploying", contractName);
+  debug("deploying", contractName);
   const _artifact = artifact(contractName);
   const tx = contract<T>(_artifact.abi, "").deploy({ data: _artifact.bytecode, arguments: constructorArgs }).send(opts);
 
   if (waitForConfirmations) {
     await waitForTxConfirmations(tx, waitForConfirmations);
   } else {
-    console.log("not waiting for confirmations");
+    debug("not waiting for confirmations");
   }
 
   const deployed = await tx;
-  console.log("deployed", contractName, deployed.options.address, "deployer", opts.from);
+  debug("deployed", contractName, deployed.options.address, "deployer", opts.from);
   tag(deployed.options.address, contractName);
   return contract<T>(_artifact.abi, deployed.options.address, deployed.options);
 }

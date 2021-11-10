@@ -7,6 +7,7 @@ import { zeroAddress } from "./utils";
 import { web3 } from "./network";
 import BN from "bn.js";
 import _ from "lodash";
+const debug = require("debug")("web3-candies");
 
 export type Contract = ContractOrig | BaseContract;
 export type Options = CallOptions | SendOptions | ContractOptions | { maxFeePerGas?: BN | string | number; maxPriorityFeePerGas?: BN | string | number };
@@ -57,14 +58,14 @@ export function parseEvents(contractOrAbi: Contract | Abi, tx: Receipt) {
 }
 
 export async function waitForTxConfirmations(tx: any, confirmations: number) {
-  console.log(`waiting for ${confirmations} confirmations...`);
+  debug(`waiting for ${confirmations} confirmations...`);
   await new Promise<void>((res) => waitConfirmations(tx, res, confirmations));
   return await tx;
 }
 
 function waitConfirmations(tx: any, res: () => void, requiredConfirms: number) {
   tx.once("confirmation", (confNumber: number, receipt: Receipt, blockHash: string) => {
-    console.log("confirmed", confNumber, "blocks", receipt.blockNumber, blockHash);
+    debug("confirmed", confNumber, "blocks", receipt.blockNumber, blockHash);
     if (confNumber >= requiredConfirms) {
       res();
     } else {

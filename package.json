@@ -32,6 +32,7 @@
     "bn.js": "5.x",
     "chai": "4.x",
     "chai-bn": "0.x",
+    "debug": "4.x",
     "lodash": "4.x",
     "mocha": "9.x",
     "prettier": "2.x",
@@ -66,7 +67,7 @@
     "typechain": "typechain --target=web3-v1 --out-dir=typechain-abi 'abi/**/*.json' && npx hardhat typechain",
     "prebuild": "rm -rf artifacts dist && npm run prettier && npm run typechain",
     "build": "npx hardhat compile && npx solhint 'contracts/**/*.sol' && tsc && cp -r src/hardhat/types dist/hardhat/types",
-    "test": "npm run build && npx hardhat test --logs",
+    "test": "export DEBUG=web3-candies && npm run build && npx hardhat test --logs",
     "coverage": "npx hardhat coverage",
     "deploy": "npx hardhat deploy --network $1",
     "upload": "npm publish --access public"

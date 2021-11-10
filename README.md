@@ -33,6 +33,8 @@ const myToken = erc20("foo", myTokenAddress); // web3 instantiated ERC20 Contrac
 await myToken.methods.approve(other, maxUint256).send({ from: owner }); // approve max uint value for other to spend
 ```
 
+> run tests with env variable `DEBUG=web3-candies` to see logs
+
 ## Sweets included
 
 > See the tests for working examples
@@ -51,6 +53,7 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 - `erc20s.eth...`: well known Ethereum ERC20 contracts
 - `erc20s.bsc...`: well known BinanceSmartChain ERC20 contracts
 - `erc20<T>(...)`: web3 ERC20 contract, with optional extending abi to merge
+- `await erc20s.eth.WETH().amount(1.234)`: returns amount in wei, converted to token decimals
 - `contracts.eth...`: well known contract instances
 
 ### contract utils

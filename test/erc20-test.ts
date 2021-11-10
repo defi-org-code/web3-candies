@@ -13,7 +13,7 @@ describe("erc20", () => {
     const total = await token.methods.totalSupply().call();
     expect(total).bignumber.gt(zero);
 
-    expect(token.name).eq("$WETH");
+    expect(token.name).eq("WETH");
     expect(token.address).eq(token.options.address).eq("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2");
     expect(token.abi).deep.eq(token.options.jsonInterface);
   });
