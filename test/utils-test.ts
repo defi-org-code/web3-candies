@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { bn, bn12, bn18, bn6, bn8, bn9, ether, fmt12, fmt18, fmt6, fmt8, fmt9, maxUint256, sqrt, to18, to3, to6, useChaiBN, zero } from "../src";
+import { bn, bn12, bn18, bn6, bn8, bn9, decimals, ether, fmt12, fmt18, fmt6, fmt8, fmt9, maxUint256, sqrt, to18, to3, to6, useChaiBN, zero, expectRevert } from "../src";
 
 useChaiBN();
 
@@ -87,5 +87,26 @@ describe("utils", () => {
   it("supports different bases", async () => {
     expect(bn("ff", 16)).bignumber.eq("255");
     expect(bn("0xff", 16)).bignumber.eq("255");
+  });
+
+  it("throws when invalid bn", async () => {
+    await expectRevert(() => bn(123.456), "invalid bn: 123.456");
+    await expectRevert(() => bn("123.456"), "invalid bn: 123.456");
+  });
+
+  it("decimals", async () => {
+    expect(decimals(bn(1234))).eq(0);
+    expect(decimals(bn18(1234))).eq(0);
+    expect(decimals(1234)).eq(0);
+    expect(decimals("1234")).eq(0);
+
+    expect(decimals(1234.0)).eq(0);
+    expect(decimals("1234.000")).eq(0);
+
+    expect(decimals(1234.123456)).eq(6);
+    expect(decimals(-1234.123456)).eq(6);
+    expect(decimals("1234.123456")).eq(6);
+    expect(decimals("1234.100000000")).eq(1);
+    expect(decimals("1234.010000000")).eq(2);
   });
 });

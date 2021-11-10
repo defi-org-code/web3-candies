@@ -1,4 +1,6 @@
-import { Abi, contract } from "./contracts";
+import BN from "bn.js";
+import { bn, convertDecimals, decimals } from "./utils";
+import { Abi, Contract, contract } from "./contracts";
 import type { ERC20 } from "../typechain-abi/ERC20";
 import type { IWETH } from "../typechain-abi/IWETH";
 import type { PancakeswapLPAbi } from "../typechain-abi/PancakeswapLPAbi";
@@ -7,8 +9,27 @@ import type { PancakeswapRouterAbi } from "../typechain-abi/PancakeswapRouterAbi
 import type { PancakeswapMasterchefAbi } from "../typechain-abi/PancakeswapMasterchefAbi";
 import type { AaveSAAVEAbi } from "../typechain-abi/AaveSAAVEAbi";
 import type { CompoundCToken } from "../typechain-abi/CompoundCToken";
+import { expect } from "chai";
 
-export type IERC20 = ERC20 & { name: string; address: string; abi: Abi };
+export type IERC20 = ERC20 & {
+  /**
+   * human readable name
+   */
+  name: string;
+  /**
+   * alias for token.options.address
+   */
+  address: string;
+  /**
+   * alias for token.options.jsonInterface
+   */
+  abi: Abi;
+  /**
+   * @param mantissa significant digits in full shares (float)
+   * @returns amount in wei
+   */
+  amount: (mantissa: number) => Promise<BN>;
+};
 export type Token = IERC20;
 
 /**
@@ -98,11 +119,24 @@ export const erc20abi = require("../abi/ERC20.json") as Abi;
 export function erc20<T>(name: string, address: string, extendAbi?: Abi): Token & T {
   const abi = extendAbi ? [...erc20abi, ...extendAbi] : erc20abi;
   const result = contract<Token & T>(abi, address);
-  result.name = name;
-  result.address = address;
-  result.abi = abi;
+  wrapToken(result, name, address, abi);
   tryTag(address, name);
   return result;
+}
+
+export function wrapToken(token: Contract, name: string, address: string, abi: Abi) {
+  const t = token as Token;
+  t.name = name;
+  t.address = address;
+  t.abi = abi;
+  t.amount = (mantissa: number) =>
+    t.methods
+      .decimals()
+      .call()
+      .then((tokenDecimals: string) => {
+        const mantissaDecimals = decimals(mantissa);
+        return convertDecimals(bn(10).pow(bn(mantissaDecimals)).muln(mantissa), mantissaDecimals, tokenDecimals);
+      });
 }
 
 function tryTag(address: string, name: string) {

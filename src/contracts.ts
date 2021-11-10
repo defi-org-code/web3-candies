@@ -19,8 +19,9 @@ export function contract<T extends Contract>(abi: Abi, address: string, options?
   return c;
 }
 
-export function parseEvents(c: Contract, tx: TransactionReceipt) {
+export function parseEvents(c: Contract, tx: Receipt) {
   require("web3-parse-receipt-events")(c.options.jsonInterface, c.options.address, tx);
+  return tx.events!;
 }
 
 export async function waitForTxConfirmations(tx: any, confirmations: number) {

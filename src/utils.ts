@@ -10,6 +10,7 @@ export function bn(n: BN | string | number, base = 10): BN {
   if (!n) return zero;
   else if (n instanceof BN) return n;
   else if (base == 16 && typeof n == "string") return new BN(Web3.utils.stripHexPrefix(n), base);
+  else if (decimals(n) !== 0) throw new Error(`invalid bn: ${n}`);
   else return new BN(n, base);
 }
 
@@ -107,8 +108,18 @@ export function to18(n: BN | number | string, decimals: BN | number | string): B
 /**
  * increase or decrease `n` percision from `decimals` to `targetDecimals`
  */
-export function convertDecimals(n: BN | number | string, decimals: BN | number | string, targetDecimals: BN | number | string) {
-  return bn(decimals).gt(bn(targetDecimals)) ? bn(n).divRound(bn(10).pow(bn(decimals).sub(bn(targetDecimals)))) : bn(n).mul(bn(10).pow(bn(targetDecimals).sub(bn(decimals))));
+export function convertDecimals(n: BN | number | string, sourceDecimals: BN | number | string, targetDecimals: BN | number | string) {
+  if (bn(sourceDecimals).gt(bn(targetDecimals))) {
+    return bn(n).divRound(bn(10).pow(bn(sourceDecimals).sub(bn(targetDecimals))));
+  } else {
+    return bn(n).mul(bn(10).pow(bn(targetDecimals).sub(bn(sourceDecimals))));
+  }
+}
+
+export function decimals(mantissa: BN | number | string) {
+  const n = _.toNumber(mantissa);
+  if (_.isInteger(n)) return 0;
+  return _.toString(n).split(".")[1].length;
 }
 
 /**
