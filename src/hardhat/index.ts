@@ -112,8 +112,6 @@ export async function deployArtifact<T extends Contract>(
 
   if (waitForConfirmations) {
     await waitForTxConfirmations(tx, waitForConfirmations);
-  } else {
-    debug("not waiting for confirmations");
   }
 
   const deployed = await tx;
