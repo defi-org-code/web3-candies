@@ -19,6 +19,14 @@ describe("utils", () => {
 
     expect(bn9("1").toString()).eq(bn9(1).toString()).eq("1000000000");
     expect(bn9("1")).bignumber.eq(bn9(1)).eq(bn("1000000000")).gt(bn6("1"));
+
+    expect(bn18("123456789012345678901234567890.123456789012345678901234567890")).not.bignumber.zero;
+    expect(bn12("123456789012345678901234567890.123456789012345678901234567890")).not.bignumber.zero;
+    expect(bn9("123456789012345678901234567890.123456789012345678901234567890")).not.bignumber.zero;
+    expect(bn8("123456789012345678901234567890.123456789012345678901234567890")).not.bignumber.zero;
+    expect(bn6("123456789012345678901234567890.123456789012345678901234567890")).not.bignumber.zero;
+
+    expect(bn18(1e6).toString()).eq("1000000000000000000000000");
   });
 
   it("uncommify before parsing", async () => {

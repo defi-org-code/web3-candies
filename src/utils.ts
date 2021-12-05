@@ -20,21 +20,21 @@ export function bn(n: BN | string | number, base = 10): BN {
  * assuming 18 decimals, uncommafy (support "1,234.567")
  */
 export function bn18(n: string | number): BN {
-  return bn(Web3.utils.toWei(n.toString().split(",").join(""), "ether"));
+  return bn(Web3.utils.toWei(parse(n.toString(), 18), "ether"));
 }
 
 /**
  * assuming 12 decimals, uncommafy (support "1,234.567")
  */
 export function bn12(n: string | number): BN {
-  return bn(Web3.utils.toWei(n.toString().split(",").join(""), "szabo"));
+  return bn(Web3.utils.toWei(parse(n.toString(), 12), "szabo"));
 }
 
 /**
  * assuming 9 decimals (gwei), uncommafy (support "1,234.567")
  */
 export function bn9(n: string | number): BN {
-  return bn(Web3.utils.toWei(n.toString().split(",").join(""), "gwei"));
+  return bn(Web3.utils.toWei(parse(n.toString(), 9), "gwei"));
 }
 
 /**
@@ -48,7 +48,7 @@ export function bn8(n: string | number): BN {
  * assuming 6 decimals, uncommafy (support "1,234.567")
  */
 export function bn6(n: string | number): BN {
-  return bn(Web3.utils.toWei(n.toString().split(",").join(""), "lovelace"));
+  return bn(Web3.utils.toWei(parse(n.toString(), 6), "lovelace"));
 }
 
 /**
@@ -122,6 +122,16 @@ export function decimals(mantissa: BN | number | string) {
   if (_.isInteger(mantissa)) return 0;
   const str = mantissa instanceof BN ? mantissa.toString(10) : _.trim(_.toString(mantissa), "0");
   return (str.split(".")[1] || []).length;
+}
+
+function parse(s: string, maxDecimals: number) {
+  let str = s.split(",").join("");
+  if (_.isInteger(str) || !str.includes(".")) return str;
+
+  str = _.trim(str, "0");
+  const d = (str.split(".")[1] || []).length;
+  if (d > maxDecimals) return str.substring(0, str.length - (d - maxDecimals));
+  return str;
 }
 
 /**
