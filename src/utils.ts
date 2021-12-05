@@ -119,9 +119,9 @@ export function convertDecimals(n: BN | number | string, sourceDecimals: BN | nu
 }
 
 export function decimals(mantissa: BN | number | string) {
-  const n = _.toNumber(mantissa);
-  if (_.isInteger(n)) return 0;
-  return _.toString(n).split(".")[1].length;
+  if (_.isInteger(mantissa)) return 0;
+  const str = mantissa instanceof BN ? mantissa.toString(10) : _.trim(_.toString(mantissa), "0");
+  return (str.split(".")[1] || []).length;
 }
 
 /**

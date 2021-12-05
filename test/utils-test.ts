@@ -108,5 +108,6 @@ describe("utils", () => {
     expect(decimals("1234.123456")).eq(6);
     expect(decimals("1234.100000000")).eq(1);
     expect(decimals("1234.010000000")).eq(2);
+    expect(decimals("1234.000000000000000000000000000001")).eq(30);
   });
 });
