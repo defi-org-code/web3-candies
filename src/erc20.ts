@@ -72,12 +72,21 @@ export const erc20s = {
 
     // ---- bluechip ----
     ORBS: () => erc20("ORBS", "0xeBd49b26169e1b52c04cFd19FCf289405dF55F80"),
+    DOT: () => erc20("DOT", "0x7083609fCE4d1d8Dc0C979AAb8c869Ea2C873402"),
+    ADA: () => erc20("ADA", "0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47"),
+    LINK: () => erc20("LINK", "0xF8A0BF9cF54Bb92F17374d9e9A321E6a111a51bD"),
+    DOGE: () => erc20("DOGE", "0xbA2aE424d960c26247Dd6c32edC70B295c744C43"),
 
     // ---- pancakeswap ----
     CAKE: () => erc20("CAKE", "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"),
     Pancakeswap_LP_BUSD_BNB: () => erc20<PancakeswapLPAbi>("Pancakeswap: LP BUSD/BNB", "0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16", require("../abi/PancakeswapLPAbi.json")),
+    Pancakeswap_LP_BTCB_BNB: () => erc20<PancakeswapLPAbi>("Pancakeswap: LP BUSD/BNB", "0x61EB789d75A95CAa3fF50ed7E47b96c132fEc082", require("../abi/PancakeswapLPAbi.json")),
     Pancakeswap_LP_CAKE_BNB: () => erc20<PancakeswapLPAbi>("Pancakeswap: LP CAKE/BNB", "0x0eD7e52944161450477ee417DE9Cd3a859b14fD0", require("../abi/PancakeswapLPAbi.json")),
     Pancakeswap_LP_ORBS_BUSD: () => erc20<PancakeswapLPAbi>("Pancakeswap: LP ORBS/BUSD", "0xB87b857670A44356f2b70337E0F218713D2378e8", require("../abi/PancakeswapLPAbi.json")),
+    Pancakeswap_LP_DOT_BNB: () => erc20<PancakeswapLPAbi>("Pancakeswap: LP DOT/BNB", "0xDd5bAd8f8b360d76d12FdA230F8BAF42fe0022CF", require("../abi/PancakeswapLPAbi.json")),
+    Pancakeswap_LP_ADA_BNB: () => erc20<PancakeswapLPAbi>("Pancakeswap: LP ADA/BNB", "0x28415ff2C35b65B9E5c7de82126b4015ab9d031F", require("../abi/PancakeswapLPAbi.json")),
+    Pancakeswap_LP_LINK_BNB: () => erc20<PancakeswapLPAbi>("Pancakeswap: LP LINK/BNB", "0x824eb9faDFb377394430d2744fa7C42916DE3eCe", require("../abi/PancakeswapLPAbi.json")),
+    Pancakeswap_LP_DOGE_BNB: () => erc20<PancakeswapLPAbi>("Pancakeswap: LP DOGE/BNB", "0xac109C8025F272414fd9e2faA805a583708A017f", require("../abi/PancakeswapLPAbi.json")),
 
     // ---- venus ----
     XVS: () => erc20("XVS", "0xcF6BB5389c92Bdda8a3747Ddb454cB7a64626C63"),
