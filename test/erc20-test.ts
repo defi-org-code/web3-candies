@@ -1,7 +1,5 @@
 import { expect } from "chai";
-import { account, bn18, erc20, erc20s, expectRevert, parseEvents, useChaiBN, web3, zero, networks } from "../src";
-import { deployArtifact, mineBlocks, resetNetworkFork } from "../src/hardhat";
-import type { Example } from "../typechain-hardhat/Example";
+import { account, bn18, erc20, erc20s, networks, useChaiBN, zero } from "../src";
 import * as _ from "lodash";
 
 useChaiBN();
