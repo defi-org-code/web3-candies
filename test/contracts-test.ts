@@ -10,6 +10,10 @@ useChaiBN();
 describe("Contracts", () => {
   const weth = contract<IWETH>(require("../abi/IWETH.json"), "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2");
 
+  async function deployExample() {
+    return await deployArtifact<Example>("Example", { from: await account() }, [123, weth.options.address, [456]]);
+  }
+
   describe("parseEvents", async () => {
     it("mutates tx, returns parsed events", async () => {
       const tx = await weth.methods.deposit().send({ from: await account(), value: bn18("42") });
@@ -18,7 +22,7 @@ describe("Contracts", () => {
     });
 
     it("parses events of other contract abi", async () => {
-      const c = await deployArtifact<Example>("Example", { from: await account() }, [123, weth.options.address, [456]]);
+      const c = await deployExample();
       const tx = await c.methods.testInnerEvent().send({ from: await account() });
 
       const events = parseEvents(artifact("Example2").abi, tx);
@@ -39,8 +43,8 @@ describe("Contracts", () => {
     expect(result.options.address).not.empty;
   });
 
-  it("expectRevert", async () => {
-    const c = await deployArtifact<Example>("Example", { from: await account() }, [123, weth.options.address, [456]]);
+  it("expectRevert, propagates errors correctly", async () => {
+    const c = await deployExample();
     expect(await c.methods.assertNotZero("123").call()).bignumber.eq("123");
     await expectRevert(() => c.methods.assertNotZero(zero).call(), "n should not be zero");
   });

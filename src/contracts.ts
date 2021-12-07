@@ -18,7 +18,7 @@ export type Abi = AbiItem[];
 
 export function contract<T extends Contract>(abi: Abi, address: string, options?: ContractOptions): T {
   const c = new (web3().eth.Contract)(abi, address, options) as T;
-  c.handleRevert = true;
+  c.handleRevert = false;
   return c;
 }
 
