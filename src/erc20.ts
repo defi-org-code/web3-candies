@@ -1,5 +1,5 @@
 import BN from "bn.js";
-import { bn, convertDecimals, decimals } from "./utils";
+import { bn, convertDecimals, decimals, to18 } from "./utils";
 import { Abi, Contract, contract } from "./contracts";
 import type { ERC20 } from "../typechain-abi/ERC20";
 import type { IWETH } from "../typechain-abi/IWETH";
@@ -27,10 +27,19 @@ export type IERC20 = ERC20 & {
    */
   abi: Abi;
   /**
+   * memoized version of methods.decimals
+   */
+  decimals: () => Promise<number>;
+  /**
    * @param mantissa significant digits in full shares (float)
    * @returns amount in wei
    */
   amount: (mantissa: number) => Promise<BN>;
+  /**
+   * @param amount in token amount
+   * @returns amount in 18 decimals
+   */
+  mantissa: (amount: number | string | BN) => Promise<BN>;
 };
 export type Token = IERC20;
 
@@ -151,14 +160,24 @@ export function wrapToken(token: Contract, name: string, address: string, abi: A
   t.name = name;
   t.address = address;
   t.abi = abi;
+
+  const tt = t as Token & { _decimals_memoized: number };
+
+  t.decimals = () =>
+    !!tt._decimals_memoized
+      ? Promise.resolve(tt._decimals_memoized)
+      : t.methods
+          .decimals()
+          .call()
+          .then((d) => (tt._decimals_memoized = parseInt(d)));
+
   t.amount = (mantissa: number) =>
-    t.methods
-      .decimals()
-      .call()
-      .then((tokenDecimals: string) => {
-        const mantissaDecimals = decimals(mantissa);
-        return convertDecimals(bn(10).pow(bn(mantissaDecimals)).muln(mantissa), mantissaDecimals, tokenDecimals);
-      });
+    t.decimals().then((d: number) => {
+      const mantissaDecimals = decimals(mantissa);
+      return convertDecimals(bn(10).pow(bn(mantissaDecimals)).muln(mantissa), mantissaDecimals, d);
+    });
+
+  t.mantissa = (amount: number | string | BN) => t.decimals().then((d: number) => to18(amount, d));
 }
 
 function tryTag(address: string, name: string) {

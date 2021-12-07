@@ -1,6 +1,8 @@
 import { expect } from "chai";
-import { account, bn18, erc20, erc20s, networks, useChaiBN, zero } from "../src";
+import { account, bn18, erc20, erc20s, networks, useChaiBN, zero, bn6 } from "../src";
+import type { NonPayableTransactionObject } from "@typechain/web3-v1/static/types";
 import * as _ from "lodash";
+import { resetNetworkFork } from "../src/hardhat";
 
 useChaiBN();
 
@@ -35,6 +37,29 @@ describe("erc20", () => {
       expect(await token.amount(123.456789))
         .bignumber.eq(bn18("123.456789"))
         .eq("123456789000000000000");
+    });
+
+    it("mantissa - convert to 18 decimals", async () => {
+      const token = erc20s.eth.USDC();
+      expect(await token.methods.decimals().call()).bignumber.eq("6");
+      expect(await token.mantissa(bn6(1234.123456)))
+        .bignumber.eq(bn18(1234.123456))
+        .eq("1234123456000000000000");
+      expect(await token.mantissa(bn6(1234.123456))).bignumber.eq(bn18(1234.123456));
+      expect(await token.mantissa(123456)).bignumber.eq(bn18(0.123456));
+    });
+
+    it("decimals - memoized and parsed", async () => {
+      const token = erc20s.eth.USDC();
+      expect(await token.decimals()).eq(6);
+
+      token.methods.decimals = () => ({ call: () => Promise.resolve("0") } as NonPayableTransactionObject<string>); // proving the call is memoized
+      expect(await token.methods.decimals().call()).bignumber.eq("0");
+      expect(await token.decimals()).eq(6);
+
+      expect(await token.amount(123)).bignumber.eq(bn6(123));
+      expect(await token.mantissa(bn6(1234.123456))).bignumber.eq(bn18(1234.123456));
+      await resetNetworkFork();
     });
   });
 });
