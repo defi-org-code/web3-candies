@@ -52,6 +52,13 @@ export function bn6(n: string | number): BN {
 }
 
 /**
+ * assuming 3 decimals, uncommafy (support "1,234.567")
+ */
+export function bn3(n: string | number): BN {
+  return bn(Web3.utils.toWei(parse(n.toString(), 3), "babbage"));
+}
+
+/**
  * formats from wei, assuming 18 decimals
  */
 export function fmt18(ether: BN | number | string): string {
@@ -84,6 +91,13 @@ export function fmt8(n: BN | number | string): string {
  */
 export function fmt6(ether: BN | number | string): string {
   return commafy(Web3.utils.fromWei(bn(ether), "lovelace"));
+}
+
+/**
+ * formats from wei, assuming 3 decimals
+ */
+export function fmt3(ether: BN | number | string): string {
+  return commafy(Web3.utils.fromWei(bn(ether), "babbage"));
 }
 
 /**
@@ -137,8 +151,8 @@ function parse(s: string, maxDecimals: number) {
 /**
  * converts to human-readble formatted number string (123,456.789)
  */
-export function commafy(num: string) {
-  const parts = _.split(num, ".");
+export function commafy(num: string | number | BN) {
+  const parts = _.split(num.toString(), ".");
   const upper = _(parts[0].split(""))
     .reverse()
     .chunk(3)

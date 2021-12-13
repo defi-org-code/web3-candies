@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { bn, bn12, bn18, bn6, bn8, bn9, decimals, ether, fmt12, fmt18, fmt6, fmt8, fmt9, maxUint256, sqrt, to18, to3, to6, useChaiBN, zero, expectRevert } from "../src";
+import { bn, bn12, bn18, bn6, bn8, bn9, decimals, ether, fmt12, fmt18, fmt6, fmt8, fmt9, maxUint256, sqrt, to18, to3, to6, useChaiBN, zero, expectRevert, fmt3, bn3 } from "../src";
 
 useChaiBN();
 
@@ -49,6 +49,7 @@ describe("utils", () => {
     expect(fmt9(bn9("1,234,567,890.123456789"))).eq("1,234,567,890.123456789");
     expect(fmt8(bn8("1,234,567,890.12345678"))).eq("1,234,567,890.12345678");
     expect(fmt6(bn6("1,234,567,890.123456"))).eq("1,234,567,890.123456");
+    expect(fmt3(bn3("1,234,567,890.123456"))).eq("1,234,567,890.123");
   });
 
   it("constants", async () => {
@@ -62,6 +63,7 @@ describe("utils", () => {
     expect(to3("1000", "3")).bignumber.eq("1000");
     expect(to3(bn("1000"), bn("3"))).bignumber.eq("1000");
     expect(to3(bn18("1234"), 18)).bignumber.eq("1234000");
+    expect(fmt3(to3(bn18("1234.56789999"), 18))).eq("1,234.568");
   });
 
   it("to6 decimals", async () => {

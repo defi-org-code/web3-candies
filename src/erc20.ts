@@ -127,6 +127,16 @@ export const erc20s = {
     // ---- aave ----
     Aave_MATIC: () => erc20("Aave: aMATIC", "0x8dF3aad3a84da6b69A4DA8aeC3eA40d9091B2Ac4"),
   },
+
+  arb: {
+    // ---- base assets ----
+    WETH: () => erc20("WETH", "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"),
+  },
+
+  avax: {
+    // ---- base assets ----
+    WAVAX: () => erc20("WAVAX", "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"),
+  },
 };
 
 /**

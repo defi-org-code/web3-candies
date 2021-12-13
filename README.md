@@ -42,11 +42,11 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 ### bn.js utils
 
 - `bn`: convert `string|number|bn` to `bn.js` object
-- `bn6, bn8, bn9, bn12, bn18`: convert human readable `string|number` to `bn.js` object, handling commas and decimals
-- `fmt6, fmt8, fmt9, fmt12, fmt18`: convert `bn.js` object to human readable `string`, handling commas and decimals
+- `bn3, bn6, bn8, bn9, bn12, bn18`: convert human readable `string|number` to `bn.js` object, handling commas and decimals
+- `fmt3, fmt6, fmt8, fmt9, fmt12, fmt18`: convert `bn.js` object to human readable `string`, handling commas and decimals
 - `to18, to6, to3`: convert to decimals, losing percision
 - `zero, ether, maxUint256`: hardcoded useful values
-- `sqrt`: compute square root
+- `sqrt`: compute square root of BN
 
 ### ERC20 & well known contracts
 
@@ -67,7 +67,6 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 ### network utils
 
 - `web3()`: the globally accesible singleton. call `setWeb3Instance(web3)` if needed
-- `getNetwork()`: returns network object with id, name
 - `ethChainId`, `bscChainId`: constants
 - `account`: alias for web3.accounts
 - `block`: alias for web3.getBlock, with parsed timestamp
