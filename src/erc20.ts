@@ -112,7 +112,7 @@ export const erc20s = {
 
   poly: {
     // ---- base assets ----
-    WMATIC: () => erc20("WMATIC", "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270"),
+    WMATIC: () => erc20<IWETH>("WMATIC", "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270", require("../abi/IWETH.json")),
     WBTC: () => erc20("WBTC", "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6"),
     USDC: () => erc20("USDC", "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"),
     USDT: () => erc20("USDT", "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"),
