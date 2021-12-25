@@ -18,6 +18,7 @@ export type DeployParams = {
   maxPriorityFeePerGas: string;
   initialETH: string;
   uploadSources: boolean;
+  useLegacyTxType: boolean;
 };
 
 export async function deploy(
@@ -33,7 +34,9 @@ export async function deploy(
 
   const { maxFeePerGas, maxPriorityFeePerGas } = await askFees();
 
-  const params: DeployParams = {
+  const useLegacyTxType = await askUseLegacy();
+
+  await confirm({
     chainId: await web3().eth.getChainId(),
     account: deployer,
     balance: fmt18(await web3().eth.getBalance(deployer)),
@@ -44,18 +47,15 @@ export async function deploy(
     maxFeePerGas: fmt9(maxFeePerGas) + " gwei",
     initialETH: fmt18(initialETH),
     uploadSources,
-  };
-
-  await confirm(params);
+    useLegacyTxType,
+  });
 
   const backup = backupArtifacts(timestamp);
 
-  const result = await deployArtifact(
-    contractName,
-    { from: deployer, gas: gasLimit, maxFeePerGas, maxPriorityFeePerGas, value: initialETH },
-    constructorArgs,
-    waitForConfirmations
-  );
+  const opts = useLegacyTxType
+    ? { from: deployer, value: initialETH, gas: gasLimit, gasPrice: maxFeePerGas }
+    : { from: deployer, value: initialETH, gas: gasLimit, maxFeePerGas, maxPriorityFeePerGas };
+  const result = await deployArtifact(contractName, opts, constructorArgs, waitForConfirmations);
   const address = result.options.address;
 
   execSync(`mv ${backup} ${backup}/../${timestamp}-${address}`);
@@ -135,6 +135,16 @@ async function askFees() {
   return { maxPriorityFeePerGas: bn9(maxPriorityFeePerGas.toString()), maxFeePerGas: bn9(maxFeePerGas.toString()) };
 }
 
+async function askUseLegacy() {
+  const { useLegacyTxType } = await prompts({
+    type: "confirm",
+    name: "useLegacyTxType",
+    message: "Use legacy transaction type?",
+    initial: false,
+  });
+  return !!useLegacyTxType;
+}
+
 async function confirm(params: DeployParams) {
   console.log("DEPLOYING!");
   console.log(params);
@@ -142,6 +152,7 @@ async function confirm(params: DeployParams) {
     type: "confirm",
     name: "ok",
     message: "ALL OK?",
+    initial: false,
   });
   if (!ok) throw new Error("aborted");
 }
