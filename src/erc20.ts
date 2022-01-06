@@ -12,6 +12,9 @@ import type { CompoundCToken } from "../typechain-abi/CompoundCToken";
 import type { VenusVBNBAbi } from "../typechain-abi/VenusVBNBAbi";
 import type { VenusVTokenAbi } from "../typechain-abi/VenusVTokenAbi";
 import type { VenusComptrollerAbi } from "../typechain-abi/VenusComptrollerAbi";
+import type { AaveLendingPoolAbi } from "../typechain-abi/AaveLendingPoolAbi";
+import type { QuickswapRouterAbi } from "../typechain-abi/QuickswapRouterAbi";
+import type { TraderJoeRouterAbi } from "../typechain-abi/TraderJoeRouterAbi";
 
 export type IERC20 = ERC20 & {
   /**
@@ -136,6 +139,16 @@ export const erc20s = {
   avax: {
     // ---- base assets ----
     WAVAX: () => erc20("WAVAX", "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7"),
+    USDC: () => erc20("USDC", "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E"),
+    USDCe: () => erc20("USDC.e", "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664"),
+    USDT: () => erc20("USDT", "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7"),
+    USDTe: () => erc20("USDT.e", "0xc7198437980c041c805A1EDcbA50c1Ce5db95118"),
+    BUSDe: () => erc20("BUSD.e", "0x19860CCB0A68fd4213aB9D8266F7bBf05A8dDe98"),
+    WBTCe: () => erc20("WBTC.e", "0x50b7545627a5162F82A992c33b87aDc75187B218"),
+    DAIe: () => erc20("DAI.e", "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70"),
+
+    // ---- bluechip ----
+    AAVEe: () => erc20("AAVE.e", "0x63a72806098Bd3D9520cC43356dD78afe5D386D9"),
   },
 };
 
@@ -152,7 +165,20 @@ export const contracts = {
     // ---- venus ----
     Venus_Comptroller: () => contract<VenusComptrollerAbi>(require("../abi/VenusComptrollerAbi.json"), "0xfD36E2c2a6789Db23113685031d7F16329158384"),
   },
-  poly: {},
+  poly: {
+    // ---- quickswap ----
+    Quickswap_Router: () => contract<QuickswapRouterAbi>(require("../abi/QuickswapRouterAbi.json"), "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff"),
+
+    // ---- aave ----
+    Aave_LendingPool: () => contract<AaveLendingPoolAbi>(require("../abi/AaveLendingPoolAbi.json"), "0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf"),
+  },
+  avax: {
+    // ---- traderjoe ----
+    TraderJoe_Router: () => contract<TraderJoeRouterAbi>(require("../abi/TraderJoeRouterAbi.json"), "0x60aE616a2155Ee3d9A68541Ba4544862310933d4"),
+
+    // ---- aave ----
+    Aave_LendingPool: () => contract<AaveLendingPoolAbi>(require("../abi/AaveLendingPoolAbi.json"), "0x4F01AeD16D97E3aB5ab2B501154DC9bb0F1A5A2C"),
+  },
 };
 
 export const erc20abi = require("../abi/ERC20.json") as Abi;
