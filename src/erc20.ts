@@ -15,6 +15,8 @@ import type { VenusComptrollerAbi } from "../typechain-abi/VenusComptrollerAbi";
 import type { AaveLendingPoolAbi } from "../typechain-abi/AaveLendingPoolAbi";
 import type { QuickswapRouterAbi } from "../typechain-abi/QuickswapRouterAbi";
 import type { TraderJoeRouterAbi } from "../typechain-abi/TraderJoeRouterAbi";
+import type { SushiswapMasterchefAbi } from "../typechain-abi/SushiswapMasterchefAbi";
+import type { SushiswapRouterAbi } from "../typechain-abi/SushiswapRouterAbi";
 
 export type IERC20 = ERC20 & {
   /**
@@ -156,7 +158,14 @@ export const erc20s = {
  * to extend: `const mycontracts = _.merge(contracts, { eth: ...})`
  */
 export const contracts = {
-  eth: {},
+  eth: {
+    // ---- sushiswap ----
+    Sushiswap_Router: () => contract<SushiswapRouterAbi>(require("../abi/SushiswapRouterAbi.json"), "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F"),
+    Sushiswap_Masterchef: () => contract<SushiswapMasterchefAbi>(require("../abi/SushiswapMasterchefAbi.json"), "0xc2EdaD668740f1aA35E4D8f227fB8E17dcA888Cd"),
+
+    // ---- aave ----
+    Aave_LendingPool: () => contract<AaveLendingPoolAbi>(require("../abi/AaveLendingPoolAbi.json"), "0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9"),
+  },
   bsc: {
     // ---- pancakeswap ----
     Pancakeswap_Router: () => contract<PancakeswapRouterAbi>(require("../abi/PancakeswapRouterAbi.json"), "0x10ED43C718714eb63d5aA57B78B54704E256024E"),
