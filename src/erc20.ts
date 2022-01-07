@@ -13,6 +13,7 @@ import type { VenusVBNBAbi } from "../typechain-abi/VenusVBNBAbi";
 import type { VenusVTokenAbi } from "../typechain-abi/VenusVTokenAbi";
 import type { VenusComptrollerAbi } from "../typechain-abi/VenusComptrollerAbi";
 import type { AaveLendingPoolAbi } from "../typechain-abi/AaveLendingPoolAbi";
+import type { AaveIncentivesAbi } from "../typechain-abi/AaveIncentivesAbi";
 import type { QuickswapRouterAbi } from "../typechain-abi/QuickswapRouterAbi";
 import type { TraderJoeRouterAbi } from "../typechain-abi/TraderJoeRouterAbi";
 import type { SushiswapMasterchefAbi } from "../typechain-abi/SushiswapMasterchefAbi";
@@ -165,6 +166,7 @@ export const contracts = {
 
     // ---- aave ----
     Aave_LendingPool: () => contract<AaveLendingPoolAbi>(require("../abi/AaveLendingPoolAbi.json"), "0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9"),
+    Aave_Incentives: () => contract<AaveIncentivesAbi>(require("../abi/AaveIncentivesAbi.json"), "0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5"),
   },
   bsc: {
     // ---- pancakeswap ----
@@ -180,6 +182,7 @@ export const contracts = {
 
     // ---- aave ----
     Aave_LendingPool: () => contract<AaveLendingPoolAbi>(require("../abi/AaveLendingPoolAbi.json"), "0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf"),
+    Aave_Incentives: () => contract<AaveIncentivesAbi>(require("../abi/AaveIncentivesAbi.json"), "0x357D51124f59836DeD84c8a1730D72B749d8BC23"),
   },
   avax: {
     // ---- traderjoe ----
@@ -187,6 +190,7 @@ export const contracts = {
 
     // ---- aave ----
     Aave_LendingPool: () => contract<AaveLendingPoolAbi>(require("../abi/AaveLendingPoolAbi.json"), "0x4F01AeD16D97E3aB5ab2B501154DC9bb0F1A5A2C"),
+    Aave_Incentives: () => contract<AaveIncentivesAbi>(require("../abi/AaveIncentivesAbi.json"), "0x01D83Fe6A10D2f2B7AF17034343746188272cAc9"),
   },
 };
 
