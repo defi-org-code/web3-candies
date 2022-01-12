@@ -45,7 +45,7 @@
     "web3-parse-receipt-events": "1.x"
   },
   "optionalDependencies": {
-    "@nomiclabs/hardhat-etherscan": "2.x",
+    "@nomiclabs/hardhat-etherscan": "3.x",
     "@nomiclabs/hardhat-web3": "2.x",
     "@typechain/hardhat": "2.x",
     "@types/fs-extra": "9.x",
@@ -56,7 +56,6 @@
     "node-fetch": "3.x",
     "ts-node": "10.x",
     "prompts": "2.x",
-    "solidity-coverage": "^0.8.0-beta.0",
     "hardhat": "2.x",
     "hardhat-gas-reporter": "1.x",
     "hardhat-tracer": "latest",
@@ -68,7 +67,6 @@
     "prebuild": "rm -rf artifacts dist && npm run prettier && npm run typechain",
     "build": "npx hardhat compile && npx solhint 'contracts/**/*.sol' && tsc && cp -r src/hardhat/types dist/hardhat/types",
     "test": "export DEBUG=web3-candies && npm run build && npx hardhat test --logs",
-    "coverage": "npx hardhat coverage",
     "deploy": "npx hardhat deploy --network $1",
     "upload": "npm publish --access public"
   },
