@@ -40,7 +40,7 @@ export type IERC20 = ERC20 & {
    * @param mantissa significant digits in full shares (float)
    * @returns amount in wei
    */
-  amount: (mantissa: number) => Promise<BN>;
+  amount: (mantissa: number | BN) => Promise<BN>;
   /**
    * @param amount in token amount
    * @returns amount in 18 decimals
@@ -220,10 +220,12 @@ export function wrapToken(token: Contract, name: string, address: string, abi: A
           .call()
           .then((d) => (tt._decimals_memoized = parseInt(d)));
 
-  t.amount = (mantissa: number) =>
+  t.amount = (mantissa: number | BN) =>
     t.decimals().then((d: number) => {
       const mantissaDecimals = decimals(mantissa);
-      return convertDecimals(bn(10).pow(bn(mantissaDecimals)).muln(mantissa), mantissaDecimals, d);
+      return mantissa instanceof BN
+        ? convertDecimals(bn(10).pow(bn(mantissaDecimals)).mul(mantissa), mantissaDecimals, d)
+        : convertDecimals(bn(10).pow(bn(mantissaDecimals)).muln(mantissa), mantissaDecimals, d);
     });
 
   t.mantissa = (amount: number | string | BN) => t.decimals().then((d: number) => to18(amount, d));

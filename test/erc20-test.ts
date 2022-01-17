@@ -3,6 +3,7 @@ import { account, bn18, erc20, erc20s, networks, useChaiBN, zero, bn6 } from "..
 import type { NonPayableTransactionObject } from "@typechain/web3-v1/static/types";
 import * as _ from "lodash";
 import { resetNetworkFork } from "../src/hardhat";
+import { bn } from "../dist";
 
 useChaiBN();
 
@@ -37,6 +38,7 @@ describe("erc20", () => {
       expect(await token.amount(123.456789))
         .bignumber.eq(bn18("123.456789"))
         .eq("123456789000000000000");
+      expect(await token.amount(bn(100_000_000))).bignumber.eq(bn18("100,000,000"));
     });
 
     it("mantissa - convert to 18 decimals", async () => {
