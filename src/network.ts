@@ -12,6 +12,10 @@ export const networks = {
   poly: { id: 0x89, name: "Polygon", shortname: "poly" } as Network,
   arb: { id: 42161, name: "Arbitrum", shortname: "arb" } as Network,
   avax: { id: 43114, name: "Avalanche", shortname: "avax" } as Network,
+  oeth: { id: 10, name: "Optimism", shortname: "oeth" } as Network,
+  ftm: { id: 250, name: "Fantom", shortname: "ftm" } as Network,
+  one: { id: 1666600000, name: "Harmony", shortname: "one" } as Network,
+  klay: { id: 8217, name: "Klaytn", shortname: "klay" } as Network,
 };
 
 /**
