@@ -3,6 +3,7 @@ import Web3 from "web3";
 import _ from "lodash";
 import { block, web3 } from "../network";
 import { contract, Contract, Options, waitForTxConfirmations } from "../contracts";
+import BN from "bn.js";
 const debug = require("debug")("web3-candies");
 
 /**
@@ -34,6 +35,13 @@ export function artifact(name: string): Artifact {
 export async function impersonate(...address: string[]) {
   debug("impersonating", ...address);
   await hre().network.provider.send("hardhat_impersonateAccount", [...address]);
+}
+
+/**
+ * Set native currency balance (ETH, BNB etc)
+ */
+export async function setBalance(address: string, balance: string | number | BN) {
+  await hre().network.provider.send("hardhat_setBalance", [address, hre().web3.utils.toHex(balance)]);
 }
 
 export async function resetNetworkFork(blockNumber: number = getNetworkForkingBlockNumber()) {

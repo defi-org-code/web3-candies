@@ -1,7 +1,8 @@
 import { expect } from "chai";
 import { account, erc20s, ether, useChaiBN, web3, bn9 } from "../src";
-import { deployArtifact, mineBlock, mineBlocks, hre } from "../src/hardhat";
+import { deployArtifact, mineBlock, mineBlocks, hre, setBalance } from "../src/hardhat";
 import type { Example } from "../typechain-hardhat/Example";
+import { zero } from "../dist";
 
 useChaiBN();
 
@@ -37,5 +38,12 @@ describe("hardhat", () => {
     const nowBlock = await web3().eth.getBlock("latest");
     expect(nowBlock.number).eq(startBlock.number + 50);
     expect(nowBlock.timestamp).gte(parseInt(startBlock.timestamp.toString()) + 100);
+  });
+
+  it("setBalance", async () => {
+    await setBalance(await account(1), zero);
+    expect(await web3().eth.getBalance(await account(1))).bignumber.zero;
+    await setBalance(await account(1), ether);
+    expect(await web3().eth.getBalance(await account(1))).bignumber.eq(ether);
   });
 });
