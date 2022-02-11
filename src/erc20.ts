@@ -148,6 +148,7 @@ export const erc20s = {
     USDTe: () => erc20("USDT.e", "0xc7198437980c041c805A1EDcbA50c1Ce5db95118"),
     BUSDe: () => erc20("BUSD.e", "0x19860CCB0A68fd4213aB9D8266F7bBf05A8dDe98"),
     WBTCe: () => erc20("WBTC.e", "0x50b7545627a5162F82A992c33b87aDc75187B218"),
+    WETHe: () => erc20("WETH.e", "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB"),
     DAIe: () => erc20("DAI.e", "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70"),
 
     // ---- bluechip ----
