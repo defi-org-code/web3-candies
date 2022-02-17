@@ -1,9 +1,8 @@
 import { expect } from "chai";
 import { account, bn18, contract, expectRevert, parseEvents, useChaiBN, web3, zero } from "../src";
-import { deployArtifact, mineBlocks, artifact } from "../src/hardhat";
+import { artifact, deployArtifact, mineBlocks } from "../src/hardhat";
 import type { Example } from "../typechain-hardhat/Example";
 import type { IWETH } from "../typechain-abi/IWETH";
-import _ from "lodash";
 
 useChaiBN();
 
@@ -15,20 +14,17 @@ describe("Contracts", () => {
   }
 
   describe("parseEvents", async () => {
-    it("mutates tx, returns parsed events", async () => {
+    it("returns parsed events", async () => {
       const tx = await weth.methods.deposit().send({ from: await account(), value: bn18("42") });
-      const events = parseEvents(weth, tx); // needed only for other called contracts
-      expect(events.Deposit.returnValues.wad).bignumber.eq(bn18("42"));
+      const events = parseEvents(tx, weth);
+      expect(events.find((e) => e.event === "Deposit")!.returnValues.wad).bignumber.eq(bn18("42"));
     });
 
     it("parses events of other contract abi", async () => {
       const c = await deployExample();
       const tx = await c.methods.testInnerEvent().send({ from: await account() });
-
-      const events = parseEvents(artifact("Example2").abi, tx);
-
-      expect(_.keys(events)).deep.eq(["ExampleEvent"]);
-      expect(events.ExampleEvent.returnValues.foo).eq("bar");
+      const events = parseEvents(tx, artifact("Example2").abi);
+      expect(events.find((e) => e.event === "ExampleEvent")!.returnValues.foo).eq("bar");
     });
   });
 

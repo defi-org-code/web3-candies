@@ -1,5 +1,30 @@
 import { expect } from "chai";
-import { bn, bn12, bn18, bn6, bn8, bn9, decimals, ether, fmt12, fmt18, fmt6, fmt8, fmt9, maxUint256, sqrt, to18, to3, to6, useChaiBN, zero, expectRevert, fmt3, bn3 } from "../src";
+import {
+  bn,
+  bn12,
+  bn18,
+  bn6,
+  bn8,
+  bn9,
+  decimals,
+  ether,
+  fmt12,
+  fmt18,
+  fmt6,
+  fmt8,
+  fmt9,
+  maxUint256,
+  sqrt,
+  to18,
+  to3,
+  to6,
+  useChaiBN,
+  zero,
+  expectRevert,
+  fmt3,
+  bn3,
+  eqIgnoreCase,
+} from "../src";
 
 useChaiBN();
 
@@ -119,5 +144,15 @@ describe("utils", () => {
     expect(decimals("1234.100000000")).eq(1);
     expect(decimals("1234.010000000")).eq(2);
     expect(decimals("1234.000000000000000000000000000001")).eq(30);
+  });
+
+  it("equal ignore case", async () => {
+    expect(eqIgnoreCase("", "")).is.true;
+    expect(eqIgnoreCase("", "a")).is.false;
+    expect(eqIgnoreCase("a", "")).is.false;
+    expect(eqIgnoreCase("a", "b")).is.false;
+    expect(eqIgnoreCase("a", "a")).is.true;
+    expect(eqIgnoreCase("A", "a")).is.true;
+    expect(eqIgnoreCase("a", "A")).is.true;
   });
 });

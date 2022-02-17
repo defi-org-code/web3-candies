@@ -184,3 +184,7 @@ export function sqrt(n: BN) {
 
   return result;
 }
+
+export function eqIgnoreCase(a: string, b: string) {
+  return a === b || a.toLowerCase() === b.toLowerCase();
+}
