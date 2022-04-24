@@ -86,7 +86,7 @@ export const erc20s = {
     // ---- pancakeswap ----
     CAKE: () => erc20("CAKE", "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"),
     Pancakeswap_LP_BUSD_BNB: () => erc20<PancakeswapLPAbi>("Pancakeswap: LP BUSD/BNB", "0x58F876857a02D6762E0101bb5C46A8c1ED44Dc16", require("../abi/PancakeswapLPAbi.json")),
-    Pancakeswap_LP_BTCB_BNB: () => erc20<PancakeswapLPAbi>("Pancakeswap: LP BUSD/BNB", "0x61EB789d75A95CAa3fF50ed7E47b96c132fEc082", require("../abi/PancakeswapLPAbi.json")),
+    Pancakeswap_LP_BTCB_BNB: () => erc20<PancakeswapLPAbi>("Pancakeswap: LP BTCB/BNB", "0x61EB789d75A95CAa3fF50ed7E47b96c132fEc082", require("../abi/PancakeswapLPAbi.json")),
     Pancakeswap_LP_CAKE_BNB: () => erc20<PancakeswapLPAbi>("Pancakeswap: LP CAKE/BNB", "0x0eD7e52944161450477ee417DE9Cd3a859b14fD0", require("../abi/PancakeswapLPAbi.json")),
     Pancakeswap_LP_ORBS_BUSD: () => erc20<PancakeswapLPAbi>("Pancakeswap: LP ORBS/BUSD", "0xB87b857670A44356f2b70337E0F218713D2378e8", require("../abi/PancakeswapLPAbi.json")),
     Pancakeswap_LP_DOT_BNB: () => erc20<PancakeswapLPAbi>("Pancakeswap: LP DOT/BNB", "0xDd5bAd8f8b360d76d12FdA230F8BAF42fe0022CF", require("../abi/PancakeswapLPAbi.json")),
@@ -144,6 +144,15 @@ export const erc20s = {
 
     // ---- bluechip ----
     AAVEe: () => erc20("AAVE.e", "0x63a72806098Bd3D9520cC43356dD78afe5D386D9"),
+  },
+
+  oeth: {
+    // ---- base assets ----
+    WETH: () => erc20<IWETH>("WETH", "0x4200000000000000000000000000000000000006", require("../abi/IWETH.json")),
+    WBTC: () => erc20("WBTC", "0x68f180fcCe6836688e9084f035309E29Bf0A2095"),
+    USDC: () => erc20("USDC", "0x7F5c764cBc14f9669B88837ca1490cCa17c31607"),
+    USDT: () => erc20("USDT", "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58"),
+    DAI: () => erc20("DAI", "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"),
   },
 };
 
