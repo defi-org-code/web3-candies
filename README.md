@@ -54,7 +54,6 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 - `erc20s.bsc...`: well known BinanceSmartChain ERC20 contracts
 - `erc20<T>(...)`: web3 ERC20 contract, with optional extending abi to merge
 - `await erc20s.eth.WETH().amount(1.234)`: returns amount in wei, converted to token decimals
-- `contracts.eth...`: well known contract instances
 
 ### contract utils
 
