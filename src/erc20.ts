@@ -4,20 +4,11 @@ import { Abi, Contract, contract } from "./contracts";
 import type { ERC20 } from "../typechain-abi/ERC20";
 import type { IWETH } from "../typechain-abi/IWETH";
 import type { PancakeswapLPAbi } from "../typechain-abi/PancakeswapLPAbi";
-import type { AlpacaIBAlpaca } from "../typechain-abi/AlpacaIBAlpaca";
-import type { PancakeswapRouterAbi } from "../typechain-abi/PancakeswapRouterAbi";
-import type { PancakeswapMasterchefAbi } from "../typechain-abi/PancakeswapMasterchefAbi";
+import type { AlpacaIBAlpacaAbi } from "../typechain-abi/AlpacaIBAlpacaAbi";
 import type { AaveSAAVEAbi } from "../typechain-abi/AaveSAAVEAbi";
-import type { CompoundCToken } from "../typechain-abi/CompoundCToken";
+import type { CompoundCTokenAbi } from "../typechain-abi/CompoundCTokenAbi";
 import type { VenusVBNBAbi } from "../typechain-abi/VenusVBNBAbi";
 import type { VenusVTokenAbi } from "../typechain-abi/VenusVTokenAbi";
-import type { VenusComptrollerAbi } from "../typechain-abi/VenusComptrollerAbi";
-import type { AaveLendingPoolAbi } from "../typechain-abi/AaveLendingPoolAbi";
-import type { AaveIncentivesAbi } from "../typechain-abi/AaveIncentivesAbi";
-import type { QuickswapRouterAbi } from "../typechain-abi/QuickswapRouterAbi";
-import type { TraderJoeRouterAbi } from "../typechain-abi/TraderJoeRouterAbi";
-import type { SushiswapMasterchefAbi } from "../typechain-abi/SushiswapMasterchefAbi";
-import type { SushiswapRouterAbi } from "../typechain-abi/SushiswapRouterAbi";
 
 export type IERC20 = ERC20 & {
   /**
@@ -74,7 +65,7 @@ export const erc20s = {
 
     // ---- compound ----
     COMP: () => erc20("COMP", "0xc00e94Cb662C3520282E6f5717214004A7f26888"),
-    Compound_cUSDC: () => erc20<CompoundCToken>("Compound: cUSDC", "0x39AA39c021dfbaE8faC545936693aC917d5E7563", require("../abi/CompoundCToken.json")),
+    Compound_cUSDC: () => erc20<CompoundCTokenAbi>("Compound: cUSDC", "0x39AA39c021dfbaE8faC545936693aC917d5E7563", require("../abi/CompoundCTokenAbi.json")),
   },
 
   bsc: {
@@ -111,9 +102,9 @@ export const erc20s = {
 
     // ---- alpaca ----
     ALPACA: () => erc20("ALPACA", "0x8F0528cE5eF7B51152A59745bEfDD91D97091d2F"),
-    Alpaca_ibALPACA: () => erc20<AlpacaIBAlpaca>("Alpaca: ibALPACA", "0xf1bE8ecC990cBcb90e166b71E368299f0116d421", require("../abi/AlpacaIBAlpaca.json")),
-    Alpaca_ibETH: () => erc20<AlpacaIBAlpaca>("Alpaca: ibETH", "0xbfF4a34A4644a113E8200D7F1D79b3555f723AfE", require("../abi/AlpacaIBAlpaca.json")),
-    Alpaca_ibBNB: () => erc20<AlpacaIBAlpaca>("Alpaca: ibBNB", "0xd7D069493685A581d27824Fc46EdA46B7EfC0063", require("../abi/AlpacaIBAlpaca.json")),
+    Alpaca_ibALPACA: () => erc20<AlpacaIBAlpacaAbi>("Alpaca: ibALPACA", "0xf1bE8ecC990cBcb90e166b71E368299f0116d421", require("../abi/AlpacaIBAlpacaAbi.json")),
+    Alpaca_ibETH: () => erc20<AlpacaIBAlpacaAbi>("Alpaca: ibETH", "0xbfF4a34A4644a113E8200D7F1D79b3555f723AfE", require("../abi/AlpacaIBAlpacaAbi.json")),
+    Alpaca_ibBNB: () => erc20<AlpacaIBAlpacaAbi>("Alpaca: ibBNB", "0xd7D069493685A581d27824Fc46EdA46B7EfC0063", require("../abi/AlpacaIBAlpacaAbi.json")),
   },
 
   poly: {
@@ -136,7 +127,7 @@ export const erc20s = {
 
   arb: {
     // ---- base assets ----
-    WETH: () => erc20("WETH", "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"),
+    WETH: () => erc20<IWETH>("WETH", "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1", require("../abi/IWETH.json")),
   },
 
   avax: {
@@ -153,45 +144,6 @@ export const erc20s = {
 
     // ---- bluechip ----
     AAVEe: () => erc20("AAVE.e", "0x63a72806098Bd3D9520cC43356dD78afe5D386D9"),
-  },
-};
-
-/**
- * to extend: `const mycontracts = _.merge(contracts, { eth: ...})`
- */
-export const contracts = {
-  eth: {
-    // ---- sushiswap ----
-    Sushiswap_Router: () => contract<SushiswapRouterAbi>(require("../abi/SushiswapRouterAbi.json"), "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F"),
-    Sushiswap_Masterchef: () => contract<SushiswapMasterchefAbi>(require("../abi/SushiswapMasterchefAbi.json"), "0xc2EdaD668740f1aA35E4D8f227fB8E17dcA888Cd"),
-
-    // ---- aave ----
-    Aave_LendingPool: () => contract<AaveLendingPoolAbi>(require("../abi/AaveLendingPoolAbi.json"), "0x7d2768dE32b0b80b7a3454c06BdAc94A69DDc7A9"),
-    Aave_Incentives: () => contract<AaveIncentivesAbi>(require("../abi/AaveIncentivesAbi.json"), "0xd784927Ff2f95ba542BfC824c8a8a98F3495f6b5"),
-  },
-  bsc: {
-    // ---- pancakeswap ----
-    Pancakeswap_Router: () => contract<PancakeswapRouterAbi>(require("../abi/PancakeswapRouterAbi.json"), "0x10ED43C718714eb63d5aA57B78B54704E256024E"),
-    Pancakeswap_Masterchef: () => contract<PancakeswapMasterchefAbi>(require("../abi/PancakeswapMasterchefAbi.json"), "0x73feaa1eE314F8c655E354234017bE2193C9E24E"),
-
-    // ---- venus ----
-    Venus_Comptroller: () => contract<VenusComptrollerAbi>(require("../abi/VenusComptrollerAbi.json"), "0xfD36E2c2a6789Db23113685031d7F16329158384"),
-  },
-  poly: {
-    // ---- quickswap ----
-    Quickswap_Router: () => contract<QuickswapRouterAbi>(require("../abi/QuickswapRouterAbi.json"), "0xa5E0829CaCEd8fFDD4De3c43696c57F7D7A678ff"),
-
-    // ---- aave ----
-    Aave_LendingPool: () => contract<AaveLendingPoolAbi>(require("../abi/AaveLendingPoolAbi.json"), "0x8dFf5E27EA6b7AC08EbFdf9eB090F32ee9a30fcf"),
-    Aave_Incentives: () => contract<AaveIncentivesAbi>(require("../abi/AaveIncentivesAbi.json"), "0x357D51124f59836DeD84c8a1730D72B749d8BC23"),
-  },
-  avax: {
-    // ---- traderjoe ----
-    TraderJoe_Router: () => contract<TraderJoeRouterAbi>(require("../abi/TraderJoeRouterAbi.json"), "0x60aE616a2155Ee3d9A68541Ba4544862310933d4"),
-
-    // ---- aave ----
-    Aave_LendingPool: () => contract<AaveLendingPoolAbi>(require("../abi/AaveLendingPoolAbi.json"), "0x4F01AeD16D97E3aB5ab2B501154DC9bb0F1A5A2C"),
-    Aave_Incentives: () => contract<AaveIncentivesAbi>(require("../abi/AaveIncentivesAbi.json"), "0x01D83Fe6A10D2f2B7AF17034343746188272cAc9"),
   },
 };
 
