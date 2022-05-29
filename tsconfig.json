@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ES5",
+    "target": "ES2015",
     "module": "CommonJS",
     "moduleResolution": "Node",
-    "outDir": "dist",
     "strict": true,
     "esModuleInterop": true,
     "declaration": true,
     "resolveJsonModule": true,
-    "importsNotUsedAsValues": "preserve"
+    "importsNotUsedAsValues": "preserve",
+    "outDir": "dist"
   },
-  "include": ["src"]
+  "include": ["./src"]
 }

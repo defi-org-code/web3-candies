@@ -1,14 +1,7 @@
 import BN from "bn.js";
 import { bn, convertDecimals, decimals, to18 } from "./utils";
 import { Abi, Contract, contract } from "./contracts";
-import type { ERC20 } from "../typechain-abi/ERC20";
-import type { IWETH } from "../typechain-abi/IWETH";
-import type { PancakeswapLPAbi } from "../typechain-abi/PancakeswapLPAbi";
-import type { AlpacaIBAlpacaAbi } from "../typechain-abi/AlpacaIBAlpacaAbi";
-import type { AaveSAAVEAbi } from "../typechain-abi/AaveSAAVEAbi";
-import type { CompoundCTokenAbi } from "../typechain-abi/CompoundCTokenAbi";
-import type { VenusVBNBAbi } from "../typechain-abi/VenusVBNBAbi";
-import type { VenusVTokenAbi } from "../typechain-abi/VenusVTokenAbi";
+import type { ERC20, IWETH } from "./abi";
 
 export type IERC20 = ERC20 & {
   /**

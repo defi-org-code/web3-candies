@@ -1,4 +1,4 @@
-.config.json
+.env
 artifacts
 cache
 typechain-hardhat

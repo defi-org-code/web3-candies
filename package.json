@@ -2,12 +2,12 @@
   "name": "@defi.org/web3-candies",
   "version": "3.1.0",
   "description": "Common utilities for web3",
+  "author": "defi.org",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/defi-org-code/web3-candies.git"
   },
-  "author": "defi.org",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/defi-org-code/web3-candies/issues"
   },
@@ -15,16 +15,14 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "abi",
     "dist",
-    "typechain-abi",
     ".solhint.json",
     "tsconfig.json",
     "hardhat.config.ts"
   ],
   "dependencies": {
     "@openzeppelin/contracts": "4.x",
-    "@typechain/web3-v1": "3.x",
+    "@typechain/web3-v1": "6.x",
     "@types/bn.js": "5.x",
     "@types/chai": "4.x",
     "@types/mocha": "9.x",
@@ -34,25 +32,26 @@
     "chai-bn": "0.x",
     "debug": "4.x",
     "lodash": "4.x",
-    "mocha": "9.x",
+    "mocha": "10.x",
     "prettier": "2.x",
     "prettier-plugin-solidity": "latest",
     "solhint": "3.x",
     "ts-generator": "0.1.x",
-    "typechain": "5.x",
+    "typechain": "8.x",
     "typescript": "4.x",
     "web3": "1.x"
   },
   "optionalDependencies": {
     "@nomiclabs/hardhat-etherscan": "3.x",
     "@nomiclabs/hardhat-web3": "2.x",
-    "@typechain/hardhat": "2.x",
+    "@typechain/hardhat": "6.x",
     "@types/fs-extra": "9.x",
-    "@types/node": "16.x",
+    "@types/node": "17.x",
     "@types/prompts": "2.x",
-    "axios": "0.26.x",
+    "axios": "0.27.x",
     "fs-extra": "10.x",
     "ts-node": "10.x",
+    "dotenv": "16.x",
     "prompts": "2.x",
     "hardhat": "2.x",
     "hardhat-gas-reporter": "1.x",
@@ -61,7 +60,7 @@
   },
   "scripts": {
     "prettier": "prettier --write '{contracts,src,test}/**/*.{ts,js,json,sol}'",
-    "typechain": "typechain --target=web3-v1 --out-dir=typechain-abi 'abi/**/*.json' && npx hardhat typechain",
+    "typechain": "typechain --target=web3-v1 --out-dir=src/abi 'abi/**/*.json' && npx hardhat typechain",
     "prebuild": "rm -rf artifacts dist && npm run prettier && npm run typechain",
     "build": "npx hardhat compile && npx solhint 'contracts/**/*.sol' && tsc && cp -r src/hardhat/types dist/hardhat/types",
     "test": "export DEBUG=web3-candies && npm run build && npx hardhat test --logs",

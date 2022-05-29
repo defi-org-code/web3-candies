@@ -2,11 +2,11 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import BN from "bn.js";
-import { ContractOptions } from "web3-eth-contract";
-import { EventLog } from "web3-core";
-import { EventEmitter } from "events";
-import {
+import type BN from "bn.js";
+import type { ContractOptions } from "web3-eth-contract";
+import type { EventLog } from "web3-core";
+import type { EventEmitter } from "events";
+import type {
   Callback,
   PayableTransactionObject,
   NonPayableTransactionObject,
@@ -15,7 +15,7 @@ import {
   BaseContract,
 } from "./types";
 
-interface EventOptions {
+export interface EventOptions {
   filter?: object;
   fromBlock?: BlockType;
   topics?: string[];
@@ -38,13 +38,13 @@ export type Transfer = ContractEventLog<{
   2: string;
 }>;
 
-export interface VenusVBNBAbi extends BaseContract {
+export interface ERC20 extends BaseContract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
-  ): VenusVBNBAbi;
-  clone(): VenusVBNBAbi;
+  ): ERC20;
+  clone(): ERC20;
   methods: {
     allowance(
       owner: string,
@@ -58,58 +58,21 @@ export interface VenusVBNBAbi extends BaseContract {
 
     balanceOf(account: string): NonPayableTransactionObject<string>;
 
-    balanceOfUnderlying(account: string): NonPayableTransactionObject<string>;
-
-    borrow(
-      borrowAmount: number | string | BN
-    ): NonPayableTransactionObject<string>;
-
-    borrowBalanceCurrent(account: string): NonPayableTransactionObject<string>;
-
-    borrowRatePerBlock(): NonPayableTransactionObject<string>;
-
     decimals(): NonPayableTransactionObject<string>;
 
-    exchangeRateCurrent(): NonPayableTransactionObject<string>;
+    decreaseAllowance(
+      spender: string,
+      subtractedValue: number | string | BN
+    ): NonPayableTransactionObject<boolean>;
 
-    getAccountSnapshot(account: string): NonPayableTransactionObject<{
-      0: string;
-      1: string;
-      2: string;
-      3: string;
-    }>;
-
-    getCash(): NonPayableTransactionObject<string>;
-
-    "mint()"(): PayableTransactionObject<void>;
-
-    "mint(uint256)"(
-      mintAmount: number | string | BN
-    ): NonPayableTransactionObject<string>;
+    increaseAllowance(
+      spender: string,
+      addedValue: number | string | BN
+    ): NonPayableTransactionObject<boolean>;
 
     name(): NonPayableTransactionObject<string>;
 
-    redeem(
-      redeemTokens: number | string | BN
-    ): NonPayableTransactionObject<string>;
-
-    redeemUnderlying(
-      redeemAmount: number | string | BN
-    ): NonPayableTransactionObject<string>;
-
-    "repayBorrow(uint256)"(
-      repayAmount: number | string | BN
-    ): NonPayableTransactionObject<string>;
-
-    "repayBorrow()"(): PayableTransactionObject<void>;
-
-    supplyRatePerBlock(): NonPayableTransactionObject<string>;
-
     symbol(): NonPayableTransactionObject<string>;
-
-    totalBorrowsCurrent(): NonPayableTransactionObject<string>;
-
-    totalReserves(): NonPayableTransactionObject<string>;
 
     totalSupply(): NonPayableTransactionObject<string>;
 

@@ -2,7 +2,7 @@ import { expect } from "chai";
 import { account, bn18, contract, expectRevert, parseEvents, useChaiBN, web3, zero } from "../src";
 import { artifact, deployArtifact, mineBlocks } from "../src/hardhat";
 import type { Example } from "../typechain-hardhat/Example";
-import type { IWETH } from "../typechain-abi/IWETH";
+import type { IWETH } from "../src/abi";
 
 useChaiBN();
 
