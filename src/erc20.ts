@@ -3,6 +3,9 @@ import { bn, convertDecimals, decimals, to18 } from "./utils";
 import { Abi, Contract, contract } from "./contracts";
 import type { ERC20, IWETH } from "./abi";
 
+export const erc20abi = require("./abi/ERC20.json") as Abi;
+export const iwethabi = require("./abi/IWETH.json") as Abi;
+
 export type IERC20 = ERC20 & {
   /**
    * human readable name
@@ -38,7 +41,7 @@ export type Token = IERC20;
  */
 export const erc20s = {
   eth: {
-    WETH: () => erc20<IWETH>("WETH", "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", require("../abi/IWETH.json")),
+    WETH: () => erc20<IWETH>("WETH", "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", iwethabi),
     WBTC: () => erc20("WBTC", "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"),
     USDC: () => erc20("USDC", "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"),
     USDT: () => erc20("USDT", "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
@@ -47,7 +50,7 @@ export const erc20s = {
   },
 
   bsc: {
-    WBNB: () => erc20<IWETH>("WBNB", "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", require("../abi/IWETH.json")),
+    WBNB: () => erc20<IWETH>("WBNB", "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", iwethabi),
     BTCB: () => erc20("BTCB", "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c"),
     USDC: () => erc20("USDC", "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d"),
     USDT: () => erc20("USDT", "0x55d398326f99059fF775485246999027B3197955"),
@@ -61,7 +64,7 @@ export const erc20s = {
   },
 
   poly: {
-    WMATIC: () => erc20<IWETH>("WMATIC", "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270", require("../abi/IWETH.json")),
+    WMATIC: () => erc20<IWETH>("WMATIC", "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270", iwethabi),
     WBTC: () => erc20("WBTC", "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6"),
     USDC: () => erc20("USDC", "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174"),
     USDT: () => erc20("USDT", "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"),
@@ -73,11 +76,11 @@ export const erc20s = {
   },
 
   arb: {
-    WETH: () => erc20<IWETH>("WETH", "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1", require("../abi/IWETH.json")),
+    WETH: () => erc20<IWETH>("WETH", "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1", iwethabi),
   },
 
   avax: {
-    WAVAX: () => erc20<IWETH>("WAVAX", "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7", require("../abi/IWETH.json")),
+    WAVAX: () => erc20<IWETH>("WAVAX", "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7", iwethabi),
     USDC: () => erc20("USDC", "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E"),
     USDCe: () => erc20("USDC.e", "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664"),
     USDT: () => erc20("USDT", "0x9702230A8Ea53601f5cD2dc00fDBc13d4dF4A8c7"),
@@ -89,15 +92,13 @@ export const erc20s = {
   },
 
   oeth: {
-    WETH: () => erc20<IWETH>("WETH", "0x4200000000000000000000000000000000000006", require("../abi/IWETH.json")),
+    WETH: () => erc20<IWETH>("WETH", "0x4200000000000000000000000000000000000006", iwethabi),
     WBTC: () => erc20("WBTC", "0x68f180fcCe6836688e9084f035309E29Bf0A2095"),
     USDC: () => erc20("USDC", "0x7F5c764cBc14f9669B88837ca1490cCa17c31607"),
     USDT: () => erc20("USDT", "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58"),
     DAI: () => erc20("DAI", "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"),
   },
 };
-
-export const erc20abi = require("../abi/ERC20.json") as Abi;
 
 export function erc20<T>(name: string, address: string, extendAbi?: Abi): Token & T {
   const abi = extendAbi ? [...erc20abi, ...extendAbi] : erc20abi;

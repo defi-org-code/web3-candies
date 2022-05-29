@@ -3,11 +3,12 @@ import { account, bn18, contract, expectRevert, parseEvents, useChaiBN, web3, ze
 import { artifact, deployArtifact, mineBlocks } from "../src/hardhat";
 import type { Example } from "../typechain-hardhat/Example";
 import type { IWETH } from "../src/abi";
+import { iwethabi } from "../dist";
 
 useChaiBN();
 
 describe("Contracts", () => {
-  const weth = contract<IWETH>(require("../abi/IWETH.json"), "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2");
+  const weth = contract<IWETH>(iwethabi, "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2");
 
   async function deployExample() {
     return await deployArtifact<Example>("Example", { from: await account() }, [123, weth.options.address, [456]]);

@@ -59,12 +59,14 @@
     "hardhat-spdx-license-identifier": "2.x"
   },
   "scripts": {
+    "clean": "rm -rf artifacts cache dist ",
     "prettier": "prettier --write '{contracts,src,test}/**/*.{ts,js,json,sol}'",
-    "typechain": "typechain --target=web3-v1 --out-dir=src/abi 'abi/**/*.json' && npx hardhat typechain",
-    "prebuild": "rm -rf artifacts dist && npm run prettier && npm run typechain",
-    "build": "npx hardhat compile && npx solhint 'contracts/**/*.sol' && tsc && cp -r src/hardhat/types dist/hardhat/types",
-    "test": "export DEBUG=web3-candies && npm run build && npx hardhat test --logs",
-    "deploy": "npx hardhat deploy --network $1",
+    "typechain": "typechain --target=web3-v1 --out-dir=src/abi 'src/abi/**/*.json' && hardhat typechain",
+    "prebuild": "npm run prettier && npm run typechain",
+    "build": "hardhat compile && solhint 'contracts/**/*.sol' && tsc && cp -r src/hardhat/types dist/hardhat/types",
+    "pretest": "npm run build",
+    "test": "DEBUG=web3-candies hardhat test --logs",
+    "deploy": "hardhat deploy --network $1",
     "upload": "npm publish --access public"
   },
   "prettier": {
