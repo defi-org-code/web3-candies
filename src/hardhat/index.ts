@@ -1,9 +1,11 @@
 import type { Artifact, HardhatRuntimeEnvironment } from "./types";
 import Web3 from "web3";
 import _ from "lodash";
-import { block, web3 } from "../network";
+import { block, networks, web3 } from "../network";
 import { contract, Contract, Options, waitForTxConfirmations } from "../contracts";
 import BN from "bn.js";
+import { bn18 } from "../utils";
+import { HardhatUserConfig } from "hardhat/types";
 const debug = require("debug")("web3-candies");
 
 /**
@@ -126,4 +128,81 @@ export async function deployArtifact<T extends Contract>(
   debug("deployed", contractName, deployed.options.address, "deployer", opts.from);
   tag(deployed.options.address, contractName);
   return contract<T>(_artifact.abi, deployed.options.address, deployed.options);
+}
+
+export function gasReporterConfig() {
+  switch (process.env.NETWORK) {
+    case "BSC":
+      return { token: "BNB", url: "https://api.bscscan.com/api?module=proxy&action=eth_gasPrice" };
+    case "POLY":
+      return { token: "MATIC", url: "https://api.polygonscan.com/api?module=proxy&action=eth_gasPrice" };
+    case "AVAX":
+      return { token: "AVAX", url: "https://api.snowtrace.io/api?module=proxy&action=eth_gasPrice" };
+    default:
+      return {};
+  }
+}
+
+export function hardhatDefaultConfig() {
+  require("dotenv").config();
+  process.env.NETWORK = process.env.NETWORK?.toUpperCase() || "ETH";
+  console.log(`🌐 network`, process.env.NETWORK, "blocknumber", process.env.BLOCK_NUMBER, "🌐");
+  return {
+    solidity: {
+      version: "0.8.10",
+      settings: {
+        optimizer: {
+          enabled: true,
+          runs: 200,
+        },
+      },
+    },
+    defaultNetwork: "hardhat",
+    networks: {
+      hardhat: {
+        forking: {
+          blockNumber: process.env.BLOCK_NUMBER ? parseInt(process.env.BLOCK_NUMBER!) : undefined,
+          url: (process.env as any)[`NETWORK_URL_${process.env.NETWORK}`] || "",
+        },
+        blockGasLimit: 10e6,
+        accounts: {
+          accountsBalance: bn18(10e6).toString(),
+        },
+      },
+      eth: {
+        chainId: networks.eth.id,
+        url: process.env.NETWORK_URL_ETH || "",
+      },
+      bsc: {
+        chainId: networks.bsc.id,
+        url: process.env.NETWORK_URL_BSC || "",
+      },
+      poly: {
+        chainId: networks.poly.id,
+        url: process.env.NETWORK_URL_POLY || "",
+      },
+      avax: {
+        chainId: networks.avax.id,
+        url: process.env.NETWORK_URL_AVAX || "",
+      },
+    },
+    typechain: {
+      outDir: "typechain-hardhat",
+      target: "web3-v1",
+    },
+    mocha: {
+      timeout: 180_000,
+      retries: 0,
+    },
+    gasReporter: {
+      currency: "USD",
+      coinmarketcap: process.env.COINMARKETCAP,
+      token: gasReporterConfig().token,
+      gasPriceApi: gasReporterConfig().url,
+      showTimeSpent: true,
+    },
+    etherscan: {
+      apiKey: process.env[`ETHERSCAN_${process.env.NETWORK}`],
+    },
+  } as HardhatUserConfig;
 }
