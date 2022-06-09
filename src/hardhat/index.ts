@@ -146,7 +146,7 @@ export function gasReporterConfig() {
 export function hardhatDefaultConfig() {
   require("dotenv").config();
   process.env.NETWORK = process.env.NETWORK?.toUpperCase() || "ETH";
-  console.log(`🌐 network`, process.env.NETWORK, "blocknumber", process.env.BLOCK_NUMBER, "🌐");
+  console.log(`🌐 network`, process.env.NETWORK, "blocknumber", process.env.BLOCK, "🌐");
   return {
     solidity: {
       version: "0.8.10",
@@ -161,7 +161,7 @@ export function hardhatDefaultConfig() {
     networks: {
       hardhat: {
         forking: {
-          blockNumber: process.env.BLOCK_NUMBER ? parseInt(process.env.BLOCK_NUMBER!) : undefined,
+          blockNumber: process.env.BLOCK ? parseInt(process.env.BLOCK!) : undefined,
           url: (process.env as any)[`NETWORK_URL_${process.env.NETWORK}`] || "",
         },
         blockGasLimit: 10e6,
