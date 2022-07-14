@@ -1,8 +1,7 @@
 import { expect } from "chai";
-import { account, erc20s, ether, useChaiBN, web3, bn9 } from "../src";
+import { account, erc20s, ether, useChaiBN, web3, bn9, zero } from "../src";
 import { deployArtifact, mineBlock, mineBlocks, hre, setBalance } from "../src/hardhat";
-import type { Example } from "../typechain-hardhat/Example";
-import { zero } from "../dist";
+import type { Example } from "../typechain-hardhat/contracts/Example.sol";
 
 useChaiBN();
 

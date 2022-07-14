@@ -130,23 +130,20 @@ export async function deployArtifact<T extends Contract>(
   return contract<T>(_artifact.abi, deployed.options.address, deployed.options);
 }
 
-export function gasReporterConfig() {
-  switch (process.env.NETWORK) {
-    case "BSC":
-      return { token: "BNB", url: "https://api.bscscan.com/api?module=proxy&action=eth_gasPrice" };
-    case "POLY":
-      return { token: "MATIC", url: "https://api.polygonscan.com/api?module=proxy&action=eth_gasPrice" };
-    case "AVAX":
-      return { token: "AVAX", url: "https://api.snowtrace.io/api?module=proxy&action=eth_gasPrice" };
-    default:
-      return {};
-  }
-}
-
 export function hardhatDefaultConfig() {
   require("dotenv").config();
   process.env.NETWORK = process.env.NETWORK?.toUpperCase() || "ETH";
-  console.log(`🌐 network`, process.env.NETWORK, "blocknumber", process.env.BLOCK, "🌐");
+  console.log(`🌐 network`, process.env.NETWORK, "blocknumber", process.env.BLOCK ? parseInt(process.env.BLOCK!) : "latest", "🌐");
+
+  const networkUrl = (process.env as any)[`NETWORK_URL_${process.env.NETWORK}`];
+  if (!networkUrl) console.error(`⚠️ expected NETWORK_URL_${process.env.NETWORK} in env`);
+
+  const etherscanKey = process.env[`ETHERSCAN_${process.env.NETWORK}`];
+  if (!etherscanKey) console.error(`⚠️ expected ETHERSCAN_${process.env.NETWORK} in env`);
+
+  const coinmarketcapKey = process.env.COINMARKETCAP;
+  if (!coinmarketcapKey) console.error(`⚠️ expected COINMARKETCAP in env`);
+
   return {
     solidity: {
       version: "0.8.10",
@@ -162,7 +159,7 @@ export function hardhatDefaultConfig() {
       hardhat: {
         forking: {
           blockNumber: process.env.BLOCK ? parseInt(process.env.BLOCK!) : undefined,
-          url: (process.env as any)[`NETWORK_URL_${process.env.NETWORK}`] || "",
+          url: networkUrl,
         },
         blockGasLimit: 10e6,
         accounts: {
@@ -196,13 +193,24 @@ export function hardhatDefaultConfig() {
     },
     gasReporter: {
       currency: "USD",
-      coinmarketcap: process.env.COINMARKETCAP,
+      coinmarketcap: coinmarketcapKey,
       token: gasReporterConfig().token,
       gasPriceApi: gasReporterConfig().url,
       showTimeSpent: true,
     },
-    etherscan: {
-      apiKey: process.env[`ETHERSCAN_${process.env.NETWORK}`],
-    },
+    etherscan: { apiKey: etherscanKey },
   } as HardhatUserConfig;
+}
+
+export function gasReporterConfig() {
+  switch (process.env.NETWORK) {
+    case "BSC":
+      return { token: "BNB", url: "https://api.bscscan.com/api?module=proxy&action=eth_gasPrice" };
+    case "POLY":
+      return { token: "MATIC", url: "https://api.polygonscan.com/api?module=proxy&action=eth_gasPrice" };
+    case "AVAX":
+      return { token: "AVAX", url: "https://api.snowtrace.io/api?module=proxy&action=eth_gasPrice" };
+    default:
+      return {};
+  }
 }

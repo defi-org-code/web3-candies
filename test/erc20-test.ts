@@ -1,9 +1,8 @@
 import { expect } from "chai";
-import { account, bn18, erc20, erc20s, networks, useChaiBN, zero, bn6 } from "../src";
-import type { NonPayableTransactionObject } from "@typechain/web3-v1/static/types";
 import * as _ from "lodash";
+import { account, bn18, erc20, erc20s, networks, useChaiBN, zero, bn6, bn } from "../src";
+import type { NonPayableTransactionObject } from "@typechain/web3-v1/static/types";
 import { resetNetworkFork } from "../src/hardhat";
-import { bn } from "../dist";
 
 useChaiBN();
 
