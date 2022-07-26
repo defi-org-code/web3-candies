@@ -114,11 +114,19 @@ export async function deployArtifact<T extends Contract>(
   contractName: string,
   opts: Options & { from: string },
   constructorArgs?: any[],
-  waitForConfirmations: number = 0
+  waitForConfirmations: number = 0,
+  timeoutInSeconds?: number
 ): Promise<T> {
   debug("deploying", contractName);
   const _artifact = artifact(contractName);
-  const tx = contract<T>(_artifact.abi, "").deploy({ data: _artifact.bytecode, arguments: constructorArgs }).send(opts);
+  const contractToDeploy = contract<T>(_artifact.abi, "");
+
+  if (timeoutInSeconds) {
+    contractToDeploy.transactionBlockTimeout = timeoutInSeconds;
+    contractToDeploy.transactionPollingTimeout = timeoutInSeconds;
+  }
+
+  const tx = contractToDeploy.deploy({ data: _artifact.bytecode, arguments: constructorArgs }).send(opts);
 
   if (waitForConfirmations) {
     await waitForTxConfirmations(tx, waitForConfirmations);
