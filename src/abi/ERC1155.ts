@@ -60,13 +60,13 @@ export type URI = ContractEventLog<{
   1: string;
 }>;
 
-export interface IERC1155 extends BaseContract {
+export interface ERC1155 extends BaseContract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
-  ): IERC1155;
-  clone(): IERC1155;
+  ): ERC1155;
+  clone(): ERC1155;
   methods: {
     balanceOf(
       account: string,
@@ -107,6 +107,8 @@ export interface IERC1155 extends BaseContract {
     supportsInterface(
       interfaceId: string | number[]
     ): NonPayableTransactionObject<boolean>;
+
+    uri(arg0: number | string | BN): NonPayableTransactionObject<string>;
   };
   events: {
     ApprovalForAll(cb?: Callback<ApprovalForAll>): EventEmitter;

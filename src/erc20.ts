@@ -6,7 +6,7 @@ import type { ERC20, IWETH } from "./abi";
 export const erc20abi = require("./abi/ERC20.json") as Abi;
 export const iwethabi = require("./abi/IWETH.json") as Abi;
 
-export type IERC20 = ERC20 & {
+export type Token = ERC20 & {
   /**
    * human readable name
    */
@@ -34,7 +34,6 @@ export type IERC20 = ERC20 & {
    */
   mantissa: (amount: number | string | BN) => Promise<BN>;
 };
-export type Token = IERC20;
 
 /**
  * to extend: `const myerc20s = _.merge(erc20s, { eth: ...})`
