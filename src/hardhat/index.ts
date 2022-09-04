@@ -154,13 +154,17 @@ export function hardhatDefaultConfig() {
 
   return {
     solidity: {
-      version: "0.8.10",
-      settings: {
-        optimizer: {
-          enabled: true,
-          runs: 200,
+      compilers: [
+        {
+          version: "0.8.16",
+          settings: {
+            optimizer: {
+              enabled: true,
+              runs: 200,
+            },
+          },
         },
-      },
+      ],
     },
     defaultNetwork: "hardhat",
     networks: {

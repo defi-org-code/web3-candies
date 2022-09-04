@@ -46,7 +46,7 @@
     "@nomiclabs/hardhat-web3": "2.x",
     "@typechain/hardhat": "6.x",
     "@types/fs-extra": "9.x",
-    "@types/node": "17.x",
+    "@types/node": "18.x",
     "@types/prompts": "2.x",
     "axios": "0.27.x",
     "fs-extra": "10.x",

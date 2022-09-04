@@ -16,5 +16,5 @@ export async function expectRevert(fn: () => any, withError: string) {
     err = e;
   }
   expect(!!err, `expected to revert with '${withError}'`).to.be.true;
-  expect(err!.message).to.include(withError);
+  expect(err!.message, `expected error message:\n\t'${withError}'\n\tbut was:\n\t'${err!.message}'\n\t`).to.include(withError);
 }
