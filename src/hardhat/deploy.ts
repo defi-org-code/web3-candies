@@ -104,7 +104,7 @@ function backupArtifacts(timestamp: number) {
   return dest;
 }
 
-async function askDeployer() {
+export async function askDeployer() {
   const { privateKey } = await prompts({
     type: "password",
     name: "privateKey",
@@ -117,7 +117,7 @@ async function askDeployer() {
   return account.address as string;
 }
 
-async function askFees() {
+export async function askFees() {
   const { maxPriorityFeePerGas, maxFeePerGas } = await prompts([
     {
       type: "number",
