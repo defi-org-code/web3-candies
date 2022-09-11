@@ -145,6 +145,7 @@ export function hardhatDefaultConfig() {
 
   const networkUrl = (process.env as any)[`NETWORK_URL_${process.env.NETWORK}`];
   if (!networkUrl) console.error(`⚠️ expected NETWORK_URL_${process.env.NETWORK} in env`);
+  process.env.NETWORK_URL = networkUrl;
 
   const etherscanKey = process.env[`ETHERSCAN_${process.env.NETWORK}`];
   if (!etherscanKey) console.error(`⚠️ expected ETHERSCAN_${process.env.NETWORK} in env`);
@@ -175,24 +176,25 @@ export function hardhatDefaultConfig() {
         },
         blockGasLimit: 10e6,
         accounts: {
-          accountsBalance: bn18(10e6).toString(),
+          passphrase: process.env.npm_package_name || Math.random().toString(), //empty accounts
+          accountsBalance: bn18(100e6).toString(),
         },
       },
       eth: {
         chainId: networks.eth.id,
-        url: process.env.NETWORK_URL_ETH || "",
+        url: networkUrl || "",
       },
       bsc: {
         chainId: networks.bsc.id,
-        url: process.env.NETWORK_URL_BSC || "",
+        url: networkUrl || "",
       },
       poly: {
         chainId: networks.poly.id,
-        url: process.env.NETWORK_URL_POLY || "",
+        url: networkUrl || "",
       },
       avax: {
         chainId: networks.avax.id,
-        url: process.env.NETWORK_URL_AVAX || "",
+        url: networkUrl || "",
       },
     },
     typechain: {
