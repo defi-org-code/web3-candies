@@ -1,5 +1,6 @@
 import BN from "bn.js";
 import { bn, convertDecimals, decimals, to18 } from "./utils";
+import { toChecksumAddress, isAddress } from "web3-utils";
 import { Abi, Contract, contract } from "./contracts";
 import type { ERC20, IWETH } from "./abi";
 
@@ -105,6 +106,7 @@ export const erc20s = {
 
 export function erc20<T>(name: string, address: string, extendAbi?: Abi): Token & T {
   const abi = extendAbi ? [...erc20abi, ...extendAbi] : erc20abi;
+  address = toChecksumAddress(address);
   const result = contract<Token & T>(abi, address);
   wrapToken(result, name, address, abi);
   tryTag(address, name);

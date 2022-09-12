@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import * as _ from "lodash";
-import { account, bn18, erc20, erc20s, networks, useChaiBN, zero, bn6, bn } from "../src";
+import { account, bn, bn18, bn6, erc20, erc20s, networks, useChaiBN, zero, zeroAddress } from "../src";
 import type { NonPayableTransactionObject } from "@typechain/web3-v1/static/types";
 import { resetNetworkFork } from "../src/hardhat";
 
@@ -28,6 +28,15 @@ describe("erc20", () => {
     expect(await erc20s.eth.WBTC().methods.allowance(a, a).call()).bignumber.zero;
 
     expect(_.get(erc20s, [networks.eth.shortname, "USDC"])().options.address).eq(erc20s.eth.USDC().options.address);
+  });
+
+  it("address auto checksums", async () => {
+    expect(erc20("foo", zeroAddress).address).eq(zeroAddress);
+    expect(erc20("foo", "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2").address)
+      .eq(erc20("foo", "0XC02AAA39B223FE8D0A0E5C4F27EAD9083C756CC2").address)
+      .eq(erc20("foo", "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2").options.address)
+      .eq(erc20("foo", "0XC02AAA39B223FE8D0A0E5C4F27EAD9083C756CC2").options.address)
+      .eq("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2");
   });
 
   describe("token helper methods", async () => {
