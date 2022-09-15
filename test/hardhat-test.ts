@@ -1,7 +1,8 @@
 import { expect } from "chai";
-import { account, erc20s, ether, useChaiBN, web3, bn9, zero } from "../src";
+import { account, erc20s, ether, useChaiBN, web3, bn9, zero, networks } from "../src";
 import { deployArtifact, mineBlock, mineBlocks, hre, setBalance } from "../src/hardhat";
 import type { Example } from "../typechain-hardhat/contracts/Example.sol";
+import { hardhatDefaultConfig } from "../dist/hardhat";
 
 useChaiBN();
 
@@ -44,5 +45,13 @@ describe("hardhat", () => {
     expect(await web3().eth.getBalance(await account(1))).bignumber.zero;
     await setBalance(await account(1), ether);
     expect(await web3().eth.getBalance(await account(1))).bignumber.eq(ether);
+  });
+
+  it("default hardhat config with all supported networks", async () => {
+    const config = hardhatDefaultConfig();
+    expect(config.defaultNetwork).eq("hardhat");
+    expect(config.networks!.hardhat).not.undefined;
+    expect(config.networks!.eth!.chainId).eq(networks.eth.id);
+    expect(config.networks!.bsc!.chainId).eq(networks.bsc.id);
   });
 });

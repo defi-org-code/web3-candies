@@ -153,7 +153,7 @@ export function hardhatDefaultConfig() {
   const coinmarketcapKey = process.env.COINMARKETCAP;
   if (!coinmarketcapKey) console.error(`⚠️ expected COINMARKETCAP in env`);
 
-  return {
+  const config = {
     solidity: {
       compilers: [
         {
@@ -180,22 +180,6 @@ export function hardhatDefaultConfig() {
           accountsBalance: bn18(100e6).toString(),
         },
       },
-      eth: {
-        chainId: networks.eth.id,
-        url: networkUrl || "",
-      },
-      bsc: {
-        chainId: networks.bsc.id,
-        url: networkUrl || "",
-      },
-      poly: {
-        chainId: networks.poly.id,
-        url: networkUrl || "",
-      },
-      avax: {
-        chainId: networks.avax.id,
-        url: networkUrl || "",
-      },
     },
     typechain: {
       outDir: "typechain-hardhat",
@@ -213,7 +197,14 @@ export function hardhatDefaultConfig() {
       showTimeSpent: true,
     },
     etherscan: { apiKey: etherscanKey },
-  } as HardhatUserConfig;
+  };
+
+  return _.merge(config, {
+    networks: _.chain(networks)
+      .mapKeys((n) => n.shortname)
+      .mapValues((n) => ({ chainId: n.id, url: networkUrl }))
+      .value(),
+  }) as HardhatUserConfig;
 }
 
 export function gasReporterConfig() {
