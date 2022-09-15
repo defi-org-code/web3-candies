@@ -102,6 +102,16 @@ export const erc20s = {
     USDT: () => erc20("USDT", "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58"),
     DAI: () => erc20("DAI", "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1"),
   },
+
+  ftm: {
+    WFTM: () => erc20<IWETH>("WFTM", "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83", iwethabi),
+    WBTC: () => erc20("WBTC", "0x321162Cd933E2Be498Cd2267a90534A804051b11"),
+    WETH: () => erc20("WETH", "0x74b23882a30290451A17c44f4F05243b6b58C76d"),
+    USDC: () => erc20("USDC", "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75"),
+    DAI: () => erc20("DAI", "0x8D11eC38a3EB5E956B052f67Da8Bdc9bef8Abf3E"),
+    FRAX: () => erc20("FRAX", "0xdc301622e621166BD8E82f2cA0A26c13Ad0BE355"),
+    ORBS: () => erc20("ORBS", "0x3E01B7E242D5AF8064cB9A8F9468aC0f8683617c"),
+  },
 };
 
 export function erc20<T>(name: string, address: string, extendAbi?: Abi): Token & T {
