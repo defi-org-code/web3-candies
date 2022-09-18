@@ -209,12 +209,18 @@ export function hardhatDefaultConfig() {
 
 export function gasReporterConfig() {
   switch (process.env.NETWORK) {
+    case "ARB":
+      return { token: "ETH", url: "https://api.arbiscan.io/api?module=proxy&action=eth_gasPrice" };
+    case "OPT":
+      return { token: "ETH", url: "https://api-optimistic.etherscan.io/api?module=proxy&action=eth_gasPrice" };
     case "BSC":
       return { token: "BNB", url: "https://api.bscscan.com/api?module=proxy&action=eth_gasPrice" };
     case "POLY":
       return { token: "MATIC", url: "https://api.polygonscan.com/api?module=proxy&action=eth_gasPrice" };
     case "AVAX":
       return { token: "AVAX", url: "https://api.snowtrace.io/api?module=proxy&action=eth_gasPrice" };
+    case "FTM":
+      return { token: "FTM", url: "https://api.ftmscan.com/api?module=proxy&action=eth_gasPrice" };
     default:
       return {};
   }
