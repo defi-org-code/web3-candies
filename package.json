@@ -22,7 +22,6 @@
   ],
   "dependencies": {
     "@openzeppelin/contracts": "4.x",
-    "@typechain/web3-v1": "6.x",
     "@types/bn.js": "5.x",
     "@types/chai": "4.x",
     "@types/mocha": "9.x",
@@ -35,16 +34,13 @@
     "mocha": "10.x",
     "prettier": "2.x",
     "prettier-plugin-solidity": "latest",
-    "solhint": "3.x",
-    "ts-generator": "0.1.x",
-    "typechain": "8.x",
-    "typescript": "4.x",
     "web3": "1.x"
   },
   "optionalDependencies": {
     "@nomiclabs/hardhat-etherscan": "3.x",
     "@nomiclabs/hardhat-web3": "2.x",
     "@typechain/hardhat": "6.x",
+    "@typechain/web3-v1": "6.x",
     "@types/fs-extra": "9.x",
     "@types/node": "18.x",
     "@types/prompts": "2.x",
@@ -56,7 +52,11 @@
     "hardhat": "2.x",
     "hardhat-gas-reporter": "1.x",
     "hardhat-tracer": "latest",
-    "hardhat-spdx-license-identifier": "2.x"
+    "hardhat-spdx-license-identifier": "2.x",
+    "solhint": "3.x",
+    "ts-generator": "0.1.x",
+    "typechain": "8.x",
+    "typescript": "4.x"
   },
   "scripts": {
     "clean": "rm -rf artifacts cache dist",
