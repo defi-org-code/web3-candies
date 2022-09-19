@@ -21,7 +21,6 @@
     "hardhat.config.ts"
   ],
   "dependencies": {
-    "@openzeppelin/contracts": "4.x",
     "@types/bn.js": "5.x",
     "@types/chai": "4.x",
     "@types/mocha": "9.x",
@@ -35,9 +34,11 @@
     "prettier": "2.x",
     "prettier-plugin-solidity": "latest",
     "web3": "1.x",
-    "web3-utils": "1.x"
+    "web3-utils": "1.x",
+    "ethereumjs-util": "7.x"
   },
   "optionalDependencies": {
+    "@openzeppelin/contracts": "4.x",
     "@nomiclabs/hardhat-etherscan": "3.x",
     "@nomiclabs/hardhat-web3": "2.x",
     "@typechain/hardhat": "6.x",
