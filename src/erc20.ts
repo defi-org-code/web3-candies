@@ -1,8 +1,8 @@
+import type { ERC20, IWETH } from "./abi";
 import BN from "bn.js";
 import { bn, convertDecimals, decimals, to18 } from "./utils";
-import { toChecksumAddress, isAddress } from "web3-utils";
 import { Abi, Contract, contract } from "./contracts";
-import type { ERC20, IWETH } from "./abi";
+import { web3 } from "./network";
 
 export const erc20abi = require("./abi/ERC20.json") as Abi;
 export const iwethabi = require("./abi/IWETH.json") as Abi;
@@ -116,7 +116,7 @@ export const erc20s = {
 
 export function erc20<T>(name: string, address: string, extendAbi?: Abi): Token & T {
   const abi = extendAbi ? [...erc20abi, ...extendAbi] : erc20abi;
-  address = toChecksumAddress(address);
+  address = web3().utils.toChecksumAddress(address);
   const result = contract<Token & T>(abi, address);
   wrapToken(result, name, address, abi);
   tryTag(address, name);

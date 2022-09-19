@@ -1,5 +1,6 @@
 import { expect } from "chai";
-import { sleep, throttle, useChaiBN, keepTrying, preventMacSleep } from "../src";
+import { sleep, throttle, keepTrying, preventMacSleep } from "../src";
+import { useChaiBN } from "../src/hardhat";
 
 useChaiBN();
 

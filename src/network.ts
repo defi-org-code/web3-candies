@@ -1,5 +1,5 @@
 import Web3 from "web3";
-import { BlockInfo, BlockNumber } from "./contracts";
+import type { BlockInfo, BlockNumber } from "./contracts";
 
 export type Network = { id: number; name: string; shortname: string };
 

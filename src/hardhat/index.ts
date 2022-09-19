@@ -6,6 +6,8 @@ import { block, networks, web3 } from "../network";
 import { contract, Contract, Options, waitForTxConfirmations } from "../contracts";
 import { bn18 } from "../utils";
 import { HardhatUserConfig } from "hardhat/types";
+export * from "./testing";
+
 const debug = require("debug")("web3-candies");
 
 /**

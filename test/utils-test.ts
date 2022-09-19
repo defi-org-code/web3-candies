@@ -1,30 +1,6 @@
 import { expect } from "chai";
-import {
-  bn,
-  bn12,
-  bn18,
-  bn6,
-  bn8,
-  bn9,
-  decimals,
-  ether,
-  fmt12,
-  fmt18,
-  fmt6,
-  fmt8,
-  fmt9,
-  maxUint256,
-  sqrt,
-  to18,
-  to3,
-  to6,
-  useChaiBN,
-  zero,
-  expectRevert,
-  fmt3,
-  bn3,
-  eqIgnoreCase,
-} from "../src";
+import { bn, bn12, bn18, bn6, bn8, bn9, decimals, ether, fmt12, fmt18, fmt6, fmt8, fmt9, maxUint256, sqrt, to18, to3, to6, zero, fmt3, bn3, eqIgnoreCase } from "../src";
+import { expectRevert, useChaiBN } from "../src/hardhat";
 
 useChaiBN();
 

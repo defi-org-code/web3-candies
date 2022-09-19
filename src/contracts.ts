@@ -1,5 +1,5 @@
-import type { CallOptions, Contract as ContractOrig, ContractOptions, SendOptions } from "web3-eth-contract";
 import type { BaseContract, BlockType } from "@typechain/web3-v1/static/types";
+import type { CallOptions, Contract as ContractOrig, ContractOptions, SendOptions } from "web3-eth-contract";
 import type { EventLog, TransactionReceipt } from "web3-core";
 import type { AbiItem } from "web3-utils";
 import type { BlockTransactionString } from "web3-eth";
