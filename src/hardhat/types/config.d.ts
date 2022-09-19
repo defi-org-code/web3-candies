@@ -1,5 +1,5 @@
 /// <reference types="mocha" />
-import type { BN } from "ethereumjs-util";
+import type BN from "bn.js";
 export interface NetworksUserConfig {
   hardhat?: HardhatNetworkUserConfig;
   [networkName: string]: NetworkUserConfig | undefined;

@@ -28,8 +28,7 @@
     "debug": "4.x",
     "prettier": "2.x",
     "prettier-plugin-solidity": "latest",
-    "web3": "1.x",
-    "ethereumjs-util": "7.x"
+    "web3": "1.x"
   },
   "optionalDependencies": {
     "@openzeppelin/contracts": "4.x",

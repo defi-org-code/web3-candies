@@ -1,12 +1,11 @@
 import Web3 from "web3";
 import BN from "bn.js";
 import _ from "lodash";
-import { zeroAddress as zeroAddressFn } from "ethereumjs-util";
 
 export const zero = bn("0");
 export const ether = bn18("1");
 export const maxUint256 = "115792089237316195423570985008687907853269984665640564039457584007913129639935";
-export const zeroAddress = zeroAddressFn();
+export const zeroAddress = "0x0000000000000000000000000000000000000000";
 
 export function bn(n: BN | string | number, base = 10): BN {
   if (!n) return zero;
