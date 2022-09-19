@@ -3,9 +3,9 @@ import path from "path";
 import { web3 } from "../network";
 import { bn9, fmt18, fmt9 } from "../utils";
 import { execSync } from "child_process";
-import { AbiItem } from "web3-utils";
 import { deployArtifact, hre } from "./index";
 import prompts from "prompts";
+import type { Abi } from "../contracts";
 
 export type DeployParams = {
   chainId: number;
@@ -90,7 +90,7 @@ export async function etherscanVerify(address: string, constructorArgs: any[]) {
   });
 }
 
-export function abiEncodedConstructorArgs(abi: AbiItem[], constructorArgs: any[]) {
+export function abiEncodedConstructorArgs(abi: Abi, constructorArgs: any[]) {
   if (!constructorArgs.length) return "";
   const ctrAbi = abi.find((i) => i.type == "constructor");
   return web3().eth.abi.encodeFunctionCall(ctrAbi!, constructorArgs);

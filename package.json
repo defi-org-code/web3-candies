@@ -2,7 +2,7 @@
   "name": "@defi.org/web3-candies",
   "version": "3.9.0",
   "description": "Common utilities for web3",
-  "author": "defi.org",
+  "author": "danielz@orbs.com",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -60,7 +60,7 @@
   },
   "scripts": {
     "clean": "rm -rf artifacts cache dist",
-    "prettier": "prettier --write '{contracts,src,test}/**/*.{ts,js,json,sol}'",
+    "prettier": "prettier --write '{contracts,src,test}/**/*.{ts,js,json,sol,tsx,jsx}'",
     "typechain": "typechain --target=web3-v1 --out-dir=src/abi 'src/abi/**/*.json' && hardhat typechain",
     "prebuild": "npm run clean && npm run prettier && npm run typechain",
     "build": "hardhat compile && solhint 'contracts/**/*.sol' && tsc && cp -r src/hardhat/types dist/hardhat/types",
