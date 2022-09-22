@@ -21,9 +21,9 @@
     "hardhat.config.ts"
   ],
   "dependencies": {
-    "@types/bn.js": "5.x",
     "@types/lodash": "4.x",
-    "bn.js": "5.x",
+    "axios": "0.27.x",
+    "bignumber.js": "9.x",
     "lodash": "4.x",
     "debug": "4.x",
     "prettier": "2.x",
@@ -41,9 +41,8 @@
     "@types/prompts": "2.x",
     "@types/chai": "4.x",
     "@types/mocha": "9.x",
-    "axios": "0.27.x",
     "chai": "4.x",
-    "chai-bn": "0.x",
+    "@defi.org/chai-bignumber": "3.x",
     "mocha": "10.x",
     "fs-extra": "10.x",
     "ts-node": "10.x",

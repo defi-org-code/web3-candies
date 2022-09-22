@@ -1,11 +1,6 @@
-import BN from "bn.js";
 import { expect, use } from "chai";
-import CBN from "chai-bn";
-export * from "chai-bn";
-
-export function useChaiBN() {
-  use(CBN(BN));
-}
+import cbn from "@defi.org/chai-bignumber";
+use(cbn());
 
 export async function expectRevert(fn: () => any, withError: string | RegExp) {
   if (typeof withError === "string") {

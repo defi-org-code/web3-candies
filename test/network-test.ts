@@ -1,9 +1,7 @@
 import { expect } from "chai";
 import { account, block, bn, estimatedBlockNumber, web3, zero, setWeb3Instance } from "../src";
-import { artifact, resetNetworkFork, useChaiBN } from "../src/hardhat";
+import { artifact, resetNetworkFork } from "../src/hardhat";
 import Web3 from "web3";
-
-useChaiBN();
 
 describe("network", () => {
   it("hardhat + web3", async () => {
@@ -16,7 +14,7 @@ describe("network", () => {
     const startBalance = bn(await web3().eth.getBalance(await account()));
     expect(startBalance).bignumber.gt(zero);
 
-    await web3().eth.sendTransaction({ from: await account(), to: await account(9), value: startBalance.divn(2) });
+    await web3().eth.sendTransaction({ from: await account(), to: await account(9), value: startBalance.div(2).toString() });
 
     await resetNetworkFork();
 

@@ -1,11 +1,11 @@
 import BN from "bn.js";
 import path from "path";
 import { web3 } from "../network";
-import { bn9, fmt18, fmt9 } from "../utils";
 import { execSync } from "child_process";
 import { deployArtifact, hre } from "./index";
 import prompts from "prompts";
 import type { Abi } from "../contracts";
+import { bn, bn9, bnm } from "../utils";
 
 export type DeployParams = {
   chainId: number;
@@ -39,13 +39,13 @@ export async function deploy(
   await confirm({
     chainId: await web3().eth.getChainId(),
     account: deployer,
-    balance: fmt18(await web3().eth.getBalance(deployer)),
+    balance: bnm(await web3().eth.getBalance(deployer)).toFormat(),
     contractName,
     args: constructorArgs,
     gasLimit,
-    maxPriorityFeePerGas: fmt9(maxPriorityFeePerGas) + " gwei",
-    maxFeePerGas: fmt9(maxFeePerGas) + " gwei",
-    initialETH: fmt18(initialETH),
+    maxPriorityFeePerGas: bnm(maxPriorityFeePerGas, 9).toFormat({ suffix: " gwei" }),
+    maxFeePerGas: bnm(maxFeePerGas, 9).toFormat({ suffix: " gwei" }),
+    initialETH: bnm(initialETH).toFormat(),
     uploadSources,
     useLegacyTxType,
   });
@@ -132,7 +132,7 @@ export async function askFees() {
       validate: (s: any) => !!parseInt(s),
     },
   ]);
-  return { maxPriorityFeePerGas: bn9(maxPriorityFeePerGas.toString()), maxFeePerGas: bn9(maxFeePerGas.toString()) };
+  return { maxPriorityFeePerGas: bn9(maxPriorityFeePerGas).toString(), maxFeePerGas: bn9(maxFeePerGas).toString() };
 }
 
 async function askUseLegacy() {

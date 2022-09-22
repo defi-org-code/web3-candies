@@ -1,10 +1,8 @@
 import { expect } from "chai";
-import { account, bn18, contract, parseEvents, web3, zero, iwethabi } from "../src";
-import { artifact, deployArtifact, expectRevert, mineBlocks, useChaiBN } from "../src/hardhat";
+import { account, contract, parseEvents, web3, zero, iwethabi, bn18 } from "../src";
+import { artifact, deployArtifact, expectRevert, mineBlocks } from "../src/hardhat";
 import type { IWETH } from "../src/abi";
 import type { Example } from "../typechain-hardhat/contracts/Example.sol";
-
-useChaiBN();
 
 describe("Contracts", () => {
   const weth = contract<IWETH>(iwethabi, "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2");
@@ -15,7 +13,7 @@ describe("Contracts", () => {
 
   describe("parseEvents", async () => {
     it("returns parsed events", async () => {
-      const tx = await weth.methods.deposit().send({ from: await account(), value: bn18("42") });
+      const tx = await weth.methods.deposit().send({ from: await account(), value: bn18(42).toString() });
       const events = parseEvents(tx, weth);
       expect(events.find((e) => e.event === "Deposit")!.returnValues.wad).bignumber.eq(bn18("42"));
     });
@@ -42,6 +40,6 @@ describe("Contracts", () => {
   it("expectRevert, propagates errors correctly", async () => {
     const c = await deployExample();
     expect(await c.methods.assertNotZero("123").call()).bignumber.eq("123");
-    await expectRevert(() => c.methods.assertNotZero(zero).call(), "n should not be zero");
+    await expectRevert(() => c.methods.assertNotZero(zero.toString()).call(), "n should not be zero");
   });
 });

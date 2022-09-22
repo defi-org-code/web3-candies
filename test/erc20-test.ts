@@ -1,10 +1,8 @@
 import { expect } from "chai";
-import * as _ from "lodash";
+import _ from "lodash";
 import { account, bn, bn18, bn6, erc20, erc20s, networks, zero, zeroAddress } from "../src";
 import type { NonPayableTransactionObject } from "@typechain/web3-v1/static/types";
-import { resetNetworkFork, useChaiBN } from "../src/hardhat";
-
-useChaiBN();
+import { resetNetworkFork } from "../src/hardhat";
 
 describe("erc20", () => {
   const token = erc20s.eth.WETH();
@@ -46,17 +44,29 @@ describe("erc20", () => {
       expect(await token.amount(123.456789))
         .bignumber.eq(bn18("123.456789"))
         .eq("123456789000000000000");
-      expect(await token.amount(bn(100_000_000))).bignumber.eq(bn18("100,000,000"));
+      expect(await token.amount(bn(100_000_000))).bignumber.eq(bn18(100_000_000));
+
+      expect(await token.amount("123.456"))
+        .bignumber.eq(bn18("123.456"))
+        .eq("123456000000000000000");
+
+      expect(await token.amount("123456.00000000000000000000000001"))
+        .bignumber.eq(bn18("123456"))
+        .eq("123456000000000000000000");
+
+      expect(await erc20s.eth.USDC().to18("123456000")).bignumber.eq(123456000000000000000);
     });
 
-    it("mantissa - convert to 18 decimals", async () => {
+    it("to18 - convert to 18 decimals", async () => {
       const token = erc20s.eth.USDC();
       expect(await token.methods.decimals().call()).bignumber.eq("6");
-      expect(await token.mantissa(bn6(1234.123456)))
-        .bignumber.eq(bn18(1234.123456))
-        .eq("1234123456000000000000");
-      expect(await token.mantissa(bn6(1234.123456))).bignumber.eq(bn18(1234.123456));
-      expect(await token.mantissa(123456)).bignumber.eq(bn18(0.123456));
+      expect(await token.to18(123456123456)).bignumber.eq(123456123456000000000000);
+      expect(await token.to18(123456123456.789)).bignumber.eq(123456123456789000000000);
+    });
+
+    it("mantissa", async () => {
+      expect(await erc20s.eth.USDC().mantissa(123123456789)).bignumber.eq(123123.456789);
+      expect(await token.mantissa(1123456789123456789)).bignumber.eq(1.123456789123456789);
     });
 
     it("decimals - memoized and parsed", async () => {
@@ -68,8 +78,12 @@ describe("erc20", () => {
       expect(await token.decimals()).eq(6);
 
       expect(await token.amount(123)).bignumber.eq(bn6(123));
-      expect(await token.mantissa(bn6(1234.123456))).bignumber.eq(bn18(1234.123456));
+      expect(await token.to18(1234123456)).bignumber.eq(bn18(1234.123456));
       await resetNetworkFork();
+    });
+
+    it("optional decimals, memoized", async () => {
+      expect(await erc20("", zeroAddress, 123).decimals()).eq(123);
     });
   });
 });

@@ -1,10 +1,9 @@
 import type { Artifact, HardhatRuntimeEnvironment } from "./types";
 import Web3 from "web3";
-import BN from "bn.js";
 import _ from "lodash";
 import { block, networks, web3 } from "../network";
 import { contract, Contract, Options, waitForTxConfirmations } from "../contracts";
-import { bn18 } from "../utils";
+import { bn, Value } from "../utils";
 import { HardhatUserConfig } from "hardhat/types";
 export * from "./testing";
 
@@ -44,8 +43,8 @@ export async function impersonate(...address: string[]) {
 /**
  * Set native currency balance (ETH, BNB etc)
  */
-export async function setBalance(address: string, balance: string | number | BN) {
-  await hre().network.provider.send("hardhat_setBalance", [address, hre().web3.utils.toHex(balance)]);
+export async function setBalance(address: string, balance: Value) {
+  await hre().network.provider.send("hardhat_setBalance", [address, "0x" + bn(balance).toString(16)]);
 }
 
 export async function resetNetworkFork(blockNumber: number = getNetworkForkingBlockNumber()) {
@@ -178,8 +177,8 @@ export function hardhatDefaultConfig() {
         },
         blockGasLimit: 10e6,
         accounts: {
-          passphrase: process.env.npm_package_name || Math.random().toString(), //empty accounts
-          accountsBalance: bn18(100e6).toString(),
+          passphrase: process.env.npm_package_name || "empty", //empty accounts
+          accountsBalance: bn(100e18).toString(),
         },
       },
     },
@@ -190,6 +189,7 @@ export function hardhatDefaultConfig() {
     mocha: {
       timeout: 180_000,
       retries: 0,
+      bail: true,
     },
     gasReporter: {
       currency: "USD",

@@ -1,127 +1,9 @@
 import { expect } from "chai";
-import { bn, bn12, bn18, bn6, bn8, bn9, decimals, ether, fmt12, fmt18, fmt6, fmt8, fmt9, maxUint256, sqrt, to18, to3, to6, zero, fmt3, bn3, eqIgnoreCase } from "../src";
-import { expectRevert, useChaiBN } from "../src/hardhat";
-
-useChaiBN();
+import { bn, bn18, bn6, bn9, eqIgnoreCase, ether, maxUint256, zero, zeroAddress, parsebn, one, ten, bne, bnm, convertDecimals } from "../src";
+import { expectRevert } from "../src/hardhat";
+import _ from "lodash";
 
 describe("utils", () => {
-  it("bn", async () => {
-    expect(bn(1).toString()).eq("1");
-    expect(bn(1)).bignumber.eq("1");
-
-    expect(bn18("1")).bignumber.eq(bn18(1)).eq("1000000000000000000");
-    expect(bn12("1")).bignumber.eq(bn12(1)).eq("1000000000000");
-    expect(bn6("1").toString()).eq(bn6(1).toString()).eq("1000000");
-    expect(bn6("1")).bignumber.eq(bn6(1)).eq("1000000");
-    expect(bn6("0.1")).bignumber.eq(bn6(0.1)).eq("100000");
-
-    expect(bn8("1").toString()).eq(bn8(1).toString()).eq("100000000");
-    expect(bn8("1")).bignumber.eq(bn8(1)).eq(bn("100000000")).gt(bn6("1"));
-
-    expect(bn9("1").toString()).eq(bn9(1).toString()).eq("1000000000");
-    expect(bn9("1")).bignumber.eq(bn9(1)).eq(bn("1000000000")).gt(bn6("1"));
-
-    expect(bn18("123456789012345678901234567890.123456789012345678901234567890")).not.bignumber.zero;
-    expect(bn12("123456789012345678901234567890.123456789012345678901234567890")).not.bignumber.zero;
-    expect(bn9("123456789012345678901234567890.123456789012345678901234567890")).not.bignumber.zero;
-    expect(bn8("123456789012345678901234567890.123456789012345678901234567890")).not.bignumber.zero;
-    expect(bn6("123456789012345678901234567890.123456789012345678901234567890")).not.bignumber.zero;
-
-    expect(bn18(1e6).toString()).eq("1000000000000000000000000");
-  });
-
-  it("uncommify before parsing", async () => {
-    expect(bn18("1,000,000.0")).bignumber.eq(bn18("1000000"));
-    expect(bn12("1,000,000.0")).bignumber.eq(bn12("1000000"));
-    expect(bn9("1,000,000.0")).bignumber.eq(bn9("1000000"));
-    expect(bn8("1,000,000.0")).bignumber.eq(bn8("1000000"));
-    expect(bn6("1,000,000.0")).bignumber.eq(bn6("1000000"));
-  });
-
-  it("format human readable", async () => {
-    expect(fmt6(bn6("1"))).eq("1");
-    expect(fmt8(bn8("1"))).eq("1");
-    expect(fmt9(bn9("1"))).eq("1");
-    expect(fmt12(bn12("1"))).eq("1");
-    expect(fmt18(bn18("1"))).eq("1");
-
-    expect(fmt18(bn18("1,234,567,890.123456789123456789"))).eq("1,234,567,890.123456789123456789");
-    expect(fmt12(bn12("1,234,567,890.123456789123"))).eq("1,234,567,890.123456789123");
-    expect(fmt9(bn9("1,234,567,890.123456789"))).eq("1,234,567,890.123456789");
-    expect(fmt8(bn8("1,234,567,890.12345678"))).eq("1,234,567,890.12345678");
-    expect(fmt6(bn6("1,234,567,890.123456"))).eq("1,234,567,890.123456");
-    expect(fmt3(bn3("1,234,567,890.123456"))).eq("1,234,567,890.123");
-  });
-
-  it("constants", async () => {
-    expect(zero).bignumber.eq(bn(0)).eq("0");
-    expect(ether).bignumber.eq(bn18("1"));
-    expect(maxUint256).bignumber.eq(bn("2").pow(bn("256")).subn(1)); //max 256 bytes value
-  });
-
-  it("to3 decimals", async () => {
-    expect(to3(100, 2)).bignumber.eq("1000");
-    expect(to3("1000", "3")).bignumber.eq("1000");
-    expect(to3(bn("1000"), bn("3"))).bignumber.eq("1000");
-    expect(to3(bn18("1234"), 18)).bignumber.eq("1234000");
-    expect(fmt3(to3(bn18("1234.56789999"), 18))).eq("1,234.568");
-  });
-
-  it("to6 decimals", async () => {
-    expect(to6(100, 2)).bignumber.eq(bn6(1));
-    expect(to6("1000", "3")).bignumber.eq(bn6(1));
-    expect(to6(bn("1000"), bn("3"))).bignumber.eq(bn6(1));
-    expect(to6(bn6("1"), 6)).bignumber.eq(bn6(1));
-    expect(to6(bn9("1"), 9)).bignumber.eq(bn6(1));
-  });
-
-  it("to18 decimals", async () => {
-    expect(to18(100, 2)).bignumber.eq(bn18(1));
-    expect(to18("1000", "3")).bignumber.eq(bn18(1));
-    expect(to18(bn("1000"), bn("3"))).bignumber.eq(bn18(1));
-    expect(to18(bn6("1"), 6)).bignumber.eq(bn18(1));
-    expect(to18(bn9("1"), 9)).bignumber.eq(bn18(1));
-  });
-
-  it("sqrt", async () => {
-    expect(sqrt(zero)).bignumber.zero;
-    expect(sqrt(bn(1))).bignumber.eq(bn(1));
-    expect(sqrt(bn(2))).bignumber.eq(bn(1));
-    expect(sqrt(bn(3))).bignumber.eq(bn(1));
-    expect(sqrt(bn(4))).bignumber.eq(bn(2));
-    expect(sqrt(bn(5))).bignumber.eq(bn(2));
-    expect(sqrt(bn(9))).bignumber.eq(bn(3));
-    expect(sqrt(bn(100))).bignumber.eq(bn(10));
-    expect(sqrt(bn(123456789).sqr())).bignumber.eq(bn(123456789));
-  });
-
-  it("supports different bases", async () => {
-    expect(bn("ff", 16)).bignumber.eq("255");
-    expect(bn("0xff", 16)).bignumber.eq("255");
-  });
-
-  it("throws when invalid bn", async () => {
-    await expectRevert(() => bn(123.456), "invalid bn: 123.456");
-    await expectRevert(() => bn("123.456"), "invalid bn: 123.456");
-  });
-
-  it("decimals", async () => {
-    expect(decimals(bn(1234))).eq(0);
-    expect(decimals(bn18(1234))).eq(0);
-    expect(decimals(1234)).eq(0);
-    expect(decimals("1234")).eq(0);
-
-    expect(decimals(1234.0)).eq(0);
-    expect(decimals("1234.000")).eq(0);
-
-    expect(decimals(1234.123456)).eq(6);
-    expect(decimals(-1234.123456)).eq(6);
-    expect(decimals("1234.123456")).eq(6);
-    expect(decimals("1234.100000000")).eq(1);
-    expect(decimals("1234.010000000")).eq(2);
-    expect(decimals("1234.000000000000000000000000000001")).eq(30);
-  });
-
   it("equal ignore case", async () => {
     expect(eqIgnoreCase("", "")).is.true;
     expect(eqIgnoreCase("", "a")).is.false;
@@ -130,5 +12,63 @@ describe("utils", () => {
     expect(eqIgnoreCase("a", "a")).is.true;
     expect(eqIgnoreCase("A", "a")).is.true;
     expect(eqIgnoreCase("a", "A")).is.true;
+  });
+
+  it("constants", async () => {
+    expect(zero).bignumber.eq(bn(0)).eq(0);
+    expect(one).bignumber.eq(1);
+    expect(ten).bignumber.eq(10);
+    expect(ether).bignumber.eq(bn18()).eq(1e18);
+    expect(bn9()).bignumber.eq(1e9);
+    expect(bn6()).bignumber.eq(1e6);
+    expect(maxUint256).bignumber.eq(bn("2").pow(bn("256")).minus(1)); //max 256 bytes value
+    expect(zeroAddress).eq("0x" + _.repeat("0", 40));
+
+    expect(bn18(123)).bignumber.eq(123e18);
+    expect(bn9(123.456)).bignumber.eq(123456000000);
+    expect(bn6(123.456)).bignumber.eq(123456000);
+  });
+
+  it("bn", async () => {
+    expect(bn(12345)).bignumber.closeTo(12340, 5);
+    expect(bn(1).toString()).eq("1");
+    expect(bn(1)).bignumber.eq(1);
+    expect(bn(0)).bignumber.zero;
+    expect(bn("")).bignumber.zero;
+    expect(bn(`${maxUint256}${maxUint256}.${maxUint256}`)).bignumber.eq(`${maxUint256}${maxUint256}.${maxUint256}`);
+
+    expect(bn("ff", 16)).bignumber.eq("255");
+    expect(bn("0xff", 16)).bignumber.eq("255");
+    expect(bn("10", 8)).bignumber.eq("8");
+    await expectRevert(() => bn("hello"), "invalid BigNumber: hello");
+  });
+
+  it("bne, bnm", async () => {
+    expect(bne(123.456, 4)).bignumber.eq(1234560);
+    expect(bne(123.456789, 4)).bignumber.eq(1234567);
+    expect(bnm(123456789.123, 4)).bignumber.eq(12345.6789123);
+    expect(bnm(bn18(1000.1234)).toFormat()).eq("1,000.1234");
+  });
+
+  it("parsebn", async () => {
+    expect(parsebn("")).bignumber.zero;
+    expect(parsebn(0)).bignumber.zero;
+    expect(parsebn("0.000")).bignumber.zero;
+    expect(parsebn(1)).bignumber.eq(1);
+    expect(parsebn(-1)).bignumber.eq(-1);
+    expect(parsebn(bn18())).bignumber.eq(ether);
+    expect(parsebn("1")).bignumber.eq(1);
+    expect(parsebn("-1")).bignumber.eq(-1);
+    expect(parsebn("1,234,567.123456789")).bignumber.eq(1234567.123456789);
+    expect(parsebn("   001,234,567.1234567890000 \n\n")).bignumber.eq(1234567.123456789);
+    expect(parsebn("1x234x567_123 456 789", { decimalSeparator: "_" })).bignumber.eq(1234567.123456789);
+    await expectRevert(() => parsebn("1.234567.123 456 789"), "invalid BigNumber: 1.234567.123456789");
+  });
+
+  it("convertDecimals", async () => {
+    expect(convertDecimals(123456, 3, 6)).bignumber.eq(bn6("123.456")).eq(123456000);
+    expect(convertDecimals("123456", 3, 6)).bignumber.eq(bn6("123.456")).eq(123456000);
+    expect(convertDecimals(bn("123456"), 3, 6)).bignumber.eq(123456000);
+    expect(convertDecimals(123456789, 6, 3)).bignumber.eq(123456);
   });
 });

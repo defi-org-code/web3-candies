@@ -1,9 +1,7 @@
 import { expect } from "chai";
-import { account, erc20s, ether, web3, bn9, zero, networks } from "../src";
-import { deployArtifact, mineBlock, mineBlocks, hre, setBalance, useChaiBN, hardhatDefaultConfig } from "../src/hardhat";
+import { account, bn9, erc20s, ether, networks, web3, zero } from "../src";
+import { deployArtifact, hardhatDefaultConfig, hre, mineBlock, mineBlocks, setBalance } from "../src/hardhat";
 import type { Example } from "../typechain-hardhat/contracts/Example.sol";
-
-useChaiBN();
 
 describe("hardhat", () => {
   it("hardhat env", async () => {
@@ -12,7 +10,7 @@ describe("hardhat", () => {
 
   it("quick deploy compiled artifact", async () => {
     expect(await web3().eth.getBalance(await account())).bignumber.gt(ether);
-    const deployed = await deployArtifact<Example>("Example", { from: await account(), maxFeePerGas: bn9(1000), maxPriorityFeePerGas: bn9(5) }, [
+    const deployed = await deployArtifact<Example>("Example", { from: await account(), maxFeePerGas: bn9(1000).toString(), maxPriorityFeePerGas: bn9(5).toString() }, [
       123,
       erc20s.eth.WETH().address,
       [456],

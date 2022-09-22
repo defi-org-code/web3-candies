@@ -1,187 +1,67 @@
-import Web3 from "web3";
+import { BigNumber } from "bignumber.js";
 import BN from "bn.js";
-import _ from "lodash";
 
-export const zero = bn("0");
-export const ether = bn18("1");
+export { BigNumber } from "bignumber.js";
+
+export type Value = number | string | BigNumber | BN;
+
+export const zero = BigNumber(0);
+export const one = BigNumber(1);
+export const ten = BigNumber(10);
+export const ether = BigNumber(1e18);
 export const maxUint256 = "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 export const zeroAddress = "0x0000000000000000000000000000000000000000";
 
-export function bn(n: BN | string | number, base = 10): BN {
+/**
+ * @returns n value exponentiated integer: bne(123.456789, 3) ==> 123456
+ */
+export const bne = (n: Value, exponent: number = 18) => bn(n).times(ten.pow(exponent)).integerValue(BigNumber.ROUND_DOWN);
+/**
+ * @returns n value mantissa: bnm(123456.789, 3) ==> 123.456789
+ */
+export const bnm = (n: Value, exponent: number = 18) => bn(n).div(ten.pow(exponent));
+
+/**
+ * @returns n exponentiated to 18 decimals
+ */
+export const bn18 = (n: Value = 1) => bne(n, 18);
+
+/**
+ * @returns n exponentiated to 9 decimals
+ */
+export const bn9 = (n: Value = 1) => bne(n, 9);
+
+/**
+ * @returns n exponentiated to 6 decimals
+ */
+export const bn6 = (n: Value = 1) => bne(n, 6);
+
+export function bn(n: Value, base?: number): BigNumber {
+  if (n instanceof BigNumber) return n;
   if (!n) return zero;
-  else if (n instanceof BN) return n;
-  else if (base == 16 && typeof n == "string") return new BN(Web3.utils.stripHexPrefix(n), base);
-  else if (decimals(n) !== 0) throw new Error(`invalid bn: ${n}`);
-  else return new BN(n, base);
-}
-
-/**
- * assuming 18 decimals, uncommafy (support "1,234.567")
- */
-export function bn18(n: string | number): BN {
-  return bn(Web3.utils.toWei(parse(n.toString(), 18), "ether"));
-}
-
-/**
- * assuming 12 decimals, uncommafy (support "1,234.567")
- */
-export function bn12(n: string | number): BN {
-  return bn(Web3.utils.toWei(parse(n.toString(), 12), "szabo"));
-}
-
-/**
- * assuming 9 decimals (gwei), uncommafy (support "1,234.567")
- */
-export function bn9(n: string | number): BN {
-  return bn(Web3.utils.toWei(parse(n.toString(), 9), "gwei"));
-}
-
-/**
- * assuming 8 decimals, uncommafy (support "1,234.567")
- */
-export function bn8(n: string | number): BN {
-  return bn9(n).divn(10);
-}
-
-/**
- * assuming 6 decimals, uncommafy (support "1,234.567")
- */
-export function bn6(n: string | number): BN {
-  return bn(Web3.utils.toWei(parse(n.toString(), 6), "lovelace"));
-}
-
-/**
- * assuming 3 decimals, uncommafy (support "1,234.567")
- */
-export function bn3(n: string | number): BN {
-  return bn(Web3.utils.toWei(parse(n.toString(), 3), "babbage"));
-}
-
-/**
- * formats from wei, assuming 18 decimals
- */
-export function fmt18(ether: BN | number | string): string {
-  return commafy(Web3.utils.fromWei(bn(ether), "ether"));
-}
-
-/**
- * formats from wei, assuming 12 decimals
- */
-export function fmt12(ether: BN | number | string): string {
-  return commafy(Web3.utils.fromWei(bn(ether), "szabo"));
-}
-
-/**
- * formats from wei, assuming 9 decimals
- */
-export function fmt9(ether: BN | number | string): string {
-  return commafy(Web3.utils.fromWei(bn(ether), "gwei"));
-}
-
-/**
- * formats from wei, assuming 8 decimals
- */
-export function fmt8(n: BN | number | string): string {
-  return fmt9(bn(n).muln(10));
-}
-
-/**
- * formats from wei, assuming 6 decimals
- */
-export function fmt6(ether: BN | number | string): string {
-  return commafy(Web3.utils.fromWei(bn(ether), "lovelace"));
-}
-
-/**
- * formats from wei, assuming 3 decimals
- */
-export function fmt3(ether: BN | number | string): string {
-  return commafy(Web3.utils.fromWei(bn(ether), "babbage"));
-}
-
-/**
- * converts to 3 decimal number, losing percision
- */
-export function to3(n: BN | number | string, decimals: BN | number | string): BN {
-  return convertDecimals(n, decimals, 3);
-}
-
-/**
- * converts to 6 decimal number, maybe losing percision
- */
-export function to6(n: BN | number | string, decimals: BN | number | string): BN {
-  return convertDecimals(n, decimals, 6);
-}
-
-/**
- * converts to 18 decimal number, maybe losing percision
- */
-export function to18(n: BN | number | string, decimals: BN | number | string): BN {
-  return convertDecimals(n, decimals, 18);
-}
-
-/**
- * increase or decrease `n` percision from `decimals` to `targetDecimals`
- */
-export function convertDecimals(n: BN | number | string, sourceDecimals: BN | number | string, targetDecimals: BN | number | string) {
-  if (bn(sourceDecimals).gt(bn(targetDecimals))) {
-    return bn(n).divRound(bn(10).pow(bn(sourceDecimals).sub(bn(targetDecimals))));
-  } else {
-    return bn(n).mul(bn(10).pow(bn(targetDecimals).sub(bn(sourceDecimals))));
-  }
-}
-
-export function decimals(mantissa: BN | number | string) {
-  if (_.isInteger(mantissa)) return 0;
-  const str = mantissa instanceof BN ? mantissa.toString(10) : _.trim(_.toString(mantissa), "0");
-  return (str.split(".")[1] || []).length;
-}
-
-function parse(s: string, maxDecimals: number) {
-  let str = s.split(",").join("");
-  if (_.isInteger(str) || !str.includes(".")) return str;
-
-  str = _.trim(str, "0");
-  const d = (str.split(".")[1] || []).length;
-  if (d > maxDecimals) return str.substring(0, str.length - (d - maxDecimals));
-  return str;
-}
-
-/**
- * converts to human-readble formatted number string (123,456.789)
- */
-export function commafy(num: string | number | BN) {
-  const parts = _.split(num.toString(), ".");
-  const upper = _(parts[0].split(""))
-    .reverse()
-    .chunk(3)
-    .map((c) => c.reverse().join(""))
-    .reverse()
-    .join(",");
-
-  const lower = parts[1];
-  if (lower) return `${upper}.${lower}`;
-  else return upper;
-}
-
-/**
- * https://en.wikipedia.org/wiki/Methods_of_computing_square_roots#Babylonian_method
- * @returns square root of n, using the Babylonian method
- */
-export function sqrt(n: BN) {
-  if (n.isZero()) return zero;
-  if (n.lt(bn(3))) return bn(1);
-
-  const two = bn(2);
-  let result = n;
-  let x = n.div(two).add(bn(1));
-
-  while (x.lt(result)) {
-    result = x;
-    x = n.div(x).add(x).div(two);
-  }
-
+  const result = BigNumber(n instanceof BN ? n.toString() : n, base);
+  if (!result.isFinite()) throw new Error(`invalid BigNumber: ${n}`);
   return result;
+}
+
+/**
+ * @returns parsed BigNumber from formatted string. The opposite of `BigNumber.toFormat`
+ */
+export function parsebn(n: Value, fmt?: BigNumber.Format): BigNumber {
+  if (typeof n !== "string") return bn(n);
+
+  const decimalSeparator = fmt?.decimalSeparator || ".";
+  const str = n.replace(new RegExp(`[^${decimalSeparator}\\d-]+`, "g"), "");
+  return bn(str.replace(decimalSeparator, "."));
+}
+
+/**
+ * increase or decrease `n` decimal percision from `decimals` to `targetDecimals`
+ */
+export function convertDecimals(n: Value, sourceDecimals: number, targetDecimals: number): BigNumber {
+  if (sourceDecimals === targetDecimals) return bn(n);
+  else if (sourceDecimals > targetDecimals) return bn(n).idiv(ten.pow(sourceDecimals - targetDecimals));
+  else return bn(n).times(ten.pow(targetDecimals - sourceDecimals));
 }
 
 export function eqIgnoreCase(a: string, b: string) {

@@ -11,21 +11,18 @@
 ## Usage example
 
 ```typescript
-import { bn18, fmt18, ether, erc20s, erc20, account, maxUint256 } from "@defi.org/web3-candies";
+import { bn, bn18, bnm, ether, erc20s, erc20, account, maxUint256 } from "@defi.org/web3-candies";
 import { resetNetworkFork } from "@defi.org/web3-candies/dist/hardhat"; // to allow hardhat dependencies to be optional
 
-const x = bn18("1,000.1234"); // x = "1000123400000000000000" [bn.js object representing wei, parsed with 18 decimals]
+const x = bn18(1000.1234); // x = "1000123400000000000000" [BigNumber.js object representing wei, parsed with 18 decimals]
 console.log(x.gt(ether)); // true
-console.log(fmt18(x)); // prints "1,000.1234"
+console.log(bnm(x).toFormat()); // prints "1,000.1234"
 
-const owner = await account(); // web3 test account [0]
-
-await erc20s.eth.WETH().methods.balanceOf(owner).call(); // WETH balance of
-
-await erc20s.eth.WETH().method.deposit().send({ value: await erc20s.eth.WETH().amount(123.456), from: owner});
+const owner = await account(); // web3 account [0]
 
 console.log(await erc20s.eth.WETH().amount(123.456)); // prints 123456000000000000000
-console.log(await erc20s.eth.USDC().mantissa("123456000")); // prints 123456000000000000000 (18 decimals)
+console.log(await erc20s.eth.USDC().mantissa("123123456789")); // prints 123123.456789
+console.log(await erc20s.eth.USDC().to18("123456000")); // prints 123456000000000000000 (18 decimals)
 
 const myToken = erc20("foo", myTokenAddress); // web3 instantiated ERC20 Contract
 await myToken.methods.approve(other, maxUint256).send({ from: owner }); // approve max uint value for other to spend
@@ -39,23 +36,24 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 
 > See the tests for working examples
 
-### bn.js utils
+### BigNumber.js utils
 
-- `bn`: convert `string|number|bn` to `bn.js` object
-- `bn3, bn6, bn8, bn9, bn12, bn18`: convert human readable `string|number` to `bn.js` object, handling commas and decimals
-- `fmt3, fmt6, fmt8, fmt9, fmt12, fmt18`: convert `bn.js` object to human readable `string`, handling commas and decimals
-- `to18, to6, to3...`: convert to decimals, losing percision
-- `zero, ether, maxUint256, zeroAddress, `: hardcoded useful values
-- `sqrt`: compute square root of BN
+- `bn`: convert `string|number|BN|BigNumber` to `BigNumber.js` object
+- `bne`: exponentiate n to decimals (`bne(123.456789, 3) ==> 123456`)
+- `bnm`: mantissa of n in decimals (`bnm(123456.789, 3) ==> 123.456789`)
+- `bn6, bn9, bn18`: convenience functions for bn with `6,9,18` decimals
+- `zero, one, ten, ether, maxUint256, zeroAddress`: hardcoded useful values
+- `parsebn`: parse formatted human-readable string to `BigNumber.js` object
+- `convertDecimals`: convert from source decimals to target decimals
 
 ### ERC20s, NFTs
 
-- `erc20s.eth...`: well known Ethereum ERC20 tokens
-- `erc20s.bsc...`: well known BNB ERC20 tokens
+- `erc20s.eth/bsc/poly/arb/avax/oeth/ftm...`: well known ERC20 base tokens per network
 - `erc20<T>(...)`: web3 ERC20 contract, with optional extending abi to merge
-- `await erc20s.eth.WETH().decimals()`: cached version of decimals method
-- `await erc20s.eth.WETH().amount(1.234)`: returns amount in wei, converted to token decimals (cached)
-- `await erc20s.eth.USDC().mantissa("100")`: returns amount in **18 decimals**, given amount in token decimals (in this case `100e18`) (cached)
+- `await erc20s.eth.WETH().decimals()`: memoized version of decimals method
+- `await erc20s.eth.WETH().amount(1.234)`: returns amount in wei, converted to token decimals (in this case `1234000000000000000`) (memoized)
+- `await erc20s.eth.USDC().mantissa(123123456789)`: returns token amount to mantissa with decimals (in this case `123123.456789`) (memoized)
+- `await erc20s.eth.USDC().to18(100)`: returns amount in **18 decimals**, given amount in token decimals (in this case `100e18`) (memoized)
 
 ### contract utils
 
@@ -68,7 +66,7 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 ### network utils
 
 - `web3()`: the globally accesible singleton. call `setWeb3Instance(web3)` if needed
-- `networks.eth...`: constants
+- `networks.eth/bsc/poly/arb/avax/oeth/ftm...`: constants
 - `account`: alias for web3.accounts
 - `block`: alias for web3.getBlock, with parsed timestamp
 - `estimatedBlockNumber`: estimate block number by timestamp
@@ -77,20 +75,22 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 
 > to allow hh to be optional, import from '@defi.org/web3-candies/dist/hardhat'
 
-- `dist/hardhat/deploy`: deployment script with prompts and confirmations, saves deployment artifacts locally, waits for confirmations, optionally uploads sources to etherscan
+- `dist/hardhat/deploy`: deployment script with prompts and confirmations, saves deployment artifacts locally, waits for confirmations, optionally verifies sources on etherscan
+- `hardhatDefaultConfig`: sweet hardhat config
+- `gasReportedConfig`: hardhat-gas-reporter preconfigured config
 - `hre()`: the globally accessible singleton
-- `tag`: tag address for use with hre.tracer in logs
+- `tag`: tag address for use with `hre.tracer` in logs
 - `artifact`: read compiled artifact
 - `impersonate`: impersonate accounts
 - `setBalance`: sets account native token balance
 - `resetNetworkFork`: resets the fork, with optional blockNumber
 - `getNetworkForkingBlockNumber`, `getNetworkForkingUrl`: read hardhat config
-- `mineBlocks`: mine blocks in a loop, simulating chain progression with timestamps
-- `mineBlock`: mine a single block with the given timestamp
+- `mineBlocks`: mine blocks in a loop, simulating chain progression with seconds
+- `mineBlock`: mine a single block with the given added seconds
 
 ### test utils
 
-- `useChaiBN()`: use bn.js in chai tests assertions, ex. `expect(ether).bignumber.gt(zero)`
+- automatically hoists and uses `@defi.org/chai-bignumber` assertions, `@defi.org/web3-candies/dist/hardhat` for assertion types
 - `expectRevert`: expects given fn to revert, containing reason string or regex
 
 ### timing utils
