@@ -1,5 +1,6 @@
 import { expect, use } from "chai";
 import cbn from "@defi.org/chai-bignumber";
+export * as cbn from "@defi.org/chai-bignumber";
 
 export function useChaiBigNumber() {
   use(cbn());
