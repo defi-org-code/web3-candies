@@ -12,6 +12,9 @@ export const ether = BigNumber(1e18);
 export const maxUint256 = "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 export const zeroAddress = "0x0000000000000000000000000000000000000000";
 
+// Almost never return exponential notation:
+BigNumber.config({ EXPONENTIAL_AT: 1e9 });
+
 /**
  * @returns n value exponentiated integer: bne(123.456789, 3) ==> 123456
  */
