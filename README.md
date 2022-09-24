@@ -90,7 +90,7 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 
 ### test utils
 
-- automatically hoists and uses `@defi.org/chai-bignumber` assertions, `@defi.org/web3-candies/dist/hardhat` for assertion types
+- `useChaiBigNumber()`: hoist and use `@defi.org/chai-bignumber` mocha+chai assertions
 - `expectRevert`: expects given fn to revert, containing reason string or regex
 
 ### timing utils

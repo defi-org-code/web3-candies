@@ -1,5 +1,8 @@
 import { expect } from "chai";
 import { sleep, throttle, keepTrying, preventMacSleep } from "../src";
+import { useChaiBigNumber } from "../src/hardhat";
+
+useChaiBigNumber();
 
 describe("timing", () => {
   it("throttle & sleep", async () => {

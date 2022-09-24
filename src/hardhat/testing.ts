@@ -1,6 +1,9 @@
 import { expect, use } from "chai";
 import cbn from "@defi.org/chai-bignumber";
-use(cbn());
+
+export function useChaiBigNumber() {
+  use(cbn());
+}
 
 export async function expectRevert(fn: () => any, withError: string | RegExp) {
   if (typeof withError === "string") {

@@ -1,7 +1,9 @@
 import { expect } from "chai";
 import { account, bn9, erc20s, ether, networks, web3, zero } from "../src";
-import { deployArtifact, hardhatDefaultConfig, hre, mineBlock, mineBlocks, setBalance } from "../src/hardhat";
+import { deployArtifact, hardhatDefaultConfig, hre, mineBlock, mineBlocks, setBalance, useChaiBigNumber } from "../src/hardhat";
 import type { Example } from "../typechain-hardhat/contracts/Example.sol";
+
+useChaiBigNumber();
 
 describe("hardhat", () => {
   it("hardhat env", async () => {

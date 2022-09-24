@@ -1,5 +1,8 @@
 import { expect } from "chai";
 import { erc1155, erc721, zero, zeroAddress } from "../src";
+import { useChaiBigNumber } from "../src/hardhat";
+
+useChaiBigNumber();
 
 describe("nfts", () => {
   it("erc721", async () => {

@@ -1,7 +1,9 @@
 import { expect } from "chai";
 import { account, block, bn, estimatedBlockNumber, web3, zero, setWeb3Instance } from "../src";
-import { artifact, resetNetworkFork } from "../src/hardhat";
+import { artifact, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 import Web3 from "web3";
+
+useChaiBigNumber();
 
 describe("network", () => {
   it("hardhat + web3", async () => {

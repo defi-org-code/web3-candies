@@ -1,8 +1,10 @@
 import { expect } from "chai";
 import { account, contract, parseEvents, web3, zero, iwethabi, bn18 } from "../src";
-import { artifact, deployArtifact, expectRevert, mineBlocks } from "../src/hardhat";
+import { artifact, deployArtifact, expectRevert, mineBlocks, useChaiBigNumber } from "../src/hardhat";
 import type { IWETH } from "../src/abi";
 import type { Example } from "../typechain-hardhat/contracts/Example.sol";
+
+useChaiBigNumber();
 
 describe("Contracts", () => {
   const weth = contract<IWETH>(iwethabi, "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2");

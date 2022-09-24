@@ -1,7 +1,9 @@
 import { expect } from "chai";
 import { bn, bn18, bn6, bn9, eqIgnoreCase, ether, maxUint256, zero, zeroAddress, parsebn, one, ten, bne, bnm, convertDecimals } from "../src";
-import { expectRevert } from "../src/hardhat";
+import { expectRevert, useChaiBigNumber } from "../src/hardhat";
 import _ from "lodash";
+
+useChaiBigNumber();
 
 describe("utils", () => {
   it("equal ignore case", async () => {
