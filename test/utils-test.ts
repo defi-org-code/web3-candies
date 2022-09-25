@@ -42,7 +42,7 @@ describe("utils", () => {
     expect(bn("ff", 16)).bignumber.eq("255");
     expect(bn("0xff", 16)).bignumber.eq("255");
     expect(bn("10", 8)).bignumber.eq("8");
-    await expectRevert(() => bn("hello"), "invalid BigNumber: hello");
+    expect(bn("hello").isNaN()).true;
   });
 
   it("bne, bnm", async () => {
@@ -63,8 +63,10 @@ describe("utils", () => {
     expect(parsebn("-1")).bignumber.eq(-1);
     expect(parsebn("1,234,567.123456789")).bignumber.eq(1234567.123456789);
     expect(parsebn("   001,234,567.1234567890000 \n\n")).bignumber.eq(1234567.123456789);
-    expect(parsebn("1x234x567_123 456 789", { decimalSeparator: "_" })).bignumber.eq(1234567.123456789);
-    await expectRevert(() => parsebn("1.234567.123 456 789"), "invalid BigNumber: 1.234567.123456789");
+    expect(parsebn("1x234x567_123 456 789", undefined, { decimalSeparator: "_" })).bignumber.eq(1234567.123456789);
+    expect(parsebn("asd", bn(1234))).bignumber.eq(1234);
+    expect(parsebn("1.2.3", bn(1234))).bignumber.eq(1234);
+    expect(parsebn("1.234567.123 456 789").isNaN()).true;
   });
 
   it("convertDecimals", async () => {

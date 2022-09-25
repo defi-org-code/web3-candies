@@ -42,20 +42,20 @@ export const bn6 = (n: Value = 1) => bne(n, 6);
 export function bn(n: Value, base?: number): BigNumber {
   if (n instanceof BigNumber) return n;
   if (!n) return zero;
-  const result = BigNumber(n instanceof BN ? n.toString() : n, base);
-  if (!result.isFinite()) throw new Error(`invalid BigNumber: ${n}`);
-  return result;
+  return BigNumber(n instanceof BN ? n.toString() : n, base);
 }
 
 /**
  * @returns parsed BigNumber from formatted string. The opposite of `BigNumber.toFormat`
  */
-export function parsebn(n: Value, fmt?: BigNumber.Format): BigNumber {
+export function parsebn(n: Value, defaultValue?: BigNumber, fmt?: BigNumber.Format): BigNumber {
   if (typeof n !== "string") return bn(n);
 
   const decimalSeparator = fmt?.decimalSeparator || ".";
   const str = n.replace(new RegExp(`[^${decimalSeparator}\\d-]+`, "g"), "");
-  return bn(str.replace(decimalSeparator, "."));
+  const result = bn(decimalSeparator === "." ? str : str.replace(decimalSeparator, "."));
+  if (defaultValue && (!result.isFinite() || result.lte(zero))) return defaultValue;
+  else return result;
 }
 
 /**
