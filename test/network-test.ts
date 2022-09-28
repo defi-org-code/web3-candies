@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { account, block, bn, estimatedBlockNumber, web3, zero, setWeb3Instance } from "../src";
+import { account, block, bn, estimatedBlockNumber, web3, zero, setWeb3Instance, hasWeb3Instance } from "../src";
 import { artifact, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 import Web3 from "web3";
 
@@ -26,11 +26,18 @@ describe("network", () => {
   });
 
   it("web3 global singleton", async () => {
+    expect(hasWeb3Instance()).is.true;
     const prev = web3();
+    expect(prev).not.undefined;
+    setWeb3Instance(null);
+    expect(hasWeb3Instance()).is.false;
+
     const instance = new Web3("");
     setWeb3Instance(instance);
     expect(web3()).eq(instance);
+    expect(hasWeb3Instance()).is.true;
     setWeb3Instance(prev);
+    expect(hasWeb3Instance()).is.true;
   });
 
   it("estimated block number", async () => {

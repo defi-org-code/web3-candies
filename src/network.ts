@@ -36,6 +36,10 @@ export function setWeb3Instance(web3: any) {
   web3Instance = web3;
 }
 
+export function hasWeb3Instance() {
+  return !!web3Instance;
+}
+
 export async function account(num: number = 0): Promise<string> {
   return (await web3().eth.getAccounts())[num];
 }
