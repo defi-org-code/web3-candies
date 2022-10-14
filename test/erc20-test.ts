@@ -87,5 +87,10 @@ describe("erc20", () => {
     it("optional decimals, memoized", async () => {
       expect(await erc20("", zeroAddress, 123).decimals()).eq(123);
     });
+
+    it("decimals memoized globally", async () => {
+      expect(await erc20("", zeroAddress, 123).decimals()).eq(123);
+      expect(await erc20("", zeroAddress).decimals()).eq(123);
+    });
   });
 });

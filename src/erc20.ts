@@ -1,5 +1,5 @@
 import type { ERC20, IWETH } from "./abi";
-import { bn, bne, bnm, parsebn, Value, BigNumber, convertDecimals } from "./utils";
+import { BigNumber, bne, bnm, convertDecimals, parsebn, Value } from "./utils";
 import { Abi, Contract, contract } from "./contracts";
 import { web3 } from "./network";
 
@@ -132,17 +132,19 @@ export function wrapToken(token: Contract, name: string, address: string, decima
   t.address = address;
   t.abi = abi;
 
-  const tt = t as Token & { _decimals_memoized: number };
-
-  if (decimals) tt._decimals_memoized = decimals;
+  if (decimals) decimalsCache.set(address, decimals);
 
   t.decimals = () =>
-    !!tt._decimals_memoized
-      ? Promise.resolve(tt._decimals_memoized)
+    decimalsCache.has(address)
+      ? Promise.resolve(decimalsCache.get(address)!)
       : t.methods
           .decimals()
           .call()
-          .then((d) => (tt._decimals_memoized = parseInt(d)));
+          .then(parseInt)
+          .then((d) => {
+            decimalsCache.set(address, d);
+            return d;
+          });
 
   t.amount = (fmt: Value) => t.decimals().then((d: number) => bne(parsebn(fmt), d));
 
@@ -150,6 +152,8 @@ export function wrapToken(token: Contract, name: string, address: string, decima
 
   t.to18 = (amount: Value) => t.decimals().then((d: number) => convertDecimals(amount, d, 18));
 }
+
+const decimalsCache = new Map<string, number>();
 
 function tryTag(address: string, name: string) {
   try {
