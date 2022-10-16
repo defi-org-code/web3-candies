@@ -132,7 +132,7 @@ export async function askFees() {
       validate: (s: any) => !!parseInt(s),
     },
   ]);
-  return { maxPriorityFeePerGas: bn9(maxPriorityFeePerGas).toString(), maxFeePerGas: bn9(maxFeePerGas).toString() };
+  return { maxPriorityFeePerGas: bn9(maxPriorityFeePerGas), maxFeePerGas: bn9(maxFeePerGas) };
 }
 
 async function askUseLegacy() {

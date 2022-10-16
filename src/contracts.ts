@@ -3,14 +3,14 @@ import type { CallOptions, Contract as ContractOrig, ContractOptions, SendOption
 import type { EventLog, TransactionReceipt } from "web3-core";
 import type { AbiItem } from "web3-utils";
 import type { BlockTransactionString } from "web3-eth";
+import type { BigNumberish } from "./utils";
 import { web3 } from "./network";
-import BN from "bn.js";
 import _ from "lodash";
 
 const debug = require("debug")("web3-candies");
 
 export type Contract = ContractOrig | BaseContract;
-export type Options = CallOptions | SendOptions | ContractOptions | { maxFeePerGas?: BN | string | number; maxPriorityFeePerGas?: BN | string | number };
+export type Options = CallOptions | SendOptions | ContractOptions | { maxFeePerGas?: BigNumberish; maxPriorityFeePerGas?: BigNumberish };
 export type BlockNumber = BlockType;
 export type BlockInfo = BlockTransactionString & { timestamp: number };
 export type Receipt = TransactionReceipt;

@@ -3,6 +3,7 @@
 /* eslint-disable */
 
 import type BN from "bn.js";
+import type BigNumber from "bignumber.js";
 import type { ContractOptions } from "web3-eth-contract";
 import type { EventLog } from "web3-core";
 import type { EventEmitter } from "events";
@@ -14,13 +15,11 @@ import type {
   ContractEventLog,
   BaseContract,
 } from "./types";
-
 export interface EventOptions {
   filter?: object;
   fromBlock?: BlockType;
   topics?: string[];
 }
-
 export type ApprovalForAll = ContractEventLog<{
   account: string;
   operator: string;
@@ -59,7 +58,6 @@ export type URI = ContractEventLog<{
   0: string;
   1: string;
 }>;
-
 export interface ERC1155 extends BaseContract {
   constructor(
     jsonInterface: any[],
@@ -70,12 +68,12 @@ export interface ERC1155 extends BaseContract {
   methods: {
     balanceOf(
       account: string,
-      id: number | string | BN
+      id: number | string | BN | BigNumber
     ): NonPayableTransactionObject<string>;
 
     balanceOfBatch(
       accounts: string[],
-      ids: (number | string | BN)[]
+      ids: (number | string | BN | BigNumber)[]
     ): NonPayableTransactionObject<string[]>;
 
     isApprovedForAll(
@@ -86,16 +84,16 @@ export interface ERC1155 extends BaseContract {
     safeBatchTransferFrom(
       from: string,
       to: string,
-      ids: (number | string | BN)[],
-      amounts: (number | string | BN)[],
+      ids: (number | string | BN | BigNumber)[],
+      amounts: (number | string | BN | BigNumber)[],
       data: string | number[]
     ): NonPayableTransactionObject<void>;
 
     safeTransferFrom(
       from: string,
       to: string,
-      id: number | string | BN,
-      amount: number | string | BN,
+      id: number | string | BN | BigNumber,
+      amount: number | string | BN | BigNumber,
       data: string | number[]
     ): NonPayableTransactionObject<void>;
 
@@ -108,7 +106,9 @@ export interface ERC1155 extends BaseContract {
       interfaceId: string | number[]
     ): NonPayableTransactionObject<boolean>;
 
-    uri(arg0: number | string | BN): NonPayableTransactionObject<string>;
+    uri(
+      arg0: number | string | BN | BigNumber
+    ): NonPayableTransactionObject<string>;
   };
   events: {
     ApprovalForAll(cb?: Callback<ApprovalForAll>): EventEmitter;

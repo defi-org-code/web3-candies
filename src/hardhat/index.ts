@@ -3,8 +3,9 @@ import Web3 from "web3";
 import _ from "lodash";
 import { block, networks, web3 } from "../network";
 import { contract, Contract, Options, waitForTxConfirmations } from "../contracts";
-import { bn, Value } from "../utils";
+import { bn, bn18, BigNumberish } from "../utils";
 import { HardhatUserConfig } from "hardhat/types";
+
 export * from "./testing";
 
 const debug = require("debug")("web3-candies");
@@ -43,7 +44,7 @@ export async function impersonate(...address: string[]) {
 /**
  * Set native currency balance (ETH, BNB etc)
  */
-export async function setBalance(address: string, balance: Value) {
+export async function setBalance(address: string, balance: BigNumberish) {
   await hre().network.provider.send("hardhat_setBalance", [address, "0x" + bn(balance).toString(16)]);
 }
 
@@ -178,7 +179,7 @@ export function hardhatDefaultConfig() {
         blockGasLimit: 10e6,
         accounts: {
           passphrase: process.env.npm_package_name || "empty", //empty accounts
-          accountsBalance: bn(100e18).toString(),
+          accountsBalance: bn18(100).toString(),
         },
       },
     },

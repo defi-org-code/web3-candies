@@ -3,6 +3,7 @@
 /* eslint-disable */
 
 import type BN from "bn.js";
+import type BigNumber from "bignumber.js";
 import type { ContractOptions } from "web3-eth-contract";
 import type { EventLog } from "web3-core";
 import type { EventEmitter } from "events";
@@ -14,13 +15,11 @@ import type {
   ContractEventLog,
   BaseContract,
 } from "./types";
-
 export interface EventOptions {
   filter?: object;
   fromBlock?: BlockType;
   topics?: string[];
 }
-
 export type Deposit = ContractEventLog<{
   dst: string;
   wad: string;
@@ -33,7 +32,6 @@ export type Withdrawal = ContractEventLog<{
   0: string;
   1: string;
 }>;
-
 export interface IWETH extends BaseContract {
   constructor(
     jsonInterface: any[],
@@ -42,7 +40,9 @@ export interface IWETH extends BaseContract {
   ): IWETH;
   clone(): IWETH;
   methods: {
-    withdraw(wad: number | string | BN): NonPayableTransactionObject<void>;
+    withdraw(
+      wad: number | string | BN | BigNumber
+    ): NonPayableTransactionObject<void>;
 
     deposit(): PayableTransactionObject<void>;
   };

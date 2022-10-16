@@ -3,6 +3,7 @@
 /* eslint-disable */
 
 import type BN from "bn.js";
+import type BigNumber from "bignumber.js";
 import type { ContractOptions } from "web3-eth-contract";
 import type { EventLog } from "web3-core";
 import type { EventEmitter } from "events";
@@ -14,13 +15,11 @@ import type {
   ContractEventLog,
   BaseContract,
 } from "./types";
-
 export interface EventOptions {
   filter?: object;
   fromBlock?: BlockType;
   topics?: string[];
 }
-
 export type Approval = ContractEventLog<{
   owner: string;
   spender: string;
@@ -37,7 +36,6 @@ export type Transfer = ContractEventLog<{
   1: string;
   2: string;
 }>;
-
 export interface ERC20 extends BaseContract {
   constructor(
     jsonInterface: any[],
@@ -53,7 +51,7 @@ export interface ERC20 extends BaseContract {
 
     approve(
       spender: string,
-      amount: number | string | BN
+      amount: number | string | BN | BigNumber
     ): NonPayableTransactionObject<boolean>;
 
     balanceOf(account: string): NonPayableTransactionObject<string>;
@@ -62,12 +60,12 @@ export interface ERC20 extends BaseContract {
 
     decreaseAllowance(
       spender: string,
-      subtractedValue: number | string | BN
+      subtractedValue: number | string | BN | BigNumber
     ): NonPayableTransactionObject<boolean>;
 
     increaseAllowance(
       spender: string,
-      addedValue: number | string | BN
+      addedValue: number | string | BN | BigNumber
     ): NonPayableTransactionObject<boolean>;
 
     name(): NonPayableTransactionObject<string>;
@@ -78,13 +76,13 @@ export interface ERC20 extends BaseContract {
 
     transfer(
       recipient: string,
-      amount: number | string | BN
+      amount: number | string | BN | BigNumber
     ): NonPayableTransactionObject<boolean>;
 
     transferFrom(
       sender: string,
       recipient: string,
-      amount: number | string | BN
+      amount: number | string | BN | BigNumber
     ): NonPayableTransactionObject<boolean>;
   };
   events: {

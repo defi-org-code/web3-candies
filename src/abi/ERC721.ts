@@ -3,6 +3,7 @@
 /* eslint-disable */
 
 import type BN from "bn.js";
+import type BigNumber from "bignumber.js";
 import type { ContractOptions } from "web3-eth-contract";
 import type { EventLog } from "web3-core";
 import type { EventEmitter } from "events";
@@ -14,13 +15,11 @@ import type {
   ContractEventLog,
   BaseContract,
 } from "./types";
-
 export interface EventOptions {
   filter?: object;
   fromBlock?: BlockType;
   topics?: string[];
 }
-
 export type Approval = ContractEventLog<{
   owner: string;
   approved: string;
@@ -45,7 +44,6 @@ export type Transfer = ContractEventLog<{
   1: string;
   2: string;
 }>;
-
 export interface ERC721 extends BaseContract {
   constructor(
     jsonInterface: any[],
@@ -56,13 +54,13 @@ export interface ERC721 extends BaseContract {
   methods: {
     approve(
       to: string,
-      tokenId: number | string | BN
+      tokenId: number | string | BN | BigNumber
     ): NonPayableTransactionObject<void>;
 
     balanceOf(owner: string): NonPayableTransactionObject<string>;
 
     getApproved(
-      tokenId: number | string | BN
+      tokenId: number | string | BN | BigNumber
     ): NonPayableTransactionObject<string>;
 
     isApprovedForAll(
@@ -72,18 +70,20 @@ export interface ERC721 extends BaseContract {
 
     name(): NonPayableTransactionObject<string>;
 
-    ownerOf(tokenId: number | string | BN): NonPayableTransactionObject<string>;
+    ownerOf(
+      tokenId: number | string | BN | BigNumber
+    ): NonPayableTransactionObject<string>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
       to: string,
-      tokenId: number | string | BN
+      tokenId: number | string | BN | BigNumber
     ): NonPayableTransactionObject<void>;
 
     "safeTransferFrom(address,address,uint256,bytes)"(
       from: string,
       to: string,
-      tokenId: number | string | BN,
+      tokenId: number | string | BN | BigNumber,
       data: string | number[]
     ): NonPayableTransactionObject<void>;
 
@@ -99,16 +99,16 @@ export interface ERC721 extends BaseContract {
     symbol(): NonPayableTransactionObject<string>;
 
     tokenByIndex(
-      index: number | string | BN
+      index: number | string | BN | BigNumber
     ): NonPayableTransactionObject<string>;
 
     tokenOfOwnerByIndex(
       owner: string,
-      index: number | string | BN
+      index: number | string | BN | BigNumber
     ): NonPayableTransactionObject<string>;
 
     tokenURI(
-      tokenId: number | string | BN
+      tokenId: number | string | BN | BigNumber
     ): NonPayableTransactionObject<string>;
 
     totalSupply(): NonPayableTransactionObject<string>;
@@ -116,7 +116,7 @@ export interface ERC721 extends BaseContract {
     transferFrom(
       from: string,
       to: string,
-      tokenId: number | string | BN
+      tokenId: number | string | BN | BigNumber
     ): NonPayableTransactionObject<void>;
   };
   events: {

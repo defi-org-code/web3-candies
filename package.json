@@ -18,11 +18,12 @@
     "dist",
     ".solhint.json",
     "tsconfig.json",
-    "hardhat.config.ts"
+    "hardhat.config.ts",
+    "typechain-web3-bignumber"
   ],
   "dependencies": {
     "@types/lodash": "4.x",
-    "axios": "0.27.x",
+    "axios": "1.x",
     "bignumber.js": "9.x",
     "lodash": "4.x",
     "debug": "4.x",
@@ -60,7 +61,7 @@
   "scripts": {
     "clean": "rm -rf artifacts cache dist",
     "prettier": "prettier --write '{contracts,src,test}/**/*.{ts,js,json,sol,tsx,jsx}'",
-    "typechain": "typechain --target=web3-v1 --out-dir=src/abi 'src/abi/**/*.json' && hardhat typechain",
+    "typechain": "typechain --target=typechain-web3-bignumber --out-dir=src/abi 'src/abi/**/*.json' && hardhat typechain",
     "prebuild": "npm run clean && npm run prettier && npm run typechain",
     "build": "hardhat compile && solhint 'contracts/**/*.sol' && tsc && cp -r src/hardhat/types dist/hardhat/types",
     "pretest": "npm run build",

@@ -15,7 +15,7 @@ describe("Contracts", () => {
 
   describe("parseEvents", async () => {
     it("returns parsed events", async () => {
-      const tx = await weth.methods.deposit().send({ from: await account(), value: bn18(42).toString() });
+      const tx = await weth.methods.deposit().send({ from: await account(), value: bn18(42) });
       const events = parseEvents(tx, weth);
       expect(events.find((e) => e.event === "Deposit")!.returnValues.wad).bignumber.eq(bn18("42"));
     });
@@ -42,6 +42,6 @@ describe("Contracts", () => {
   it("expectRevert, propagates errors correctly", async () => {
     const c = await deployExample();
     expect(await c.methods.assertNotZero("123").call()).bignumber.eq("123");
-    await expectRevert(() => c.methods.assertNotZero(zero.toString()).call(), "n should not be zero");
+    await expectRevert(() => c.methods.assertNotZero(zero).call(), "n should not be zero");
   });
 });

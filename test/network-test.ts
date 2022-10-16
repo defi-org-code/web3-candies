@@ -16,7 +16,7 @@ describe("network", () => {
     const startBalance = bn(await web3().eth.getBalance(await account()));
     expect(startBalance).bignumber.gt(zero);
 
-    await web3().eth.sendTransaction({ from: await account(), to: await account(9), value: startBalance.div(2).toString() });
+    await web3().eth.sendTransaction({ from: await account(), to: await account(9), value: startBalance.div(2) });
 
     await resetNetworkFork();
 
