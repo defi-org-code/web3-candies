@@ -179,7 +179,7 @@ export function hardhatDefaultConfig() {
         blockGasLimit: 10e6,
         accounts: {
           passphrase: process.env.npm_package_name || "empty", //empty accounts
-          accountsBalance: bn18(100).toString(),
+          accountsBalance: bn18(1_000_000).toString(),
         },
       },
     },
