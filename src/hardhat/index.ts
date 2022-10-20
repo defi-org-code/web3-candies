@@ -48,8 +48,14 @@ export async function setBalance(address: string, balance: BigNumberish) {
   await hre().network.provider.send("hardhat_setBalance", [address, "0x" + bn(balance).toString(16)]);
 }
 
-export async function resetNetworkFork(blockNumber: number = getNetworkForkingBlockNumber()) {
+/**
+ * @param blockNumber: number | 'latest', defaults to getNetworkForkingBlockNumber()
+ */
+export async function resetNetworkFork(blockNumber?: number | "latest") {
+  if (!blockNumber) blockNumber = getNetworkForkingBlockNumber();
+  if (blockNumber === "latest") blockNumber = undefined;
   debug("resetNetworkFork to", blockNumber || "latest");
+
   await hre().network.provider.send("hardhat_reset", [
     {
       forking: {
@@ -61,10 +67,16 @@ export async function resetNetworkFork(blockNumber: number = getNetworkForkingBl
   debug("now block", await web3().eth.getBlockNumber());
 }
 
+/**
+ * @returns forking blockNumber from hardhat config
+ */
 export function getNetworkForkingBlockNumber(): number {
   return _.get(hre().network.config, ["forking", "blockNumber"]);
 }
 
+/**
+ * @returns forking url from hardhat config
+ */
 export function getNetworkForkingUrl(): string {
   return _.get(hre().network.config, ["forking", "url"]);
 }
@@ -143,7 +155,7 @@ export async function deployArtifact<T extends Contract>(
 export function hardhatDefaultConfig() {
   require("dotenv").config();
   process.env.NETWORK = process.env.NETWORK?.toUpperCase() || "ETH";
-  console.log(`🌐 network`, process.env.NETWORK, "blocknumber", process.env.BLOCK ? parseInt(process.env.BLOCK!) : "latest", "🌐");
+  console.log(`\n🌐 network`, process.env.NETWORK, "blocknumber", process.env.BLOCK ? parseInt(process.env.BLOCK!) : "latest", "🌐\n\n");
 
   const networkUrl = (process.env as any)[`NETWORK_URL_${process.env.NETWORK}`];
   if (!networkUrl) console.error(`⚠️ expected NETWORK_URL_${process.env.NETWORK} in env`);

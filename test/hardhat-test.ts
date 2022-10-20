@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { account, bn9, erc20s, ether, networks, web3, zero } from "../src";
-import { deployArtifact, hardhatDefaultConfig, hre, mineBlock, mineBlocks, setBalance, useChaiBigNumber } from "../src/hardhat";
+import { deployArtifact, getNetworkForkingBlockNumber, hardhatDefaultConfig, hre, mineBlock, mineBlocks, resetNetworkFork, setBalance, useChaiBigNumber } from "../src/hardhat";
 import type { Example } from "../typechain-hardhat/contracts/Example.sol";
 
 useChaiBigNumber();
@@ -52,5 +52,20 @@ describe("hardhat", () => {
     expect(config.networks!.hardhat).not.undefined;
     expect(config.networks!.eth!.chainId).eq(networks.eth.id);
     expect(config.networks!.bsc!.chainId).eq(networks.bsc.id);
+  });
+
+  it("resetNetworkFork supports latest or number or config block number", async () => {
+    expect(getNetworkForkingBlockNumber()).eq(12345678);
+
+    await resetNetworkFork();
+    expect(await web3().eth.getBlockNumber())
+      .eq(getNetworkForkingBlockNumber())
+      .eq(12345678);
+
+    await resetNetworkFork(5000000);
+    expect(await web3().eth.getBlockNumber()).eq(5000000);
+
+    await resetNetworkFork("latest");
+    expect(await web3().eth.getBlockNumber()).gt(12345678);
   });
 });

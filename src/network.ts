@@ -1,5 +1,6 @@
 import Web3 from "web3";
 import type { BlockInfo, BlockNumber } from "./contracts";
+import _ from "lodash";
 
 export type Network = { id: number; name: string; shortname: string };
 
@@ -38,6 +39,16 @@ export function setWeb3Instance(web3: any) {
 
 export function hasWeb3Instance() {
   return !!web3Instance;
+}
+
+export async function currentNetwork() {
+  if (process.env.NETWORK) {
+    return _.find(networks, (n) => n.shortname === process.env.NETWORK?.toLowerCase());
+  }
+  if (hasWeb3Instance()) {
+    const chainId = await web3().eth.getChainId();
+    return _.find(networks, (n) => n.id === chainId);
+  }
 }
 
 export async function account(num: number = 0): Promise<string> {
