@@ -197,7 +197,7 @@ export function hardhatDefaultConfig() {
     },
     typechain: {
       outDir: "typechain-hardhat",
-      target: "web3-v1",
+      target: process.env.npm_package_name === "@defi.org/web3-candies" ? "typechain-web3-bignumber" : "node_modules/@defi.org/web3-candies/typechain-web3-bignumber",
     },
     mocha: {
       timeout: 180_000,
