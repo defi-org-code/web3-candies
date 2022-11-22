@@ -24,11 +24,7 @@ contract Example is ERC20("Example", "EX") {
     using SafeERC20 for IERC20;
     address public immutable deployer;
 
-    constructor(
-        uint256 foo,
-        address bar,
-        S memory s
-    ) {
+    constructor(uint256 foo, address bar, S memory s) {
         require(foo > 0 && bar != address(0) && s.a > 0, "testing constructor args");
         deployer = msg.sender;
     }
