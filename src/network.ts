@@ -51,6 +51,10 @@ export async function currentNetwork() {
   }
 }
 
+export async function chainId() {
+  return (await currentNetwork())?.id || 0;
+}
+
 export async function account(num: number = 0): Promise<string> {
   return (await web3().eth.getAccounts())[num];
 }

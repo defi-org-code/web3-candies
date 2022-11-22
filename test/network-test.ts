@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { account, block, bn, currentNetwork, estimatedBlockNumber, hasWeb3Instance, networks, setWeb3Instance, web3, zero } from "../src";
+import { account, block, bn, chainId, currentNetwork, estimatedBlockNumber, hasWeb3Instance, networks, setWeb3Instance, web3, zero } from "../src";
 import { artifact, hre, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 import Web3 from "web3";
 
@@ -57,5 +57,12 @@ describe("network", () => {
     w.eth.getChainId = () => Promise.resolve(1);
     setWeb3Instance(w);
     expect(await currentNetwork()).eq(networks.eth);
+
+    process.env.NETWORK = "ETH";
+  });
+
+  it("chainId", async () => {
+    expect(process.env.NETWORK).eq("ETH");
+    expect(await chainId()).eq(0x1);
   });
 });
