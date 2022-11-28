@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { account, block, bn, chainId, currentNetwork, estimatedBlockNumber, hasWeb3Instance, networks, setWeb3Instance, web3, zero } from "../src";
+import { account, block, bn, chainId, currentNetwork, estimatedBlockNumber, findBlock, hasWeb3Instance, networks, setWeb3Instance, web3, zero } from "../src";
 import { artifact, hre, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 import Web3 from "web3";
 
@@ -44,6 +44,12 @@ describe("network", () => {
     const now = await block();
     expect(await estimatedBlockNumber(Date.now(), 10)).eq(now.number);
     expect(await estimatedBlockNumber(Date.now() - 10_000, 10)).eq(now.number - 1);
+  });
+
+  it("find block", async () => {
+    const targetDate = new Date(2020, 5, 6);
+    const result = await findBlock(targetDate.getTime());
+    expect(result.timestamp).closeTo(targetDate.getTime() / 1000, 10_000);
   });
 
   it("currentNetwork", async () => {

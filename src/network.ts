@@ -2,6 +2,8 @@ import Web3 from "web3";
 import type { BlockInfo, BlockNumber } from "./contracts";
 import _ from "lodash";
 
+const debug = require("debug")("web3-candies");
+
 export type Network = { id: number; name: string; shortname: string };
 
 /**
@@ -70,4 +72,34 @@ export async function estimatedBlockNumber(timestamp: number, avgBlockDurationSe
   const diffMillis = Date.now() - timestamp;
   const diffBlocks = Math.round(diffMillis / 1000 / avgBlockDurationSec);
   return current - diffBlocks;
+}
+
+export async function findBlock(timestamp: number): Promise<BlockInfo> {
+  const targetTimestampSecs = timestamp / 1000;
+  const currentBlock = await block();
+  if (targetTimestampSecs > currentBlock.timestamp) throw new Error(`${timestamp} is in the future`);
+
+  let candidate = await block(currentBlock.number - 10_000);
+  const avgBlockDurationSec = (currentBlock.timestamp - candidate.timestamp) / 10_000;
+  debug(
+    "searching for blocknumber at",
+    new Date(timestamp).toString(),
+    "current block",
+    currentBlock.number,
+    "average block duration",
+    avgBlockDurationSec,
+    "seconds",
+    "starting at block",
+    candidate.number
+  );
+
+  while (Math.abs(candidate.timestamp - targetTimestampSecs) > avgBlockDurationSec) {
+    const distanceInSeconds = candidate.timestamp - targetTimestampSecs;
+    const estDistanceInBlocks = Math.floor(distanceInSeconds / avgBlockDurationSec);
+    debug({ distanceInSeconds, estDistanceInBlocks });
+    candidate = await block(candidate.number - estDistanceInBlocks);
+  }
+
+  debug("result", candidate.number, new Date(candidate.timestamp * 1000).toString());
+  return candidate;
 }
