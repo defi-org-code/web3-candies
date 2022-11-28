@@ -64,10 +64,10 @@
     "typechain": "typechain --target=typechain-web3-bignumber --out-dir=src/abi 'src/abi/**/*.json' && hardhat typechain",
     "prebuild": "npm run clean && npm run prettier && npm run typechain",
     "build": "hardhat compile && solhint 'contracts/**/*.sol' && tsc && cp -r src/hardhat/types dist/hardhat/types",
+    "prepublishOnly": "npm run build",
     "pretest": "npm run build",
     "test": "BLOCK=12345678 DEBUG=web3-candies hardhat test --logs",
-    "deploy": "hardhat deploy --network $1",
-    "upload": "npm publish --access public"
+    "deploy": "hardhat deploy --network $1"
   },
   "prettier": {
     "printWidth": 180
