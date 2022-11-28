@@ -93,9 +93,13 @@ export async function findBlock(timestamp: number): Promise<BlockInfo> {
     candidate.number
   );
 
-  while (Math.abs(candidate.timestamp - targetTimestampSecs) > avgBlockDurationSec) {
+  let closesDistance = Number.POSITIVE_INFINITY;
+  while (Math.abs(candidate.timestamp - targetTimestampSecs) >= avgBlockDurationSec) {
     const distanceInSeconds = candidate.timestamp - targetTimestampSecs;
     const estDistanceInBlocks = Math.floor(distanceInSeconds / avgBlockDurationSec);
+    if (Math.abs(estDistanceInBlocks) > closesDistance) break;
+
+    closesDistance = Math.abs(estDistanceInBlocks);
     debug({ distanceInSeconds, estDistanceInBlocks });
     candidate = await block(candidate.number - estDistanceInBlocks);
   }
