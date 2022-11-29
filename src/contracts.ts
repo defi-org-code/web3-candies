@@ -1,10 +1,10 @@
 import type { BaseContract, BlockType } from "@typechain/web3-v1/static/types";
-import type { CallOptions, Contract as ContractOrig, ContractOptions, ContractSendMethod, SendOptions } from "web3-eth-contract";
+import type { Contract as ContractOrig, ContractOptions, ContractSendMethod } from "web3-eth-contract";
 import type { EventLog, TransactionReceipt } from "web3-core";
 import type { AbiItem } from "web3-utils";
 import type { BlockTransactionString } from "web3-eth";
-import type { BigNumberish } from "./utils";
 import type { NonPayableTransactionObject, PayableTransactionObject } from "./abi/types";
+import BN from "bignumber.js";
 import { bn } from "./utils";
 import { web3 } from "./network";
 import _ from "lodash";
@@ -12,7 +12,7 @@ import _ from "lodash";
 const debug = require("debug")("web3-candies");
 
 export type Contract = ContractOrig | BaseContract;
-export type Options = CallOptions | SendOptions | ContractOptions | { maxFeePerGas?: BigNumberish; maxPriorityFeePerGas?: BigNumberish };
+export type Options = { from: string; maxPriorityFeePerGas?: BN.Value; maxFeePerGas?: BN.Value; value?: BN.Value };
 export type BlockNumber = BlockType;
 export type BlockInfo = BlockTransactionString & { timestamp: number };
 export type Receipt = TransactionReceipt;
@@ -61,7 +61,7 @@ export function parseEvents(receipt: Receipt, contractOrAbi: Contract | Abi): Ev
 
 export async function sendAndWaitForConfirmations<T extends Contract | Receipt = Receipt>(
   tx: NonPayableTransactionObject<any> | PayableTransactionObject<any> | ContractSendMethod,
-  opts: { from: string; maxPriorityFeePerGas?: BigNumberish; maxFeePerGas?: BigNumberish; value?: BigNumberish },
+  opts: Options,
   confirmations: number = 0
 ) {
   const nonce = await web3().eth.getTransactionCount(opts.from);

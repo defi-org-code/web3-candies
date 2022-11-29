@@ -1,54 +1,51 @@
-import { BigNumber } from "bignumber.js";
-import BN from "bn.js";
+import BN from "bignumber.js";
 
-export { BigNumber } from "bignumber.js";
+export { BigNumber as BN } from "bignumber.js";
 
-export type BigNumberish = number | string | BigNumber | BN;
-
-export const zero = BigNumber(0);
-export const one = BigNumber(1);
-export const ten = BigNumber(10);
-export const ether = BigNumber(1e18);
+export const zero = BN(0);
+export const one = BN(1);
+export const ten = BN(10);
+export const ether = BN(1e18);
 export const maxUint256 = "115792089237316195423570985008687907853269984665640564039457584007913129639935";
 export const zeroAddress = "0x0000000000000000000000000000000000000000";
 
 // Almost never return exponential notation:
-BigNumber.config({ EXPONENTIAL_AT: 1e9 });
+BN.config({ EXPONENTIAL_AT: 1e9 });
 
 /**
  * @returns n value exponentiated integer: bne(123.456789, 3) ==> 123456
  */
-export const bne = (n: BigNumberish, exponent: number = 18) => bn(n).times(ten.pow(exponent)).integerValue(BigNumber.ROUND_DOWN);
+export const bne = (n: BN.Value, exponent: number = 18) => bn(n).times(ten.pow(exponent)).integerValue(BN.ROUND_DOWN);
 /**
  * @returns n value mantissa: bnm(123456.789, 3) ==> 123.456789
  */
-export const bnm = (n: BigNumberish, exponent: number = 18) => bn(n).div(ten.pow(exponent));
+export const bnm = (n: BN.Value, exponent: number = 18) => bn(n).div(ten.pow(exponent));
 
 /**
  * @returns n exponentiated to 18 decimals
  */
-export const bn18 = (n: BigNumberish = 1) => bne(n, 18);
+export const bn18 = (n: BN.Value = 1) => bne(n, 18);
 
 /**
  * @returns n exponentiated to 9 decimals
  */
-export const bn9 = (n: BigNumberish = 1) => bne(n, 9);
+export const bn9 = (n: BN.Value = 1) => bne(n, 9);
 
 /**
  * @returns n exponentiated to 6 decimals
  */
-export const bn6 = (n: BigNumberish = 1) => bne(n, 6);
+export const bn6 = (n: BN.Value = 1) => bne(n, 6);
 
-export function bn(n: BigNumberish, base?: number): BigNumber {
-  if (n instanceof BigNumber) return n;
+export function bn(n: BN.Value, base?: number): BN {
+  if (n instanceof BN) return n;
   if (!n) return zero;
-  return BigNumber(n instanceof BN ? n.toString() : n, base);
+  return BN(n instanceof BN ? n.toString() : n, base);
 }
 
 /**
  * @returns parsed BigNumber from formatted string. The opposite of `BigNumber.toFormat`
  */
-export function parsebn(n: BigNumberish, defaultValue?: BigNumber, fmt?: BigNumber.Format): BigNumber {
+export function parsebn(n: BN.Value, defaultValue?: BN, fmt?: BN.Format): BN {
   if (typeof n !== "string") return bn(n);
 
   const decimalSeparator = fmt?.decimalSeparator || ".";
@@ -61,7 +58,7 @@ export function parsebn(n: BigNumberish, defaultValue?: BigNumber, fmt?: BigNumb
 /**
  * increase or decrease `n` decimal percision from `decimals` to `targetDecimals`
  */
-export function convertDecimals(n: BigNumberish, sourceDecimals: number, targetDecimals: number): BigNumber {
+export function convertDecimals(n: BN.Value, sourceDecimals: number, targetDecimals: number): BN {
   if (sourceDecimals === targetDecimals) return bn(n);
   else if (sourceDecimals > targetDecimals) return bn(n).idiv(ten.pow(sourceDecimals - targetDecimals));
   else return bn(n).times(ten.pow(targetDecimals - sourceDecimals));

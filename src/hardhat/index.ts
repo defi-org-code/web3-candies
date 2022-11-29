@@ -3,7 +3,7 @@ import Web3 from "web3";
 import _ from "lodash";
 import { block, networks, web3 } from "../network";
 import { contract, Contract, Options, sendAndWaitForConfirmations } from "../contracts";
-import { bn, bn18, BigNumberish } from "../utils";
+import { bn, bn18, BN } from "../utils";
 import { HardhatUserConfig } from "hardhat/types";
 
 export * from "./testing";
@@ -44,7 +44,7 @@ export async function impersonate(...address: string[]) {
 /**
  * Set native currency balance (ETH, BNB etc)
  */
-export async function setBalance(address: string, balance: BigNumberish) {
+export async function setBalance(address: string, balance: BN.Value) {
   await hre().network.provider.send("hardhat_setBalance", [address, "0x" + bn(balance).toString(16)]);
 }
 

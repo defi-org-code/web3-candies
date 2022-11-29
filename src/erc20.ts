@@ -1,5 +1,5 @@
 import type { ERC20, IWETH } from "./abi";
-import { BigNumber, bne, bnm, convertDecimals, parsebn, BigNumberish } from "./utils";
+import { bne, bnm, convertDecimals, parsebn, BN } from "./utils";
 import { Abi, Contract, contract } from "./contracts";
 import { web3 } from "./network";
 
@@ -27,17 +27,17 @@ export type Token = ERC20 & {
    * @param fmt formatted, significant digits, float, human-readable, ie 123.456
    * @returns amount in wei
    */
-  amount: (fmt: BigNumberish) => Promise<BigNumber>;
+  amount: (fmt: BN.Value) => Promise<BN>;
   /**
    * @param amount in token amount
    * @returns mantissa with decimals
    */
-  mantissa: (amount: BigNumberish) => Promise<BigNumber>;
+  mantissa: (amount: BN.Value) => Promise<BN>;
   /**
    * @param amount in token amount
    * @returns amount in 18 decimals
    */
-  to18: (amount: BigNumberish) => Promise<BigNumber>;
+  to18: (amount: BN.Value) => Promise<BN>;
 };
 
 /**
@@ -146,11 +146,11 @@ export function wrapToken(token: Contract, name: string, address: string, decima
             return d;
           });
 
-  t.amount = (fmt: BigNumberish) => t.decimals().then((d: number) => bne(parsebn(fmt), d));
+  t.amount = (fmt: BN.Value) => t.decimals().then((d: number) => bne(parsebn(fmt), d));
 
-  t.mantissa = (amount: BigNumberish) => t.decimals().then((d: number) => bnm(amount, d));
+  t.mantissa = (amount: BN.Value) => t.decimals().then((d: number) => bnm(amount, d));
 
-  t.to18 = (amount: BigNumberish) => t.decimals().then((d: number) => convertDecimals(amount, d, 18));
+  t.to18 = (amount: BN.Value) => t.decimals().then((d: number) => convertDecimals(amount, d, 18));
 }
 
 const decimalsCache = new Map<string, number>();

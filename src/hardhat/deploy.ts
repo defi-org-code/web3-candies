@@ -1,11 +1,11 @@
-import BN from "bn.js";
+import BN from "bignumber.js";
 import path from "path";
 import { web3 } from "../network";
 import { execSync } from "child_process";
 import { deployArtifact, hre } from "./index";
 import prompts from "prompts";
 import type { Abi } from "../contracts";
-import { bn, bn9, bnm } from "../utils";
+import { bn9, bnm } from "../utils";
 
 export type DeployParams = {
   chainId: number;
