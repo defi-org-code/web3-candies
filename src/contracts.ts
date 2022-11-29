@@ -1,9 +1,11 @@
 import type { BaseContract, BlockType } from "@typechain/web3-v1/static/types";
-import type { CallOptions, Contract as ContractOrig, ContractOptions, SendOptions } from "web3-eth-contract";
-import type { EventLog, PromiEvent, TransactionReceipt } from "web3-core";
+import type { CallOptions, Contract as ContractOrig, ContractOptions, ContractSendMethod, SendOptions } from "web3-eth-contract";
+import type { EventLog, TransactionReceipt } from "web3-core";
 import type { AbiItem } from "web3-utils";
 import type { BlockTransactionString } from "web3-eth";
 import type { BigNumberish } from "./utils";
+import type { NonPayableTransactionObject, PayableTransactionObject } from "./abi/types";
+import { bn } from "./utils";
 import { web3 } from "./network";
 import _ from "lodash";
 
@@ -57,19 +59,37 @@ export function parseEvents(receipt: Receipt, contractOrAbi: Contract | Abi): Ev
   return result;
 }
 
-export async function waitForConfirmations<T>(sendFn: () => PromiEvent<T>, from: string, confirmations: number = 0): Promise<T> {
-  debug(`waiting for ${confirmations} confirmations...`);
-  const nonce = await web3().eth.getTransactionCount(from);
+export async function sendAndWaitForConfirmations<T extends Contract | Receipt = Receipt>(
+  tx: NonPayableTransactionObject<any> | PayableTransactionObject<any> | ContractSendMethod,
+  opts: { from: string; maxPriorityFeePerGas?: BigNumberish; maxFeePerGas?: BigNumberish; value?: BigNumberish },
+  confirmations: number = 0
+) {
+  const nonce = await web3().eth.getTransactionCount(opts.from);
+  let options = {
+    from: opts.from,
+    nonce,
+    maxPriorityFeePerGas: opts.maxPriorityFeePerGas ? bn(opts.maxPriorityFeePerGas).toFixed(0) : undefined,
+    maxFeePerGas: opts.maxFeePerGas ? bn(opts.maxFeePerGas).toFixed(0) : undefined,
+    value: opts.value ? bn(opts.value).toFixed(0) : undefined,
+    gas: 0,
+  };
 
-  const promiEvent = sendFn();
+  debug(`estimating tx from ${options.from} nonce ${nonce} priority ${options.maxPriorityFeePerGas} maxFee ${options.maxFeePerGas} value ${options.value}`);
+  const gas = Math.floor((await tx.estimateGas(options)) * 1.2);
+  options = { ...options, gas };
+
+  debug(`sending tx with gas ${options.gas}`);
+  const promiEvent = tx.send(options);
+
   let sentBlock = Number.POSITIVE_INFINITY;
   promiEvent.once("receipt", (r) => (sentBlock = r.blockNumber));
 
+  debug(`waiting for ${confirmations} confirmations...`);
   const result = await promiEvent;
 
-  while ((await web3().eth.getTransactionCount(from)) === nonce || (await web3().eth.getBlockNumber()) < sentBlock + confirmations) {
+  while ((await web3().eth.getTransactionCount(opts.from)) === nonce || (await web3().eth.getBlockNumber()) < sentBlock + confirmations) {
     await new Promise((r) => setTimeout(r, 1000));
   }
 
-  return result;
+  return result as T;
 }

@@ -2,7 +2,7 @@ import type { Artifact, HardhatRuntimeEnvironment } from "./types";
 import Web3 from "web3";
 import _ from "lodash";
 import { block, networks, web3 } from "../network";
-import { contract, Contract, Options, waitForConfirmations as waitForConfirms } from "../contracts";
+import { contract, Contract, Options, sendAndWaitForConfirmations } from "../contracts";
 import { bn, bn18, BigNumberish } from "../utils";
 import { HardhatUserConfig } from "hardhat/types";
 
@@ -140,7 +140,7 @@ export async function deployArtifact<T extends Contract>(
     contractToDeploy.transactionPollingTimeout = timeoutInSeconds;
   }
 
-  const deployed = await waitForConfirms(() => contractToDeploy.deploy({ data: _artifact.bytecode, arguments: constructorArgs }).send(opts), opts.from, waitForConfirmations);
+  const deployed = await sendAndWaitForConfirmations<Contract>(contractToDeploy.deploy({ data: _artifact.bytecode, arguments: constructorArgs }), opts, waitForConfirmations);
 
   debug("deployed", contractName, deployed.options.address, "deployer", opts.from);
   tag(deployed.options.address, contractName);

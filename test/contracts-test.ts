@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { account, contract, parseEvents, web3, zero, iwethabi, bn18, waitForConfirmations } from "../src";
+import { account, contract, parseEvents, web3, zero, iwethabi, bn18 } from "../src";
 import { artifact, deployArtifact, expectRevert, mineBlocks, useChaiBigNumber } from "../src/hardhat";
 import type { IWETH } from "../src/abi";
 import type { Example } from "../typechain-hardhat/contracts/Example.sol";
