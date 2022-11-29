@@ -2,7 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type BN from "bn.js";
 import type BigNumber from "bignumber.js";
 import type { ContractOptions } from "web3-eth-contract";
 import type { EventLog } from "web3-core";
@@ -51,7 +50,7 @@ export interface ERC20 extends BaseContract {
 
     approve(
       spender: string,
-      amount: number | string | BN | BigNumber
+      amount: number | string | BigNumber
     ): NonPayableTransactionObject<boolean>;
 
     balanceOf(account: string): NonPayableTransactionObject<string>;
@@ -60,12 +59,12 @@ export interface ERC20 extends BaseContract {
 
     decreaseAllowance(
       spender: string,
-      subtractedValue: number | string | BN | BigNumber
+      subtractedValue: number | string | BigNumber
     ): NonPayableTransactionObject<boolean>;
 
     increaseAllowance(
       spender: string,
-      addedValue: number | string | BN | BigNumber
+      addedValue: number | string | BigNumber
     ): NonPayableTransactionObject<boolean>;
 
     name(): NonPayableTransactionObject<string>;
@@ -76,13 +75,13 @@ export interface ERC20 extends BaseContract {
 
     transfer(
       recipient: string,
-      amount: number | string | BN | BigNumber
+      amount: number | string | BigNumber
     ): NonPayableTransactionObject<boolean>;
 
     transferFrom(
       sender: string,
       recipient: string,
-      amount: number | string | BN | BigNumber
+      amount: number | string | BigNumber
     ): NonPayableTransactionObject<boolean>;
   };
   events: {

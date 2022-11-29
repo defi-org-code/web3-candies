@@ -20,7 +20,7 @@ exports.codegenInputType = (evmType) => {
   switch (evmType.type) {
     case "integer":
     case "uinteger":
-      return "number | string | BN | BigNumber";
+      return "number | string | BigNumber";
     case "address":
       return "string";
     case "bytes":

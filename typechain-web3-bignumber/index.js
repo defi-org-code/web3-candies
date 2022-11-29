@@ -52,7 +52,6 @@ exports.default = class Web3BigNumber extends TypeChainTarget {
       {
         path: join(this.outDirAbs, "types.ts"),
         contents: `
-import type BN from "bn.js";
 import type BigNumber from "bignumber.js";
 import type { EventEmitter } from "events";
 import type { EventLog, PromiEvent, TransactionReceipt } from "web3-core/types";
@@ -61,7 +60,7 @@ import type { Contract } from "web3-eth-contract";
 export interface EstimateGasOptions {
   from?: string;
   gas?: number;
-  value?: number | string | BN | BigNumber;
+  value?: number | string | BigNumber;
 }
 
 export interface EventOptions {
@@ -81,19 +80,19 @@ export interface ContractEventEmitter<T> extends EventEmitter {
 }
 
 export interface NonPayableTx {
-  nonce?: string | number | BN | BigNumber;
-  chainId?: string | number | BN | BigNumber;
+  nonce?: string | number | BigNumber;
+  chainId?: string | number | BigNumber;
   from?: string;
   to?: string;
   data?: string;
-  gas?: string | number | BN | BigNumber;
-  maxPriorityFeePerGas?: string | number | BN | BigNumber;
-  maxFeePerGas?: string | number | BN | BigNumber;
-  gasPrice?: string | number | BN | BigNumber;
+  gas?: string | number | BigNumber;
+  maxPriorityFeePerGas?: string | number | BigNumber;
+  maxFeePerGas?: string | number | BigNumber;
+  gasPrice?: string | number | BigNumber;
 }
 
 export interface PayableTx extends NonPayableTx {
-  value?: string | number | BN | BigNumber;
+  value?: string | number | BigNumber;
 }
 
 export interface NonPayableTransactionObject<T> {
@@ -112,7 +111,7 @@ export interface PayableTransactionObject<T> {
   encodeABI(): string;
 }
 
-export type BlockType = "latest" | "pending" | "genesis" | "earliest" | number | BN | BigNumber;
+export type BlockType = "latest" | "pending" | "genesis" | "earliest" | number | BigNumber;
 export type BaseContract = Omit<Contract, "clone" | "once">;
         `,
       },

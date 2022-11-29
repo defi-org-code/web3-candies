@@ -2,7 +2,6 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type BN from "bn.js";
 import type BigNumber from "bignumber.js";
 import type { ContractOptions } from "web3-eth-contract";
 import type { EventLog } from "web3-core";
@@ -68,12 +67,12 @@ export interface ERC1155 extends BaseContract {
   methods: {
     balanceOf(
       account: string,
-      id: number | string | BN | BigNumber
+      id: number | string | BigNumber
     ): NonPayableTransactionObject<string>;
 
     balanceOfBatch(
       accounts: string[],
-      ids: (number | string | BN | BigNumber)[]
+      ids: (number | string | BigNumber)[]
     ): NonPayableTransactionObject<string[]>;
 
     isApprovedForAll(
@@ -84,16 +83,16 @@ export interface ERC1155 extends BaseContract {
     safeBatchTransferFrom(
       from: string,
       to: string,
-      ids: (number | string | BN | BigNumber)[],
-      amounts: (number | string | BN | BigNumber)[],
+      ids: (number | string | BigNumber)[],
+      amounts: (number | string | BigNumber)[],
       data: string | number[]
     ): NonPayableTransactionObject<void>;
 
     safeTransferFrom(
       from: string,
       to: string,
-      id: number | string | BN | BigNumber,
-      amount: number | string | BN | BigNumber,
+      id: number | string | BigNumber,
+      amount: number | string | BigNumber,
       data: string | number[]
     ): NonPayableTransactionObject<void>;
 
@@ -106,9 +105,7 @@ export interface ERC1155 extends BaseContract {
       interfaceId: string | number[]
     ): NonPayableTransactionObject<boolean>;
 
-    uri(
-      arg0: number | string | BN | BigNumber
-    ): NonPayableTransactionObject<string>;
+    uri(arg0: number | string | BigNumber): NonPayableTransactionObject<string>;
   };
   events: {
     ApprovalForAll(cb?: Callback<ApprovalForAll>): EventEmitter;
