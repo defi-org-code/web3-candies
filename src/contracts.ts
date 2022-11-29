@@ -1,6 +1,6 @@
 import type { BaseContract, BlockType } from "@typechain/web3-v1/static/types";
 import type { CallOptions, Contract as ContractOrig, ContractOptions, SendOptions } from "web3-eth-contract";
-import type { EventLog, TransactionReceipt } from "web3-core";
+import type { EventLog, PromiEvent, TransactionReceipt } from "web3-core";
 import type { AbiItem } from "web3-utils";
 import type { BlockTransactionString } from "web3-eth";
 import type { BigNumberish } from "./utils";
@@ -57,19 +57,19 @@ export function parseEvents(receipt: Receipt, contractOrAbi: Contract | Abi): Ev
   return result;
 }
 
-export async function waitForTxConfirmations(tx: any, confirmations: number) {
+export async function waitForConfirmations<T>(sendFn: () => PromiEvent<T>, from: string, confirmations: number = 0): Promise<T> {
   debug(`waiting for ${confirmations} confirmations...`);
-  await new Promise<void>((res) => waitConfirmations(tx, res, confirmations));
-  return await tx;
-}
+  const nonce = await web3().eth.getTransactionCount(from);
 
-function waitConfirmations(tx: any, res: () => void, requiredConfirms: number) {
-  tx.once("confirmation", (confNumber: number, receipt: Receipt, blockHash: string) => {
-    debug("confirmed", confNumber, "blocks", receipt.blockNumber, blockHash);
-    if (confNumber >= requiredConfirms) {
-      res();
-    } else {
-      waitConfirmations(tx, res, requiredConfirms);
-    }
-  });
+  const promiEvent = sendFn();
+  let sentBlock = Number.POSITIVE_INFINITY;
+  promiEvent.once("receipt", (r) => (sentBlock = r.blockNumber));
+
+  const result = await promiEvent;
+
+  while ((await web3().eth.getTransactionCount(from)) === nonce || (await web3().eth.getBlockNumber()) < sentBlock + confirmations) {
+    await new Promise((r) => setTimeout(r, 1000));
+  }
+
+  return result;
 }

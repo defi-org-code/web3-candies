@@ -67,13 +67,6 @@ export async function block(blockHashOrBlockNumber?: BlockNumber | string): Prom
   return r as BlockInfo;
 }
 
-export async function estimatedBlockNumber(timestamp: number, avgBlockDurationSec: number): Promise<number> {
-  const current: number = await web3().eth.getBlockNumber();
-  const diffMillis = Date.now() - timestamp;
-  const diffBlocks = Math.round(diffMillis / 1000 / avgBlockDurationSec);
-  return current - diffBlocks;
-}
-
 export async function findBlock(timestamp: number): Promise<BlockInfo> {
   const targetTimestampSecs = timestamp / 1000;
   const currentBlock = await block();

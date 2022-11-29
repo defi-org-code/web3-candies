@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { account, contract, parseEvents, web3, zero, iwethabi, bn18 } from "../src";
+import { account, contract, parseEvents, web3, zero, iwethabi, bn18, waitForConfirmations } from "../src";
 import { artifact, deployArtifact, expectRevert, mineBlocks, useChaiBigNumber } from "../src/hardhat";
 import type { IWETH } from "../src/abi";
 import type { Example } from "../typechain-hardhat/contracts/Example.sol";
@@ -31,7 +31,7 @@ describe("Contracts", () => {
   it("deploy wait for confirmations", async () => {
     const promise = deployArtifact("Example", { from: await account() }, [123, weth.options.address, [456]], 3);
 
-    await web3().eth.subscribe("pendingTransactions"); // must wait for the deploy to actually be sent
+    await web3().eth.subscribe("pendingTransactions"); // must wait for deploy to actually be sent
     await mineBlocks(60, 1);
     web3().eth.clearSubscriptions(() => {});
 

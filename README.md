@@ -68,8 +68,8 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 - `web3()`: the globally accesible singleton. call `setWeb3Instance(web3)` if needed
 - `networks.eth/bsc/poly/arb/avax/oeth/ftm...`: constants
 - `account`: alias for web3.accounts
-- `block`: alias for web3.getBlock, with parsed timestamp
-- `estimatedBlockNumber`: estimate block number by timestamp
+- `block`: alias for web3.getBlock, with parsed timestamp (seconds)
+- `findBlock`: find a block closest to timestamp (millis)
 
 ### hardhat utils
 

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { account, block, bn, chainId, currentNetwork, estimatedBlockNumber, findBlock, hasWeb3Instance, networks, setWeb3Instance, web3, zero } from "../src";
+import { account, block, bn, chainId, currentNetwork, findBlock, hasWeb3Instance, networks, setWeb3Instance, web3, zero } from "../src";
 import { artifact, expectRevert, hre, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 import Web3 from "web3";
 
@@ -38,12 +38,6 @@ describe("network", () => {
     expect(hasWeb3Instance()).is.true;
     setWeb3Instance(prev);
     expect(hasWeb3Instance()).is.true;
-  });
-
-  it("estimated block number", async () => {
-    const now = await block();
-    expect(await estimatedBlockNumber(Date.now(), 10)).eq(now.number);
-    expect(await estimatedBlockNumber(Date.now() - 10_000, 10)).eq(now.number - 1);
   });
 
   it("find block", async () => {
