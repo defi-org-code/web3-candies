@@ -157,10 +157,10 @@ export function hardhatDefaultConfig() {
   process.env.NETWORK_URL = networkUrl;
 
   const etherscanKey = process.env[`ETHERSCAN_${process.env.NETWORK}`];
-  if (!etherscanKey) console.error(`⚠️ expected ETHERSCAN_${process.env.NETWORK} in env`);
+  if (!etherscanKey) console.error(`expected ETHERSCAN_${process.env.NETWORK} in env`);
 
   const coinmarketcapKey = process.env.COINMARKETCAP;
-  if (!coinmarketcapKey) console.error(`⚠️ expected COINMARKETCAP in env`);
+  if (!coinmarketcapKey) console.error(`expected COINMARKETCAP in env`);
 
   const config = {
     solidity: {
