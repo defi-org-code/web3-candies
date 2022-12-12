@@ -77,5 +77,6 @@ describe("network", () => {
     expect(eth.name).eq("Ethereum Mainnet");
     expect(eth.currency.decimals).eq(18);
     expect(eth.explorers[0].url).matches(/etherscan/);
+    expect(eth.logoUrl).matches(/QmdwQ/);
   });
 });

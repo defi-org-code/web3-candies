@@ -105,13 +105,21 @@ export async function chainInfo(chainId: number) {
   const list = await fetch("https://chainid.network/chains.json").then((r) => r.json());
   const chainArgs = list.find((it: any) => it.chainId === chainId);
   if (!chainArgs) throw new Error(`unknown chainId ${chainId}`);
+
+  const logoJsonUrl = `https://raw.githubusercontent.com/ethereum-lists/chains/master/_data/icons/${chainArgs.icon}.json`;
+  const logoJson = await fetch(logoJsonUrl)
+    .then((r) => r.json())
+    .catch();
+  const logoIpfsAddress = logoJson?.[0]?.url?.split("ipfs://")?.[1] || "";
+  const logoUrl = `https://ipfs.io/ipfs/${logoIpfsAddress}`;
+
   return {
     chainId,
     name: chainArgs.name as string,
     currency: chainArgs.nativeCurrency as { name: string; symbol: string; decimals: number },
     rpcUrls: chainArgs.rpc as string[],
     explorers: chainArgs.explorers as { name: string; url: string; standard: string }[],
-    logoUrl: `https://defillama.com/chain-icons/rsz_${chainArgs.icon}.jpg`,
+    logoUrl: logoUrl || `https://defillama.com/chain-icons/rsz_${chainArgs.icon}.jpg`,
   };
 }
 
