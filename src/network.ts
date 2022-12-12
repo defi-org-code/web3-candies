@@ -100,3 +100,47 @@ export async function findBlock(timestamp: number): Promise<BlockInfo> {
   debug("result", candidate.number, new Date(candidate.timestamp * 1000).toString());
   return candidate;
 }
+
+export async function chainInfo(chainId: number) {
+  const list = await fetch("https://chainid.network/chains.json").then((r) => r.json());
+  const chainArgs = list.find((it: any) => it.chainId === chainId);
+  if (!chainArgs) throw new Error(`unknown chainId ${chainId}`);
+  return {
+    chainId,
+    name: chainArgs.name as string,
+    currency: chainArgs.nativeCurrency as { name: string; symbol: string; decimals: number },
+    rpcUrls: chainArgs.rpc as string[],
+    explorers: chainArgs.explorers as { name: string; url: string; standard: string }[],
+    logoUrl: `https://defillama.com/chain-icons/rsz_${chainArgs.icon}.jpg`,
+  };
+}
+
+export async function switchMetaMaskNetwork(chainId: number) {
+  const provider = (web3() as any).provider || web3().currentProvider;
+  if (!provider) throw new Error(`no provider`);
+
+  try {
+    await provider.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: Web3.utils.toHex(chainId) }],
+    });
+  } catch (error: any) {
+    // if unknown chain, add chain
+    if (error.code === 4902) {
+      const info = await chainInfo(chainId);
+      await provider.request({
+        method: "wallet_addEthereumChain",
+        params: [
+          {
+            chainName: info.name,
+            nativeCurrency: info.currency,
+            rpcUrls: info.rpcUrls,
+            chainId: Web3.utils.toHex(chainId),
+            blockExplorerUrls: [info.explorers.map((e) => e.url)],
+            iconUrls: [info.logoUrl],
+          },
+        ],
+      });
+    } else throw error;
+  }
+}
