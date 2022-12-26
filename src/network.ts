@@ -111,8 +111,13 @@ export async function chainInfo(chainId: number) {
     .then((r) => r.json())
     .catch();
   const logoIpfsAddress = logoJson?.[0]?.url?.split("ipfs://")?.[1] || "";
-  const logoUrl = `https://ipfs.io/ipfs/${logoIpfsAddress}`;
-  const logoUrlFallback = `https://defillama.com/chain-icons/rsz_${chainArgs.icon}.jpg`;
+
+  let logoUrl = `https://ipfs.io/ipfs/${logoIpfsAddress}`;
+  let urlResponse = { ok: false };
+  try {
+    urlResponse = await fetch(logoUrl, { timeout: 2000 } as any);
+  } catch (e) {}
+  if (!urlResponse.ok) logoUrl = `https://defillama.com/chain-icons/rsz_${chainArgs.icon}.jpg`;
 
   return {
     chainId,
@@ -121,7 +126,6 @@ export async function chainInfo(chainId: number) {
     rpcUrls: chainArgs.rpc as string[],
     explorers: chainArgs.explorers as { name: string; url: string; standard: string }[],
     logoUrl,
-    logoUrlFallback,
   };
 }
 

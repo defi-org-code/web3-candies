@@ -78,5 +78,8 @@ describe("network", () => {
     expect(eth.currency.decimals).eq(18);
     expect(eth.explorers[0].url).matches(/etherscan/);
     expect(eth.logoUrl).matches(/QmdwQ/);
+
+    const ftm = await chainInfo(250);
+    expect(ftm.logoUrl).matches(/defillama.com/);
   });
 });
