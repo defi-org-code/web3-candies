@@ -77,9 +77,9 @@ describe("network", () => {
     expect(eth.name).eq("Ethereum Mainnet");
     expect(eth.currency.decimals).eq(18);
     expect(eth.explorers[0].url).matches(/etherscan/);
-    expect(eth.logoUrl).matches(/QmdwQ/);
+    expect(eth.logoUrl).matches(/ipfs\/QmdwQ/);
 
     const ftm = await chainInfo(250);
-    expect(ftm.logoUrl).matches(/icons.llamao.fi/);
+    expect(ftm.logoUrl).matches(/icons\.llamao\.fi/);
   });
 });
