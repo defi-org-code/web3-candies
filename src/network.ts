@@ -117,7 +117,7 @@ export async function chainInfo(chainId: number) {
   try {
     urlResponse = await fetch(logoUrl, { timeout: 2000 } as any);
   } catch (e) {}
-  if (!urlResponse.ok) logoUrl = `https://defillama.com/chain-icons/rsz_${chainArgs.icon}.jpg`;
+  if (!urlResponse.ok) logoUrl = `https://icons.llamao.fi/icons/chains/rsz_${chainArgs.icon}?w=48&h=48`;
 
   return {
     chainId,

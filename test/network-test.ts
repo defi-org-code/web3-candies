@@ -80,6 +80,6 @@ describe("network", () => {
     expect(eth.logoUrl).matches(/QmdwQ/);
 
     const ftm = await chainInfo(250);
-    expect(ftm.logoUrl).matches(/defillama.com/);
+    expect(ftm.logoUrl).matches(/icons.llamao.fi/);
   });
 });
