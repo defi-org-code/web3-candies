@@ -116,7 +116,7 @@ export async function chainInfo(chainId: number) {
   let logoUrl = `https://ipfs.io/ipfs/${logoIpfsAddress}`;
   let urlResponse = { ok: false };
   try {
-    urlResponse = await fetchWithTimeout(logoUrl);
+    urlResponse = await fetchWithTimeout(logoUrl, { timeout: 1000 });
   } catch (e) {}
   if (!urlResponse.ok) logoUrl = `https://icons.llamao.fi/icons/chains/rsz_${chainArgs.icon}?w=48&h=48`;
 
