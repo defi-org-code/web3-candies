@@ -1,6 +1,7 @@
 import Web3 from "web3";
 import type { BlockInfo, BlockNumber } from "./contracts";
 import _ from "lodash";
+import { fetchWithTimeout } from "./utils";
 
 const debug = require("debug")("web3-candies");
 
@@ -115,7 +116,7 @@ export async function chainInfo(chainId: number) {
   let logoUrl = `https://ipfs.io/ipfs/${logoIpfsAddress}`;
   let urlResponse = { ok: false };
   try {
-    urlResponse = await fetch(logoUrl, { timeout: 2000 } as any);
+    urlResponse = await fetchWithTimeout(logoUrl);
   } catch (e) {}
   if (!urlResponse.ok) logoUrl = `https://icons.llamao.fi/icons/chains/rsz_${chainArgs.icon}?w=48&h=48`;
 
