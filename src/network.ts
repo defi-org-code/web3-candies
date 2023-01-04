@@ -151,7 +151,7 @@ export async function switchMetaMaskNetwork(chainId: number) {
             nativeCurrency: info.currency,
             rpcUrls: info.rpcUrls,
             chainId: Web3.utils.toHex(chainId),
-            blockExplorerUrls: [info.explorers.map((e) => e.url)],
+            blockExplorerUrls: info.explorers.map((e) => e.url),
             iconUrls: [info.logoUrl],
           },
         ],
