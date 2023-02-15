@@ -84,6 +84,10 @@ export const erc20s = {
 
   arb: {
     WETH: () => erc20<IWETH>("WETH", "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1", 18, iwethabi),
+    WBTC: () => erc20("WBTC", "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f", 8),
+    USDC: () => erc20("USDC", "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8", 6),
+    USDT: () => erc20("USDT", "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9", 6),
+    DAI: () => erc20("DAI", "0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1", 18),
   },
 
   avax: {
@@ -96,6 +100,7 @@ export const erc20s = {
     WBTCe: () => erc20("WBTC.e", "0x50b7545627a5162F82A992c33b87aDc75187B218", 8),
     WETHe: () => erc20("WETH.e", "0x49D5c2BdFfac6CE2BFdB6640F4F80f226bc10bAB", 18),
     DAIe: () => erc20("DAI.e", "0xd586E7F844cEa2F87f50152665BCbc2C279D8d70", 18),
+    ORBS: () => erc20("ORBS", "0x340fE1D898ECCAad394e2ba0fC1F93d27c7b717A", 18),
   },
 
   oeth: {
