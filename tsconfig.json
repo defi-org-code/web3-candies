@@ -7,7 +7,6 @@
     "esModuleInterop": true,
     "declaration": true,
     "resolveJsonModule": true,
-    "importsNotUsedAsValues": "preserve",
     "outDir": "dist"
   },
   "include": ["./src", "./src/**/*.json"]

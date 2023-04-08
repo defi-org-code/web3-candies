@@ -2,19 +2,11 @@
 
 pragma solidity 0.8;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
-
-contract Example2 {
-    event ExampleEvent(string foo);
-
-    function testEvent() public {
-        emit ExampleEvent("bar");
-    }
-}
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {ERC721Enumerable} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import {ERC1155} from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import {SafeERC20, IERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {Address} from "@openzeppelin/contracts/utils/Address.sol";
 
 contract Example is ERC20("Example", "EX") {
     struct S {
@@ -37,5 +29,13 @@ contract Example is ERC20("Example", "EX") {
     function testInnerEvent() external {
         Example2 e = new Example2();
         e.testEvent();
+    }
+}
+
+contract Example2 {
+    event ExampleEvent(string foo);
+
+    function testEvent() public {
+        emit ExampleEvent("bar");
     }
 }

@@ -11,15 +11,15 @@ export type Network = { id: number; name: string; shortname: string };
  * to extend: `const mynetworks = _.merge({}, networks, { eth: { foo: 123 }})`
  */
 export const networks = {
-  eth: { id: 0x1, name: "Ethereum", shortname: "eth" } as Network,
-  bsc: { id: 0x38, name: "BinanceSmartChain", shortname: "bsc" } as Network,
-  poly: { id: 0x89, name: "Polygon", shortname: "poly" } as Network,
-  arb: { id: 42161, name: "Arbitrum", shortname: "arb" } as Network,
-  avax: { id: 43114, name: "Avalanche", shortname: "avax" } as Network,
-  oeth: { id: 10, name: "Optimism", shortname: "oeth" } as Network,
-  ftm: { id: 250, name: "Fantom", shortname: "ftm" } as Network,
-  one: { id: 1666600000, name: "Harmony", shortname: "one" } as Network,
-  klay: { id: 8217, name: "Klaytn", shortname: "klay" } as Network,
+  eth: { id: 0x1, name: "Ethereum", shortname: "eth", publicRpcUrl: "https://eth.llamarpc.com" } as Network,
+  bsc: { id: 0x38, name: "BinanceSmartChain", shortname: "bsc", publicRpcUrl: "https://bsc-dataseed.binance.org" } as Network,
+  poly: { id: 0x89, name: "Polygon", shortname: "poly", publicRpcUrl: "https://polygon-rpc.com" } as Network,
+  arb: { id: 42161, name: "Arbitrum", shortname: "arb", publicRpcUrl: "https://arb1.arbitrum.io/rpc" } as Network,
+  avax: { id: 43114, name: "Avalanche", shortname: "avax", publicRpcUrl: "https://api.avax.network/ext/bc/C/rpc" } as Network,
+  oeth: { id: 10, name: "Optimism", shortname: "oeth", publicRpcUrl: "https://mainnet.optimism.io" } as Network,
+  ftm: { id: 250, name: "Fantom", shortname: "ftm", publicRpcUrl: "https://rpc.ftm.tools" } as Network,
+  one: { id: 1666600000, name: "Harmony", shortname: "one", publicRpcUrl: "https://api.harmony.one" } as Network,
+  klay: { id: 8217, name: "Klaytn", shortname: "klay", publicRpcUrl: "https://public-node-api.klaytnapi.com/v1/cypress" } as Network,
 };
 
 /**

@@ -3,10 +3,10 @@ import "dotenv/config";
 import "@typechain/hardhat";
 import "@nomiclabs/hardhat-web3";
 import "@nomiclabs/hardhat-etherscan";
-import "hardhat-tracer";
 import "hardhat-gas-reporter";
 import "hardhat-spdx-license-identifier";
 import { task } from "hardhat/config";
+import "hardhat-tracer";
 
 import { account, erc20s, ether, web3 } from "./src";
 import { deploy } from "./src/hardhat/deploy";

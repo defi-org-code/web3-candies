@@ -152,21 +152,22 @@ export function hardhatDefaultConfig() {
   process.env.NETWORK = process.env.NETWORK?.toUpperCase() || "ETH";
   console.log(`\n🌐 network`, process.env.NETWORK, "blocknumber", process.env.BLOCK ? parseInt(process.env.BLOCK!) : "latest", "🌐\n\n");
 
-  const networkUrl = (process.env as any)[`NETWORK_URL_${process.env.NETWORK}`];
-  if (!networkUrl) console.error(`⚠️ expected NETWORK_URL_${process.env.NETWORK} in env`);
+  let networkUrl = (process.env as any)[`NETWORK_URL_${process.env.NETWORK}`];
+  if (!networkUrl) console.warn(`missing env NETWORK_URL_${process.env.NETWORK}`);
+  networkUrl = networkUrl || (networks as any)[process.env.NETWORK.toLowerCase()]?.publicRpcUrl;
   process.env.NETWORK_URL = networkUrl;
 
   const etherscanKey = process.env[`ETHERSCAN_${process.env.NETWORK}`];
-  if (!etherscanKey) console.error(`expected ETHERSCAN_${process.env.NETWORK} in env`);
+  if (!etherscanKey) console.warn(`missing env ETHERSCAN_${process.env.NETWORK}`);
 
   const coinmarketcapKey = process.env.COINMARKETCAP;
-  if (!coinmarketcapKey) console.error(`expected COINMARKETCAP in env`);
+  if (!coinmarketcapKey) console.warn(`missing env COINMARKETCAP`);
 
   const config = {
     solidity: {
       compilers: [
         {
-          version: "0.8.16",
+          version: "0.8.18",
           settings: {
             optimizer: {
               enabled: true,
