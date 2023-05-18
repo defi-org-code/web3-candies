@@ -1,7 +1,8 @@
+import _ from "lodash";
 import Web3 from "web3";
 import type { BlockInfo, BlockNumber } from "./contracts";
-import _ from "lodash";
-import { fetchWithTimeout } from "./utils";
+import { sleep } from "./timing";
+import { BN, bn, fetchWithTimeout, median } from "./utils";
 
 const debug = require("debug")("web3-candies");
 
@@ -156,4 +157,35 @@ export async function switchMetaMaskNetwork(chainId: number) {
       });
     } else throw error;
   }
+}
+
+export async function estimateGasPrice(length: number = 5, w3?: Web3): Promise<{ slow: BN; avg: BN; fast: BN; baseFeePerGas: BN; blockNumber: number; timestamp: number }> {
+  if (process.env.NETWORK_URL && !w3) w3 = new Web3(process.env.NETWORK_URL);
+  w3 = w3 || web3();
+
+  for (let i = 0; i < 3; i++) {
+    try {
+      const b = await w3.eth.getBlock("latest");
+      const base = bn(b.baseFeePerGas || 0);
+
+      const history = await w3.eth.getFeeHistory(length, "latest", [1, 50, 99]);
+
+      const slows = _.map(history.reward, (r) => bn(r[0], 16));
+      const avgs = _.map(history.reward, (r) => bn(r[1], 16));
+      const fasts = _.map(history.reward, (r) => bn(r[2], 16));
+
+      return {
+        slow: base.plus(median(slows)).integerValue(),
+        avg: base.plus(median(avgs)).integerValue(),
+        fast: base.plus(median(fasts)).integerValue(),
+        baseFeePerGas: base,
+        blockNumber: b.number,
+        timestamp: bn(b.timestamp).toNumber(),
+      };
+    } catch (e) {
+      await sleep(0.1);
+    }
+  }
+
+  throw new Error("failed to get gas prices");
 }

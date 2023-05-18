@@ -29,6 +29,7 @@
     "lodash": "4.x",
     "prettier": "2.x",
     "prettier-plugin-solidity": "latest",
+    "ethereum-multicall": "2.x",
     "web3": "1.x"
   },
   "optionalDependencies": {
@@ -66,7 +67,7 @@
     "build": "hardhat compile && solhint 'contracts/**/*.sol' && tsc && cp -r src/hardhat/types dist/hardhat/types",
     "prepublishOnly": "npm run build",
     "pretest": "npm run build",
-    "test": "BLOCK=12345678 DEBUG=web3-candies hardhat test",
+    "test": "DEBUG=web3-candies BLOCK=12345678 hardhat test",
     "deploy": "hardhat deploy --network $1"
   },
   "prettier": {

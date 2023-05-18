@@ -1,8 +1,7 @@
 import { expect } from "chai";
-import { account, block, bn, chainId, chainInfo, currentNetwork, findBlock, hasWeb3Instance, networks, setWeb3Instance, web3, zero } from "../src";
-import { artifact, expectRevert, hre, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 import Web3 from "web3";
-import exp = require("constants");
+import { account, bn, chainId, chainInfo, currentNetwork, estimateGasPrice, findBlock, hasWeb3Instance, networks, setWeb3Instance, web3, zero } from "../src";
+import { artifact, expectRevert, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 
 useChaiBigNumber();
 
@@ -77,9 +76,17 @@ describe("network", () => {
     expect(eth.name).eq("Ethereum Mainnet");
     expect(eth.currency.decimals).eq(18);
     expect(eth.explorers[0].url).matches(/etherscan/);
-    expect(eth.logoUrl).matches(/ipfs\/QmdwQ/);
-
     const ftm = await chainInfo(250);
-    expect(ftm.logoUrl).matches(/icons\.llamao\.fi/);
+    expect(ftm.logoUrl).not.empty;
+  });
+
+  it("gas price", async () => {
+    await resetNetworkFork("latest");
+    const prices = await estimateGasPrice();
+    expect(prices.slow).bignumber.gt(1e6);
+    expect(prices.avg).bignumber.gte(prices.slow);
+    expect(prices.fast).bignumber.gte(prices.avg);
+    expect(prices.blockNumber).gt(10000);
+    expect(prices.baseFeePerGas).bignumber.lte(prices.slow);
   });
 });

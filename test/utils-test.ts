@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { bn, bn18, bn6, bn9, eqIgnoreCase, ether, maxUint256, zero, zeroAddress, parsebn, one, ten, bne, bnm, convertDecimals } from "../src";
+import { bn, bn18, bn6, bn9, eqIgnoreCase, ether, maxUint256, zero, zeroAddress, parsebn, one, ten, bne, bnm, convertDecimals, median } from "../src";
 import { expectRevert, useChaiBigNumber } from "../src/hardhat";
 import _ from "lodash";
 
@@ -74,5 +74,9 @@ describe("utils", () => {
     expect(convertDecimals("123456", 3, 6)).bignumber.eq(bn6("123.456")).eq(123456000);
     expect(convertDecimals(bn("123456"), 3, 6)).bignumber.eq(123456000);
     expect(convertDecimals(123456789, 6, 3)).bignumber.eq(123456);
+  });
+
+  it("median", async () => {
+    expect(median([123, 456789123, 456])).bignumber.eq(456);
   });
 });
