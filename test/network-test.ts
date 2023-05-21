@@ -2,6 +2,7 @@ import { expect } from "chai";
 import Web3 from "web3";
 import { account, bn, chainId, chainInfo, currentNetwork, estimateGasPrice, findBlock, hasWeb3Instance, networks, setWeb3Instance, web3, zero } from "../src";
 import { artifact, expectRevert, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
+import exp from "constants";
 
 useChaiBigNumber();
 
@@ -51,7 +52,7 @@ describe("network", () => {
   });
 
   it("currentNetwork", async () => {
-    expect(process.env.NETWORK).eq("ETH");
+    expect(process.env.NETWORK).eq("eth");
     expect(await currentNetwork()).eq(networks.eth);
 
     process.env.NETWORK = "";
@@ -62,11 +63,11 @@ describe("network", () => {
     setWeb3Instance(w);
     expect(await currentNetwork()).eq(networks.eth);
 
-    process.env.NETWORK = "ETH";
+    process.env.NETWORK = "eth";
   });
 
   it("chainId", async () => {
-    expect(process.env.NETWORK).eq("ETH");
+    expect(process.env.NETWORK).eq("eth");
     expect(await chainId()).eq(0x1);
   });
 
@@ -83,10 +84,11 @@ describe("network", () => {
   it("gas price", async () => {
     await resetNetworkFork("latest");
     const prices = await estimateGasPrice();
-    expect(prices.slow).bignumber.gt(1e6);
-    expect(prices.avg).bignumber.gte(prices.slow);
-    expect(prices.fast).bignumber.gte(prices.avg);
-    expect(prices.blockNumber).gt(10000);
-    expect(prices.baseFeePerGas).bignumber.lte(prices.slow);
+    expect(prices.slow.max).bignumber.gt(1e6);
+    expect(prices.med.max).bignumber.gte(prices.slow.max);
+    expect(prices.fast.max).bignumber.gte(prices.med.max);
+    expect(prices.slow.tip).bignumber.gt(1e6).lte(prices.slow.max);
+    expect(prices.med.tip).bignumber.gte(prices.slow.tip).lte(prices.slow.max);
+    expect(prices.fast.tip).bignumber.gte(prices.med.tip).lte(prices.fast.max);
   });
 });

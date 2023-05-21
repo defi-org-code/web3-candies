@@ -82,7 +82,7 @@ export async function fetchWithTimeout(url: string, options: any = {}) {
 }
 
 export function median(arr: BN.Value[]): BN {
-  arr.sort((a, b) => bn(a).comparedTo(b));
+  arr = [...arr].sort((a, b) => bn(a).comparedTo(b));
   const midIndex = Math.floor(arr.length / 2);
   return arr.length % 2 !== 0
     ? bn(arr[midIndex])

@@ -19,7 +19,7 @@ export class UniV2Pathfinder {
     throw new Error("Not implemented");
   }
 
-  private async fetchReserves(pairs: Pair[]): Promise<Pair[]> {
+  async fetchReserves(pairs: Pair[]): Promise<Pair[]> {
     const mc = new Multicall({ web3Instance: web3(), tryAggregate: true });
     const calls = _.map(pairs, (p) => {
       return {
@@ -49,7 +49,7 @@ export class UniV2Pathfinder {
     });
   }
 
-  private pair(tokenA: Token, tokenB: Token, reserveA: BN = zero, reserveB: BN = zero): Pair {
+  pair(tokenA: Token, tokenB: Token, reserveA: BN = zero, reserveB: BN = zero): Pair {
     const [token0, token1, reserve0, reserve1] = tokenA.address < tokenB.address ? [tokenA, tokenB, reserveA, reserveB] : [tokenB, tokenA, reserveB, reserveA];
     return {
       pairAddress: "", //TODO
@@ -60,7 +60,7 @@ export class UniV2Pathfinder {
     };
   }
 
-  private sortedPairs(...tokens: Token[]): Pair[] {
+  sortedPairs(...tokens: Token[]): Pair[] {
     return _.chain(tokens)
       .flatMap((t) => _.map(tokens, (tt) => [t, tt]))
       .filter((p) => p[0].address !== p[1].address)
@@ -69,7 +69,7 @@ export class UniV2Pathfinder {
       .value();
   }
 
-  private async doFind(pairs: Pair[], srcToken: Token, srcAmount: BN, dstToken: Token): Promise<Path> {
+  async doFind(pairs: Pair[], srcToken: Token, srcAmount: BN, dstToken: Token): Promise<Path> {
     throw new Error("Not implemented");
     // const uPairs = await Promise.all(
     //   pairs.map(

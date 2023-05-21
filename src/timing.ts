@@ -1,25 +1,46 @@
 import _ from "lodash";
 
-export function throttle<T>(self: any, seconds: number, fn: () => Promise<T>): () => Promise<T> {
-  return _.bind(_.throttle(fn, seconds * 1000), self);
-}
-
-export async function sleep(seconds: number) {
-  return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+/**
+ * @returns throttled version of fn, with up to milliseconds per invocation
+ */
+export function throttle<T>(self: any, ms: number, fn: () => Promise<T>): () => Promise<T> {
+  return _.bind(_.throttle(fn, ms), self);
 }
 
 /**
- * keep invoking fn, catching and loggin errors, sleeping 1 second between invocations, until successful
+ * sleep for ms
  */
-export async function keepTrying<T>(fn: () => Promise<T>): Promise<T> {
-  do {
+export async function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * keep invoking fn, catching errors, sleeping between invocations
+ */
+export async function keepTrying<T>(fn: () => Promise<T>, retries = 3, ms = 1000): Promise<T> {
+  for (let i = 0; i < retries; i++) {
     try {
-      return await fn();
+      return await timeout(fn, ms);
     } catch (e) {
-      console.error(e);
-      await sleep(1);
+      await sleep(ms);
     }
-  } while (true);
+  }
+  throw new Error("failed to invoke fn " + new Error().stack);
+}
+
+export async function timeout<T>(fn: () => Promise<T>, ms = 1000): Promise<T> {
+  let failed = false;
+  const r = await Promise.race([
+    fn(),
+    new Promise((resolve) => {
+      setTimeout(() => {
+        failed = true;
+        resolve(null);
+      }, ms);
+    }),
+  ]);
+  if (!failed && !!r) return r as T;
+  else throw new Error("timeout");
 }
 
 /**

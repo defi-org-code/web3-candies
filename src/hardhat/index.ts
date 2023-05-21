@@ -17,7 +17,7 @@ export function hre(): HardhatRuntimeEnvironment & { web3: Web3 } {
   try {
     return require("hardhat");
   } catch (e) {
-    throw new Error("optional HardHat dependency not installed!");
+    throw new Error("optional HardHat dependency not installed\n" + e);
   }
 }
 
@@ -147,21 +147,39 @@ export async function deployArtifact<T extends Contract>(
   return contract<T>(_artifact.abi, deployed.options.address, deployed.options);
 }
 
+/**
+ * @returns true if hardhat network is used, implies forking
+ */
+export function isHardhatNetwork() {
+  try {
+    return hre().network.name === "hardhat";
+  } catch (e) {
+    return false;
+  }
+}
+
 export function hardhatDefaultConfig() {
   require("dotenv").config();
-  process.env.NETWORK = process.env.NETWORK?.toUpperCase() || "ETH";
-  console.log(`\n🌐 network`, process.env.NETWORK, "blocknumber", process.env.BLOCK ? parseInt(process.env.BLOCK!) : "latest", "🌐\n\n");
+  let forking = true;
+  const argIndex = _.findIndex(process.argv, (s) => s.toLowerCase() === "--network");
+  if (argIndex >= 0) {
+    process.env.NETWORK = process.argv[argIndex + 1];
+    forking = false;
+  }
+  process.env.NETWORK = process.env.NETWORK || "eth";
+  const network = _.find(networks, (n) => n.shortname === process.env.NETWORK?.toLowerCase()) || networks.eth;
+  console.log(forking ? "⑃ hardhat forking" : "🌐 using", network.name, "blocknumber", process.env.BLOCK ? parseInt(process.env.BLOCK!) : "latest");
 
-  let networkUrl = (process.env as any)[`NETWORK_URL_${process.env.NETWORK}`];
-  if (!networkUrl) console.warn(`missing env NETWORK_URL_${process.env.NETWORK}`);
-  networkUrl = networkUrl || (networks as any)[process.env.NETWORK.toLowerCase()]?.publicRpcUrl;
+  let networkUrl = (process.env as any)[`NETWORK_URL_${process.env.NETWORK.toUpperCase()}`];
+  if (!networkUrl) debug(`missing env NETWORK_URL_${process.env.NETWORK.toUpperCase()}, fallback to public RPC`);
+  networkUrl = networkUrl || network.publicRpcUrl;
   process.env.NETWORK_URL = networkUrl;
 
-  const etherscanKey = process.env[`ETHERSCAN_${process.env.NETWORK}`];
-  if (!etherscanKey) console.warn(`missing env ETHERSCAN_${process.env.NETWORK}`);
+  const etherscanKey = process.env[`ETHERSCAN_${process.env.NETWORK.toUpperCase()}`];
+  if (!etherscanKey) debug(`missing env ETHERSCAN_${process.env.NETWORK.toUpperCase()} for contract verification`);
 
   const coinmarketcapKey = process.env.COINMARKETCAP;
-  if (!coinmarketcapKey) console.warn(`missing env COINMARKETCAP`);
+  if (!coinmarketcapKey) debug(`missing env COINMARKETCAP for gas reporter`);
 
   const config = {
     solidity: {
@@ -219,18 +237,18 @@ export function hardhatDefaultConfig() {
 }
 
 export function gasReporterConfig() {
-  switch (process.env.NETWORK) {
-    case "ARB":
+  switch (process.env.NETWORK?.toLocaleLowerCase()) {
+    case "arb":
       return { token: "ETH", url: "https://api.arbiscan.io/api?module=proxy&action=eth_gasPrice" };
-    case "OPT":
+    case "oeth":
       return { token: "ETH", url: "https://api-optimistic.etherscan.io/api?module=proxy&action=eth_gasPrice" };
-    case "BSC":
+    case "bsc":
       return { token: "BNB", url: "https://api.bscscan.com/api?module=proxy&action=eth_gasPrice" };
-    case "POLY":
+    case "poly":
       return { token: "MATIC", url: "https://api.polygonscan.com/api?module=proxy&action=eth_gasPrice" };
-    case "AVAX":
+    case "avax":
       return { token: "AVAX", url: "https://api.snowtrace.io/api?module=proxy&action=eth_gasPrice" };
-    case "FTM":
+    case "ftm":
       return { token: "FTM", url: "https://api.ftmscan.com/api?module=proxy&action=eth_gasPrice" };
     default:
       return {};

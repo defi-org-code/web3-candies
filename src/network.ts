@@ -1,8 +1,8 @@
 import _ from "lodash";
 import Web3 from "web3";
 import type { BlockInfo, BlockNumber } from "./contracts";
-import { sleep } from "./timing";
-import { BN, bn, fetchWithTimeout, median } from "./utils";
+import { keepTrying, sleep } from "./timing";
+import { BN, bn, bn9, fetchWithTimeout, median, zero } from "./utils";
 
 const debug = require("debug")("web3-candies");
 
@@ -159,33 +159,54 @@ export async function switchMetaMaskNetwork(chainId: number) {
   }
 }
 
-export async function estimateGasPrice(length: number = 5, w3?: Web3): Promise<{ slow: BN; avg: BN; fast: BN; baseFeePerGas: BN; blockNumber: number; timestamp: number }> {
+/**
+ * @returns median gas prices for slow (10th percentile), med (50th percentile) and fast (90th percentile) of the last {length = 5} blocks, in wei
+ */
+export async function estimateGasPrice(
+  percentiles: number[] = [10, 50, 90],
+  length: number = 5,
+  w3?: Web3
+): Promise<{
+  slow: { max: BN; tip: BN };
+  med: { max: BN; tip: BN };
+  fast: { max: BN; tip: BN };
+  baseFeePerGas: BN;
+  pendingBlock: BlockInfo;
+  pendingBlockNumber: number;
+}> {
   if (process.env.NETWORK_URL && !w3) w3 = new Web3(process.env.NETWORK_URL);
   w3 = w3 || web3();
 
-  for (let i = 0; i < 3; i++) {
-    try {
-      const b = await w3.eth.getBlock("latest");
-      const base = bn(b.baseFeePerGas || 0);
+  return await keepTrying(async () => {
+    const [chainId, pendingBlock, latestBlockNumber] = await Promise.all([w3!.eth.getChainId(), w3!.eth.getBlock("pending"), w3!.eth.getBlockNumber()]);
+    pendingBlock.timestamp = bn(pendingBlock.timestamp).toNumber();
+    const baseFeePerGas = bn(pendingBlock.baseFeePerGas || 0);
 
-      const history = await w3.eth.getFeeHistory(length, "latest", [1, 50, 99]);
+    switch (chainId) {
+      case networks.oeth.id:
+        return {
+          slow: { max: baseFeePerGas, tip: zero },
+          med: { max: baseFeePerGas, tip: zero },
+          fast: { max: baseFeePerGas, tip: zero },
+          baseFeePerGas,
+          pendingBlock: pendingBlock as BlockInfo,
+          pendingBlockNumber: latestBlockNumber + 1,
+        };
+      default:
+        const history = await w3!.eth.getFeeHistory(length, "pending", percentiles);
 
-      const slows = _.map(history.reward, (r) => bn(r[0], 16));
-      const avgs = _.map(history.reward, (r) => bn(r[1], 16));
-      const fasts = _.map(history.reward, (r) => bn(r[2], 16));
+        const slow = median(_.map(history.reward, (r) => bn(r[0], 16)));
+        const med = median(_.map(history.reward, (r) => bn(r[1], 16)));
+        const fast = median(_.map(history.reward, (r) => bn(r[2], 16)));
 
-      return {
-        slow: base.plus(median(slows)).integerValue(),
-        avg: base.plus(median(avgs)).integerValue(),
-        fast: base.plus(median(fasts)).integerValue(),
-        baseFeePerGas: base,
-        blockNumber: b.number,
-        timestamp: bn(b.timestamp).toNumber(),
-      };
-    } catch (e) {
-      await sleep(0.1);
+        return {
+          slow: { max: baseFeePerGas.times(1.25).plus(slow).integerValue(), tip: slow.integerValue() },
+          med: { max: baseFeePerGas.times(1.25).plus(med).integerValue(), tip: med.integerValue() },
+          fast: { max: baseFeePerGas.times(1.25).plus(fast).integerValue(), tip: fast.integerValue() },
+          baseFeePerGas,
+          pendingBlock: pendingBlock as BlockInfo,
+          pendingBlockNumber: latestBlockNumber + 1,
+        };
     }
-  }
-
-  throw new Error("failed to get gas prices");
+  });
 }

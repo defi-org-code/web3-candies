@@ -36,6 +36,8 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 
 > See the tests for working examples
 
+- `estimateGasPrices()`: simple implementation of gas estimator for slow/avg/fast gas price
+
 ### BigNumber.js utils
 
 - `bn`: convert `string|number|BN|BigNumber` to `BigNumber.js` object
@@ -103,7 +105,7 @@ await myToken.methods.approve(other, maxUint256).send({ from: owner }); // appro
 ### peerDependencies
 
 - Default (recommended) Web3 + Hardhat development dependencies are installed
-    - Use the bundled tsconfig, solhint, and other project files as a starting point
+  - Use the bundled tsconfig, solhint, and other project files as a starting point
 
 ### How to manually verify sources in Etherscan in case of an error during deploy?
 
