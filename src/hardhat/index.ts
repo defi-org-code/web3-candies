@@ -7,6 +7,7 @@ import { bn, bn18, BN } from "../utils";
 import { HardhatUserConfig } from "hardhat/types";
 
 export * from "./testing";
+export * from "./deploy";
 
 const debug = require("debug")("web3-candies");
 
