@@ -13,7 +13,7 @@ export const networks = {
   eth: { id: 0x1, name: "Ethereum", shortname: "eth", publicRpcUrl: "https://eth.llamarpc.com" },
   bsc: { id: 0x38, name: "BinanceSmartChain", shortname: "bsc", publicRpcUrl: "https://bsc-dataseed.binance.org" },
   poly: { id: 0x89, name: "Polygon", shortname: "poly", publicRpcUrl: "https://polygon-rpc.com" },
-  arb: { id: 42161, name: "Arbitrum", shortname: "arb", publicRpcUrl: "https://arb1.arbitrum.io/rpc" },
+  arb: { id: 42161, name: "Arbitrum", shortname: "arb", publicRpcUrl: "https://endpoints.omniatech.io/v1/arbitrum/one/public" },
   avax: { id: 43114, name: "Avalanche", shortname: "avax", publicRpcUrl: "https://api.avax.network/ext/bc/C/rpc" },
   oeth: { id: 10, name: "Optimism", shortname: "oeth", publicRpcUrl: "https://mainnet.optimism.io" },
   ftm: { id: 250, name: "Fantom", shortname: "ftm", publicRpcUrl: "https://rpc.ftm.tools" },
@@ -171,42 +171,31 @@ export async function estimateGasPrice(
   med: { max: BN; tip: BN };
   fast: { max: BN; tip: BN };
   baseFeePerGas: BN;
-  pendingBlock: BlockInfo;
   pendingBlockNumber: number;
+  pendingBlockTimestamp: number;
 }> {
   if (process.env.NETWORK_URL && !w3) w3 = new Web3(process.env.NETWORK_URL);
   w3 = w3 || web3();
 
   return await keepTrying(async () => {
-    const [chainId, pendingBlock, latestBlockNumber] = await Promise.all([w3!.eth.getChainId(), w3!.eth.getBlock("pending"), w3!.eth.getBlockNumber()]);
-    pendingBlock.timestamp = bn(pendingBlock.timestamp).toNumber();
-    const baseFeePerGas = bn(pendingBlock.baseFeePerGas || 0);
+    const [pendingBlock, latestBlockNumber, history] = await Promise.all([
+      w3!.eth.getBlock("pending"),
+      w3!.eth.getBlockNumber(),
+      w3!.eth.getFeeHistory(length, "pending", percentiles).catch(() => ({ reward: [] })),
+    ]);
+    const baseFeePerGas = bn(pendingBlock.baseFeePerGas || 1e8);
 
-    switch (chainId) {
-      case networks.oeth.id:
-        return {
-          slow: { max: baseFeePerGas, tip: zero },
-          med: { max: baseFeePerGas, tip: zero },
-          fast: { max: baseFeePerGas, tip: zero },
-          baseFeePerGas,
-          pendingBlock: pendingBlock as BlockInfo,
-          pendingBlockNumber: latestBlockNumber + 1,
-        };
-      default:
-        const history = await w3!.eth.getFeeHistory(length, "pending", percentiles);
+    const slow = median(_.map(history.reward, (r) => bn(r[0], 16)));
+    const med = median(_.map(history.reward, (r) => bn(r[1], 16)));
+    const fast = median(_.map(history.reward, (r) => bn(r[2], 16)));
 
-        const slow = median(_.map(history.reward, (r) => bn(r[0], 16)));
-        const med = median(_.map(history.reward, (r) => bn(r[1], 16)));
-        const fast = median(_.map(history.reward, (r) => bn(r[2], 16)));
-
-        return {
-          slow: { max: baseFeePerGas.times(1.25).plus(slow).integerValue(), tip: slow.integerValue() },
-          med: { max: baseFeePerGas.times(1.25).plus(med).integerValue(), tip: med.integerValue() },
-          fast: { max: baseFeePerGas.times(1.25).plus(fast).integerValue(), tip: fast.integerValue() },
-          baseFeePerGas,
-          pendingBlock: pendingBlock as BlockInfo,
-          pendingBlockNumber: latestBlockNumber + 1,
-        };
-    }
+    return {
+      slow: { max: baseFeePerGas.times(1.25).plus(slow).integerValue(), tip: slow.integerValue() },
+      med: { max: baseFeePerGas.times(1.25).plus(med).integerValue(), tip: med.integerValue() },
+      fast: { max: baseFeePerGas.times(1.25).plus(fast).integerValue(), tip: fast.integerValue() },
+      baseFeePerGas,
+      pendingBlockNumber: latestBlockNumber + 1,
+      pendingBlockTimestamp: bn(pendingBlock.timestamp).toNumber(),
+    };
   });
 }

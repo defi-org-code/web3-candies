@@ -18,14 +18,16 @@ export async function sleep(ms: number) {
  * keep invoking fn, catching errors, sleeping between invocations
  */
 export async function keepTrying<T>(fn: () => Promise<T>, retries = 3, ms = 1000): Promise<T> {
+  let e;
   for (let i = 0; i < retries; i++) {
     try {
       return await timeout(fn, ms);
-    } catch (e) {
+    } catch (_e) {
+      e = _e;
       await sleep(ms);
     }
   }
-  throw new Error("failed to invoke fn " + new Error().stack);
+  throw new Error("failed to invoke fn " + e);
 }
 
 export async function timeout<T>(fn: () => Promise<T>, ms = 1000): Promise<T> {
