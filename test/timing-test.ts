@@ -8,14 +8,14 @@ describe("timing", () => {
   it("throttle & sleep", async () => {
     class Foo {
       i = 0;
-      bar = throttle(this, 1, async () => this.i++);
+      bar = throttle(this, 1000, async () => this.i++);
     }
 
     const foo = new Foo();
     expect(await foo.bar()).to.eq(0);
     expect(await foo.bar()).to.eq(0);
     expect(await foo.bar()).to.eq(0);
-    await sleep(1);
+    await sleep(1000);
     expect(await foo.bar()).to.gt(0);
   });
 
