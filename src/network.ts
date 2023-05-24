@@ -73,7 +73,7 @@ export async function findBlock(timestamp: number): Promise<BlockInfo> {
   if (targetTimestampSecs > currentBlock.timestamp) throw new Error(`${timestamp} is in the future`);
 
   let candidate = await block(currentBlock.number - 10_000);
-  const avgBlockDurationSec = (currentBlock.timestamp - candidate.timestamp) / 10_000;
+  const avgBlockDurationSec = Math.max(1, (currentBlock.timestamp - candidate.timestamp) / 10_000);
   debug(
     "searching for blocknumber at",
     new Date(timestamp).toString(),
@@ -86,15 +86,16 @@ export async function findBlock(timestamp: number): Promise<BlockInfo> {
     candidate.number
   );
 
-  let closesDistance = Number.POSITIVE_INFINITY;
+  let closestDistance = Number.POSITIVE_INFINITY;
   while (Math.abs(candidate.timestamp - targetTimestampSecs) >= avgBlockDurationSec) {
     const distanceInSeconds = candidate.timestamp - targetTimestampSecs;
     const estDistanceInBlocks = Math.floor(distanceInSeconds / avgBlockDurationSec);
-    if (Math.abs(estDistanceInBlocks) > closesDistance) break;
+    if (Math.abs(estDistanceInBlocks) > closestDistance) break;
 
-    closesDistance = Math.abs(estDistanceInBlocks);
-    debug({ distanceInSeconds, estDistanceInBlocks });
-    candidate = await block(candidate.number - estDistanceInBlocks);
+    closestDistance = Math.abs(estDistanceInBlocks);
+    const targeting = Math.max(0, candidate.number - estDistanceInBlocks);
+    debug({ distanceInSeconds, estDistanceInBlocks, targeting });
+    candidate = await block(targeting);
   }
 
   debug("result", candidate.number, new Date(candidate.timestamp * 1000).toString());
