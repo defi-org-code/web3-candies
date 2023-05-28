@@ -1,7 +1,7 @@
 import type { ERC20, IWETH } from "./abi";
 import { bne, bnm, convertDecimals, parsebn, BN } from "./utils";
 import { Abi, Contract, contract } from "./contracts";
-import { currentNetwork, networks, web3 } from "./network";
+import { chainId, network, networks, web3 } from "./network";
 import _ from "lodash";
 
 export const erc20abi = require("./abi/ERC20.json") as Abi;
@@ -130,7 +130,7 @@ export async function erc20Data(address: string): Promise<TokenData> {
 }
 
 export async function iweth() {
-  const wToken = (await currentNetwork())!.wToken;
+  const wToken = network(await chainId()).wToken;
   return erc20<IWETH>(wToken.symbol, wToken.address, wToken.decimals, iwethabi);
 }
 

@@ -3,7 +3,7 @@ import Web3 from "web3";
 import type { BlockInfo, BlockNumber } from "./contracts";
 import { erc20sData } from "./erc20";
 import { keepTrying, sleep } from "./timing";
-import { BN, bn, bn9, fetchWithTimeout, median, zero } from "./utils";
+import { BN, bn, bn9, eqIgnoreCase, fetchWithTimeout, median, zero } from "./utils";
 
 const debug = require("debug")("web3-candies");
 
@@ -42,18 +42,19 @@ export function hasWeb3Instance() {
   return !!web3Instance;
 }
 
-export async function currentNetwork() {
-  if (process.env.NETWORK) {
-    return _.find(networks, (n) => n.shortname === process.env.NETWORK?.toLowerCase());
-  }
-  if (hasWeb3Instance()) {
-    const chainId = await web3().eth.getChainId();
-    return _.find(networks, (n) => n.id === chainId);
-  }
+export function network(chainId: number) {
+  return _.find(networks, (n) => n.id === chainId)!;
 }
 
 export async function chainId() {
-  return (await currentNetwork())?.id || 0;
+  if (process.env.NETWORK) {
+    return _.find(networks, (n) => n.shortname === process.env.NETWORK?.toLowerCase())!.id;
+  }
+  return await web3().eth.getChainId();
+}
+
+export function isWrappedToken(chainId: number, address: string) {
+  return eqIgnoreCase(network(chainId).wToken.address, address);
 }
 
 export async function account(num: number = 0): Promise<string> {

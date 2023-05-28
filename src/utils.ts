@@ -13,6 +13,15 @@ export const zeroAddress = "0x0000000000000000000000000000000000000000";
 // Almost never return exponential notation:
 BN.config({ EXPONENTIAL_AT: 1e9 });
 
+export const nativeTokenAddresses = [
+  zeroAddress,
+  "0x0000000000000000000000000000000000001010",
+  "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+  "0x000000000000000000000000000000000000dEaD",
+];
+
+export const isNativeAddress = (address: string) => !!nativeTokenAddresses.find((a) => eqIgnoreCase(a, address));
+
 /**
  * @returns n value exponentiated integer: bne(123.456789, 3) ==> 123456
  */
@@ -66,7 +75,7 @@ export function convertDecimals(n: BN.Value, sourceDecimals: number, targetDecim
 }
 
 export function eqIgnoreCase(a: string, b: string) {
-  return a === b || a.toLowerCase() === b.toLowerCase();
+  return a == b || a.toLowerCase() == b.toLowerCase();
 }
 
 export async function fetchWithTimeout(url: string, options: any = {}) {
