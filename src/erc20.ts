@@ -7,6 +7,8 @@ import _ from "lodash";
 export const erc20abi = require("./abi/ERC20.json") as Abi;
 export const iwethabi = require("./abi/IWETH.json") as Abi;
 
+export type TokenData = { symbol: string; address: string; decimals: number };
+
 export type Token = ERC20 & {
   /**
    * human-readable name / symbol
@@ -121,7 +123,7 @@ export const erc20sData = {
  */
 export const erc20s = _.mapValues(erc20sData, (tokens) => _.mapValues(tokens, (t) => () => erc20<IWETH>(t.symbol, t.address, t.decimals, (t as any).weth ? iwethabi : undefined)));
 
-export async function erc20Data(address: string) {
+export async function erc20Data(address: string): Promise<TokenData> {
   const e = erc20("", address);
   const [decimals, symbol] = await Promise.all([e.decimals(), e.methods.symbol().call()]);
   return { address: web3().utils.toChecksumAddress(address), decimals, symbol };
