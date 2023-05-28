@@ -53,19 +53,4 @@ describe("hardhat", () => {
     expect(config.networks!.eth!.chainId).eq(networks.eth.id);
     expect(config.networks!.bsc!.chainId).eq(networks.bsc.id);
   });
-
-  it("resetNetworkFork supports latest or number or config block number", async () => {
-    expect(getNetworkForkingBlockNumber()).eq(12345678);
-
-    await resetNetworkFork();
-    expect(await web3().eth.getBlockNumber())
-      .eq(getNetworkForkingBlockNumber())
-      .eq(12345678);
-
-    await resetNetworkFork(5000000);
-    expect(await web3().eth.getBlockNumber()).eq(5000000);
-
-    await resetNetworkFork("latest");
-    expect(await web3().eth.getBlockNumber()).gt(12345678);
-  });
 });

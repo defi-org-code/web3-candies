@@ -1,23 +1,25 @@
 import { expect } from "chai";
-import { account, contract, parseEvents, web3, zero, iwethabi, bn18 } from "../src";
+import { account, networks, contract, parseEvents, web3, zero, iwethabi, bn18, erc20sData, erc20s, currentNetwork, erc20, chainId } from "../src";
 import { artifact, deployArtifact, expectRevert, mineBlocks, useChaiBigNumber } from "../src/hardhat";
 import type { IWETH } from "../src/abi";
 import type { Example } from "../typechain-hardhat/contracts/Example.sol";
+import _ from "lodash";
 
 useChaiBigNumber();
 
 describe("Contracts", () => {
-  const weth = contract<IWETH>(iwethabi, "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2");
+  const wToken = networks[process.env.NETWORK!.toLowerCase()].wToken.address;
 
   async function deployExample() {
-    return await deployArtifact<Example>("Example", { from: await account() }, [123, weth.options.address, [456]]);
+    return await deployArtifact<Example>("Example", { from: await account() }, [123, wToken, [456]]);
   }
 
   describe("parseEvents", async () => {
     it("returns parsed events", async () => {
+      const weth = contract<IWETH>(iwethabi, wToken);
       const tx = await weth.methods.deposit().send({ from: await account(), value: bn18(42) });
-      const events = parseEvents(tx, weth);
-      expect(events.find((e) => e.event === "Deposit")!.returnValues.wad).bignumber.eq(bn18("42"));
+      const events = parseEvents(tx, iwethabi);
+      if ((await chainId()) === 1) expect(events.find((e) => e.event === "Deposit")!.returnValues.wad).bignumber.eq(bn18("42")); // not all chains have this event
     });
 
     it("parses events of other contract abi", async () => {
@@ -29,7 +31,7 @@ describe("Contracts", () => {
   });
 
   it("deploy wait for confirmations", async () => {
-    const promise = deployArtifact("Example", { from: await account() }, [123, weth.options.address, [456]], 3);
+    const promise = deployArtifact("Example", { from: await account() }, [123, wToken, [456]], 3);
 
     await web3().eth.subscribe("pendingTransactions"); // must wait for deploy to actually be sent
     await mineBlocks(60, 1);

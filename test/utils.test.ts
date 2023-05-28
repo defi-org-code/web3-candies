@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { bn, bn18, bn6, bn9, eqIgnoreCase, ether, maxUint256, zero, zeroAddress, parsebn, one, ten, bne, bnm, convertDecimals, median } from "../src";
+import { bn, bn18, bn6, bn9, eqIgnoreCase, ether, maxUint256, zero, zeroAddress, parsebn, one, ten, bne, bnm, convertDecimals, median, getCreate2Address, web3 } from "../src";
 import { expectRevert, useChaiBigNumber } from "../src/hardhat";
 import _ from "lodash";
 
@@ -78,5 +78,26 @@ describe("utils", () => {
 
   it("median", async () => {
     expect(median([123, 456789123, 456])).bignumber.eq(456);
+  });
+
+  it("compute CREATE2 address", async () => {
+    const u = web3().utils;
+    expect(u.stripHexPrefix("0x123456789")).eq("123456789");
+    const hash = u.keccak256("Hello");
+    expect(hash).eq(u.soliditySha3("Hello")).eq(u.sha3("Hello"));
+    const bytes = u.hexToBytes(hash);
+    expect(bytes.length).eq(32);
+    expect(u.stripHexPrefix(hash).length).eq(32 * 2);
+    expect(bytes.concat(bytes).length).eq(32 * 2);
+    expect(bytes.length).eq(32);
+    expect(u.bytesToHex(bytes)).eq(hash);
+
+    const ff = u.hexToBytes("0xFF");
+    expect(ff).deep.eq([255]);
+    const sender = zeroAddress;
+    const salt = u.keccak256("0x1234");
+    expect(salt).eq("0x56570de287d73cd1cb6092bb8fdee6173974955fdef345ae579ee9f475ea7432");
+    expect(u.encodePacked("0xff", "0xff")).eq("0xffff");
+    expect(getCreate2Address(sender, salt, salt)).eq("0xe6dF1989733754C1052e84E256a9428179A945f8");
   });
 });

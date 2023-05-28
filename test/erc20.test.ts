@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import _ from "lodash";
-import { account, bn, bn18, bn6, erc20, erc20s, networks, zero, zeroAddress } from "../src";
+import { account, bn, bn18, bn6, erc20, erc20Data, erc20s, networks, zero, zeroAddress } from "../src";
 import type { NonPayableTransactionObject } from "@typechain/web3-v1/static/types";
 import { resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 
@@ -75,7 +75,7 @@ describe("erc20", () => {
       const token = erc20s.eth.USDC();
       expect(await token.decimals()).eq(6);
 
-      token.methods.decimals = () => ({ call: () => Promise.resolve("0") } as NonPayableTransactionObject<string>); // proving the call is memoized
+      token.methods.decimals = () => ({ call: () => Promise.resolve("0") } as any); // proving the call is memoized
       expect(await token.methods.decimals().call()).bignumber.eq("0");
       expect(await token.decimals()).eq(6);
 
@@ -92,5 +92,9 @@ describe("erc20", () => {
       expect(await erc20("", zeroAddress, 123).decimals()).eq(123);
       expect(await erc20("", zeroAddress).decimals()).eq(123);
     });
+  });
+
+  it("erc20Data", async () => {
+    expect(await erc20Data(token.address)).deep.eq({ address: token.address, decimals: 18, symbol: "WETH" });
   });
 });

@@ -1,7 +1,7 @@
 import type { ERC20, IWETH } from "./abi";
 import { bne, bnm, convertDecimals, parsebn, BN } from "./utils";
 import { Abi, Contract, contract } from "./contracts";
-import { web3 } from "./network";
+import { currentNetwork, networks, web3 } from "./network";
 import _ from "lodash";
 
 export const erc20abi = require("./abi/ERC20.json") as Abi;
@@ -115,11 +115,22 @@ export const erc20sData = {
   },
 };
 
-/**
+/*
  *  erc20 instances of common base assets
  *  extend: `const myerc20s = _.merge(erc20s, { eth: ...})`
  */
 export const erc20s = _.mapValues(erc20sData, (tokens) => _.mapValues(tokens, (t) => () => erc20<IWETH>(t.symbol, t.address, t.decimals, (t as any).weth ? iwethabi : undefined)));
+
+export async function erc20Data(address: string) {
+  const e = erc20("", address);
+  const [decimals, symbol] = await Promise.all([e.decimals(), e.methods.symbol().call()]);
+  return { address: web3().utils.toChecksumAddress(address), decimals, symbol };
+}
+
+export async function iweth() {
+  const wToken = (await currentNetwork())!.wToken;
+  return erc20<IWETH>(wToken.symbol, wToken.address, wToken.decimals, iwethabi);
+}
 
 export function erc20<T>(name: string, address: string, decimals?: number, extendAbi?: Abi): Token & T {
   const abi = extendAbi ? [...erc20abi, ...extendAbi] : erc20abi;

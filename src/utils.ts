@@ -1,4 +1,5 @@
 import BN from "bignumber.js";
+import { web3 } from "./network";
 
 export { BigNumber as BN } from "bignumber.js";
 
@@ -91,4 +92,13 @@ export function median(arr: BN.Value[]): BN {
     : bn(arr[midIndex - 1])
         .plus(arr[midIndex])
         .div(2);
+}
+
+export function getCreate2Address(from: string, salt: string, creationCodeHash: string): string {
+  const u = web3().utils;
+  from = u.toChecksumAddress(from);
+  if (u.hexToBytes(salt).length !== 32) throw new Error("salt must be 32 bytes " + salt);
+  if (u.hexToBytes(creationCodeHash).length !== 32) throw new Error("creationCodeHash must be 32 bytes " + creationCodeHash);
+  const hash = u.keccak256(u.encodePacked("0xff", from, salt, creationCodeHash)!);
+  return u.toChecksumAddress(hash.slice(-40));
 }
