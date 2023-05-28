@@ -69,7 +69,7 @@ export async function block(blockHashOrBlockNumber?: BlockNumber | string): Prom
 export async function findBlock(timestamp: number): Promise<BlockInfo> {
   const targetTimestampSecs = timestamp / 1000;
   const currentBlock = await block();
-  if (targetTimestampSecs > currentBlock.timestamp) throw new Error(`${timestamp} is in the future`);
+  if (targetTimestampSecs > currentBlock.timestamp) throw new Error(`findBlock: ${new Date(timestamp)} is in the future`);
 
   let candidate = await block(currentBlock.number - 10_000);
   const avgBlockDurationSec = Math.max(1, (currentBlock.timestamp - candidate.timestamp) / 10_000);
@@ -92,7 +92,8 @@ export async function findBlock(timestamp: number): Promise<BlockInfo> {
     if (Math.abs(estDistanceInBlocks) > closestDistance) break;
 
     closestDistance = Math.abs(estDistanceInBlocks);
-    const targeting = Math.max(0, candidate.number - estDistanceInBlocks);
+    const targeting = candidate.number - estDistanceInBlocks;
+    if (targeting < 0) throw new Error(`findBlock: target block is before the genesis block at ${new Date((await block(0)).timestamp * 1000)}}`);
     debug({ distanceInSeconds, estDistanceInBlocks, targeting });
     candidate = await block(targeting);
   }
