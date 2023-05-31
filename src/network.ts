@@ -107,8 +107,9 @@ export async function chainInfo(chainId: number) {
   const list = await fetch("https://chainid.network/chains.json").then((r) => r.json());
   const chainArgs = list.find((it: any) => it.chainId === chainId);
   if (!chainArgs) throw new Error(`unknown chainId ${chainId}`);
+  const data = network(chainId);
 
-  const logoJsonUrl = `https://raw.githubusercontent.com/ethereum-lists/chains/master/_data/icons/${chainArgs.icon}.json`;
+  const logoJsonUrl = `https://raw.githubusercontent.com/ethereum-lists/chains/master/_data/icons/${chainArgs.icon || ""}.json`;
   const logoJson = await fetch(logoJsonUrl)
     .then((r) => r.json())
     .catch();
@@ -119,7 +120,7 @@ export async function chainInfo(chainId: number) {
   try {
     urlResponse = await fetchWithTimeout(logoUrl, { timeout: 1000 });
   } catch (e) {}
-  if (!urlResponse.ok) logoUrl = `https://icons.llamao.fi/icons/chains/rsz_${chainArgs.icon}?w=48&h=48`;
+  if (!urlResponse.ok) logoUrl = `https://icons.llamao.fi/icons/chains/rsz_${chainArgs.icon || data.name}?w=48&h=48`;
 
   return {
     chainId,
