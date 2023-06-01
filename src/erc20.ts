@@ -1,5 +1,6 @@
 import type { ERC20, IWETH } from "./abi";
-import { bne, bnm, convertDecimals, parsebn, BN } from "./utils";
+import BN from "bignumber.js";
+import { bne, bnm, convertDecimals, parsebn } from "./utils";
 import { Abi, Contract, contract } from "./contracts";
 import { chainId, network, networks, web3 } from "./network";
 import _ from "lodash";

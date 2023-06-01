@@ -3,7 +3,8 @@ import Web3 from "web3";
 import type { BlockInfo, BlockNumber } from "./contracts";
 import { erc20sData } from "./erc20";
 import { keepTrying, sleep } from "./timing";
-import { BN, bn, bn9, eqIgnoreCase, fetchWithTimeout, median, zero } from "./utils";
+import { bn, bn9, eqIgnoreCase, fetchWithTimeout, median, zero } from "./utils";
+import BN from "bignumber.js";
 
 const debug = require("debug")("web3-candies");
 

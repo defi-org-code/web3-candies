@@ -3,8 +3,9 @@ import Web3 from "web3";
 import _ from "lodash";
 import { block, networks, web3 } from "../network";
 import { contract, Contract, Options, sendAndWaitForConfirmations } from "../contracts";
-import { bn, bn18, BN } from "../utils";
+import { bn, bn18 } from "../utils";
 import { HardhatUserConfig } from "hardhat/types";
+import BN from "bignumber.js";
 
 export * from "./testing";
 export * from "./deploy";

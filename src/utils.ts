@@ -1,8 +1,6 @@
 import BN from "bignumber.js";
 import { web3 } from "./network";
 
-export { BigNumber as BN } from "bignumber.js";
-
 export const zero = BN(0);
 export const one = BN(1);
 export const ten = BN(10);
@@ -49,7 +47,7 @@ export const bn6 = (n: BN.Value = 1) => bne(n, 6);
 export function bn(n: BN.Value, base?: number): BN {
   if (n instanceof BN) return n;
   if (!n) return zero;
-  return BN(n instanceof BN ? n.toString() : n, base);
+  return BN(n, base);
 }
 
 /**
