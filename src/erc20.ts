@@ -172,8 +172,8 @@ export async function erc20Data(address: string): Promise<TokenData> {
   return { address: web3().utils.toChecksumAddress(address), decimals, symbol };
 }
 
-export async function iweth() {
-  const wToken = network(await chainId()).wToken;
+export function iweth(chainId: number) {
+  const wToken = network(chainId).wToken;
   return erc20<IWETH>(wToken.symbol, wToken.address, wToken.decimals, iwethabi);
 }
 
