@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import Web3 from "web3";
-import { account, bn, chainId, network, estimateGasPrice, findBlock, hasWeb3Instance, networks, setWeb3Instance, web3, zero } from "../src";
+import { account, bn, chainId, network, estimateGasPrice, findBlock, hasWeb3Instance, networks, setWeb3Instance, web3, zero, zeroAddress } from "../src";
 import { artifact, expectRevert, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 import exp from "constants";
 
@@ -54,6 +54,7 @@ describe("network", () => {
   it("network", async () => {
     expect(network(1)).eq(networks.eth);
     expect(network(0)).to.be.undefined;
+    expect(network(1).native.address).eq(zeroAddress);
   });
 
   it("chainId", async () => {

@@ -1,5 +1,5 @@
 import BN from "bignumber.js";
-import { web3 } from "./network";
+import Web3 from "web3";
 
 export const zero = BN(0);
 export const one = BN(1);
@@ -102,7 +102,7 @@ export function median(arr: BN.Value[]): BN {
 }
 
 export function getCreate2Address(from: string, salt: string, creationCodeHash: string): string {
-  const u = web3().utils;
+  const u = Web3.utils;
   from = u.toChecksumAddress(from);
   if (u.hexToBytes(salt).length !== 32) throw new Error("salt must be 32 bytes " + salt);
   if (u.hexToBytes(creationCodeHash).length !== 32) throw new Error("creationCodeHash must be 32 bytes " + creationCodeHash);
