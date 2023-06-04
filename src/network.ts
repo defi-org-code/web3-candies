@@ -20,6 +20,7 @@ export const networks = {
     wToken: erc20sData.eth.WETH,
     publicRpcUrl: "https://eth.llamarpc.com",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg",
+    explorer: "https://etherscan.io",
   },
   bsc: {
     id: 0x38,
@@ -29,6 +30,7 @@ export const networks = {
     wToken: erc20sData.bsc.WBNB,
     publicRpcUrl: "https://bsc-dataseed.binance.org",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/bsc_2.svg",
+    explorer: "https://bscscan.com",
   },
   poly: {
     id: 0x89,
@@ -38,6 +40,7 @@ export const networks = {
     wToken: erc20sData.poly.WMATIC,
     publicRpcUrl: "https://polygon-rpc.com",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/polygon.svg",
+    explorer: "https://polygonscan.com",
   },
   arb: {
     id: 42161,
@@ -47,6 +50,7 @@ export const networks = {
     wToken: erc20sData.arb.WETH,
     publicRpcUrl: "https://arb1.arbitrum.io/rpc",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/arbitrum.svg",
+    explorer: "https://arbiscan.io",
   },
   avax: {
     id: 43114,
@@ -56,6 +60,7 @@ export const networks = {
     wToken: erc20sData.avax.WAVAX,
     publicRpcUrl: "https://api.avax.network/ext/bc/C/rpc",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/avalanche.svg",
+    explorer: "https://snowtrace.io",
   },
   oeth: {
     id: 10,
@@ -65,6 +70,7 @@ export const networks = {
     wToken: erc20sData.oeth.WETH,
     publicRpcUrl: "https://mainnet.optimism.io",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/optimism.svg",
+    explorer: "https://optimistic.etherscan.io",
   },
   ftm: {
     id: 250,
@@ -74,6 +80,7 @@ export const networks = {
     wToken: erc20sData.ftm.WFTM,
     publicRpcUrl: "https://rpc.ftm.tools",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/fantom.svg",
+    explorer: "https://ftmscan.com",
   },
 };
 
@@ -172,48 +179,22 @@ export async function switchMetaMaskNetwork(chainId: number) {
   } catch (error: any) {
     // if unknown chain, add chain
     if (error.code === 4902) {
-      const info = await chainInfo(chainId);
+      const info = network(chainId);
       await provider.request({
         method: "wallet_addEthereumChain",
         params: [
           {
-            chainName: info.name,
-            nativeCurrency: info.currency,
-            rpcUrls: info.rpcUrls,
             chainId: Web3.utils.toHex(chainId),
-            blockExplorerUrls: info.explorers.map((e) => e.url),
+            chainName: info.name,
+            nativeCurrency: info.native,
+            rpcUrls: [info.publicRpcUrl],
+            blockExplorerUrls: [info.explorer],
             iconUrls: [info.logoUrl],
           },
         ],
       });
     } else throw error;
   }
-}
-
-async function chainInfo(chainId: number) {
-  const list = await fetch("https://chainid.network/chains.json").then((r) => r.json());
-  const chainArgs = list.find((it: any) => it.chainId === chainId);
-  if (!chainArgs) throw new Error(`unknown chainId ${chainId}`);
-  const data = network(chainId);
-  let logoUrl = data.logoUrl;
-
-  if (!logoUrl) {
-    const logoJsonUrl = `https://raw.githubusercontent.com/ethereum-lists/chains/master/_data/icons/${chainArgs.icon || ""}.json`;
-    const logoJson = await fetch(logoJsonUrl)
-      .then((r) => r.json())
-      .catch();
-    const logoIpfsAddress = logoJson?.[0]?.url?.split("ipfs://")?.[1] || "";
-    logoUrl = `https://ipfs.io/ipfs/${logoIpfsAddress}`;
-  }
-
-  return {
-    chainId,
-    name: chainArgs.name as string,
-    currency: chainArgs.nativeCurrency as { name: string; symbol: string; decimals: number },
-    rpcUrls: chainArgs.rpc as string[],
-    explorers: chainArgs.explorers as { name: string; url: string; standard: string }[],
-    logoUrl,
-  };
 }
 
 /**
