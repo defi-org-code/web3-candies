@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import Web3 from "web3";
-import { account, bn, chainId, chainInfo, network, estimateGasPrice, findBlock, hasWeb3Instance, networks, setWeb3Instance, web3, zero } from "../src";
+import { account, bn, chainId, network, estimateGasPrice, findBlock, hasWeb3Instance, networks, setWeb3Instance, web3, zero } from "../src";
 import { artifact, expectRevert, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 import exp from "constants";
 
@@ -59,16 +59,6 @@ describe("network", () => {
   it("chainId", async () => {
     expect(process.env.NETWORK).eq("eth");
     expect(await chainId()).eq(0x1);
-  });
-
-  it("chain info", async () => {
-    const eth = await chainInfo(1);
-    expect(eth.chainId).eq(1);
-    expect(eth.name).eq("Ethereum Mainnet");
-    expect(eth.currency.decimals).eq(18);
-    expect(eth.explorers[0].url).matches(/etherscan/);
-    const ftm = await chainInfo(250);
-    expect(ftm.logoUrl).not.empty;
   });
 
   it("gas price", async () => {

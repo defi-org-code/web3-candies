@@ -1,10 +1,10 @@
+import BN from "bignumber.js";
 import _ from "lodash";
 import Web3 from "web3";
 import type { BlockInfo, BlockNumber } from "./contracts";
 import { erc20sData } from "./erc20";
-import { keepTrying, sleep } from "./timing";
-import { bn, bn9, eqIgnoreCase, fetchWithTimeout, median, zero } from "./utils";
-import BN from "bignumber.js";
+import { keepTrying } from "./timing";
+import { bn, eqIgnoreCase, median, zeroAddress } from "./utils";
 
 const debug = require("debug")("web3-candies");
 
@@ -12,13 +12,69 @@ const debug = require("debug")("web3-candies");
  * to extend: `const mynetworks = _.merge({}, networks, { eth: { foo: 123 }})`
  */
 export const networks = {
-  eth: { id: 0x1, name: "Ethereum", shortname: "eth", wToken: erc20sData.eth.WETH, publicRpcUrl: "https://eth.llamarpc.com" },
-  bsc: { id: 0x38, name: "BinanceSmartChain", shortname: "bsc", wToken: erc20sData.bsc.WBNB, publicRpcUrl: "https://bsc-dataseed.binance.org" },
-  poly: { id: 0x89, name: "Polygon", shortname: "poly", wToken: erc20sData.poly.WMATIC, publicRpcUrl: "https://polygon-rpc.com" },
-  arb: { id: 42161, name: "Arbitrum", shortname: "arb", wToken: erc20sData.arb.WETH, publicRpcUrl: "https://arb1.arbitrum.io/rpc" },
-  avax: { id: 43114, name: "Avalanche", shortname: "avax", wToken: erc20sData.avax.WAVAX, publicRpcUrl: "https://api.avax.network/ext/bc/C/rpc" },
-  oeth: { id: 10, name: "Optimism", shortname: "oeth", wToken: erc20sData.oeth.WETH, publicRpcUrl: "https://mainnet.optimism.io" },
-  ftm: { id: 250, name: "Fantom", shortname: "ftm", wToken: erc20sData.ftm.WFTM, publicRpcUrl: "https://rpc.ftm.tools" },
+  eth: {
+    id: 0x1,
+    name: "Ethereum",
+    shortname: "eth",
+    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg" },
+    wToken: erc20sData.eth.WETH,
+    publicRpcUrl: "https://eth.llamarpc.com",
+    logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg",
+  },
+  bsc: {
+    id: 0x38,
+    name: "BinanceSmartChain",
+    shortname: "bsc",
+    native: { address: zeroAddress, symbol: "BNB", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/bsc_2.svg" },
+    wToken: erc20sData.bsc.WBNB,
+    publicRpcUrl: "https://bsc-dataseed.binance.org",
+    logoUrl: "https://app.1inch.io/assets/images/network-logos/bsc_2.svg",
+  },
+  poly: {
+    id: 0x89,
+    name: "Polygon",
+    shortname: "poly",
+    native: { address: zeroAddress, symbol: "MATIC", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/polygon.svg" },
+    wToken: erc20sData.poly.WMATIC,
+    publicRpcUrl: "https://polygon-rpc.com",
+    logoUrl: "https://app.1inch.io/assets/images/network-logos/polygon.svg",
+  },
+  arb: {
+    id: 42161,
+    name: "Arbitrum",
+    shortname: "arb",
+    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg" },
+    wToken: erc20sData.arb.WETH,
+    publicRpcUrl: "https://arb1.arbitrum.io/rpc",
+    logoUrl: "https://app.1inch.io/assets/images/network-logos/arbitrum.svg",
+  },
+  avax: {
+    id: 43114,
+    name: "Avalanche",
+    shortname: "avax",
+    native: { address: zeroAddress, symbol: "AVAX", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/avalanche.svg" },
+    wToken: erc20sData.avax.WAVAX,
+    publicRpcUrl: "https://api.avax.network/ext/bc/C/rpc",
+    logoUrl: "https://app.1inch.io/assets/images/network-logos/avalanche.svg",
+  },
+  oeth: {
+    id: 10,
+    name: "Optimism",
+    shortname: "oeth",
+    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg" },
+    wToken: erc20sData.oeth.WETH,
+    publicRpcUrl: "https://mainnet.optimism.io",
+    logoUrl: "https://app.1inch.io/assets/images/network-logos/optimism.svg",
+  },
+  ftm: {
+    id: 250,
+    name: "Fantom",
+    shortname: "ftm",
+    native: { address: zeroAddress, symbol: "FTM", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/fantom.svg" },
+    wToken: erc20sData.ftm.WFTM,
+    publicRpcUrl: "https://rpc.ftm.tools",
+    logoUrl: "https://app.1inch.io/assets/images/network-logos/fantom.svg",
+  },
 };
 
 /**
@@ -104,35 +160,6 @@ export async function findBlock(timestamp: number): Promise<BlockInfo> {
   return candidate;
 }
 
-export async function chainInfo(chainId: number) {
-  const list = await fetch("https://chainid.network/chains.json").then((r) => r.json());
-  const chainArgs = list.find((it: any) => it.chainId === chainId);
-  if (!chainArgs) throw new Error(`unknown chainId ${chainId}`);
-  const data = network(chainId);
-
-  const logoJsonUrl = `https://raw.githubusercontent.com/ethereum-lists/chains/master/_data/icons/${chainArgs.icon || ""}.json`;
-  const logoJson = await fetch(logoJsonUrl)
-    .then((r) => r.json())
-    .catch();
-  const logoIpfsAddress = logoJson?.[0]?.url?.split("ipfs://")?.[1] || "";
-
-  let logoUrl = `https://ipfs.io/ipfs/${logoIpfsAddress}`;
-  let urlResponse = { ok: false };
-  try {
-    urlResponse = await fetchWithTimeout(logoUrl, { timeout: 1000 });
-  } catch (e) {}
-  if (!urlResponse.ok) logoUrl = `https://icons.llamao.fi/icons/chains/rsz_${chainArgs.icon || data.name}?w=48&h=48`;
-
-  return {
-    chainId,
-    name: chainArgs.name as string,
-    currency: chainArgs.nativeCurrency as { name: string; symbol: string; decimals: number },
-    rpcUrls: chainArgs.rpc as string[],
-    explorers: chainArgs.explorers as { name: string; url: string; standard: string }[],
-    logoUrl,
-  };
-}
-
 export async function switchMetaMaskNetwork(chainId: number) {
   const provider = (web3() as any).provider || web3().currentProvider;
   if (!provider) throw new Error(`no provider`);
@@ -161,6 +188,32 @@ export async function switchMetaMaskNetwork(chainId: number) {
       });
     } else throw error;
   }
+}
+
+async function chainInfo(chainId: number) {
+  const list = await fetch("https://chainid.network/chains.json").then((r) => r.json());
+  const chainArgs = list.find((it: any) => it.chainId === chainId);
+  if (!chainArgs) throw new Error(`unknown chainId ${chainId}`);
+  const data = network(chainId);
+  let logoUrl = data.logoUrl;
+
+  if (!logoUrl) {
+    const logoJsonUrl = `https://raw.githubusercontent.com/ethereum-lists/chains/master/_data/icons/${chainArgs.icon || ""}.json`;
+    const logoJson = await fetch(logoJsonUrl)
+      .then((r) => r.json())
+      .catch();
+    const logoIpfsAddress = logoJson?.[0]?.url?.split("ipfs://")?.[1] || "";
+    logoUrl = `https://ipfs.io/ipfs/${logoIpfsAddress}`;
+  }
+
+  return {
+    chainId,
+    name: chainArgs.name as string,
+    currency: chainArgs.nativeCurrency as { name: string; symbol: string; decimals: number },
+    rpcUrls: chainArgs.rpc as string[],
+    explorers: chainArgs.explorers as { name: string; url: string; standard: string }[],
+    logoUrl,
+  };
 }
 
 /**

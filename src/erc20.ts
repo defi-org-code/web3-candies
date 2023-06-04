@@ -46,7 +46,13 @@ export type Token = ERC20 & {
 
 export const erc20sData = {
   eth: {
-    WETH: { symbol: "WETH", address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2", decimals: 18, weth: true },
+    WETH: {
+      symbol: "WETH",
+      address: "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+    },
     WBTC: { symbol: "WBTC", address: "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599", decimals: 8 },
     USDC: { symbol: "USDC", address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48", decimals: 6 },
     USDT: { symbol: "USDT", address: "0xdAC17F958D2ee523a2206206994597C13D831ec7", decimals: 6 },
@@ -56,7 +62,13 @@ export const erc20sData = {
     ORBS: { symbol: "ORBS", address: "0xff56Cc6b1E6dEd347aA0B7676C85AB0B3D08B0FA", decimals: 18 },
   },
   bsc: {
-    WBNB: { symbol: "WBNB", address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c", decimals: 18, weth: true },
+    WBNB: {
+      symbol: "WBNB",
+      address: "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c_1.png",
+    },
     BTCB: { symbol: "BTCB", address: "0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c", decimals: 18 },
     USDC: { symbol: "USDC", address: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d", decimals: 18 },
     USDT: { symbol: "USDT", address: "0x55d398326f99059fF775485246999027B3197955", decimals: 18 },
@@ -66,7 +78,13 @@ export const erc20sData = {
     ORBS: { symbol: "ORBS", address: "0xeBd49b26169e1b52c04cFd19FCf289405dF55F80", decimals: 18 },
   },
   poly: {
-    WMATIC: { symbol: "WMATIC", address: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270", decimals: 18, weth: true },
+    WMATIC: {
+      symbol: "WMATIC",
+      address: "0x0d500B1d8E8eF31E21C99d1Db9A6444d3ADf1270",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270.png",
+    },
     sMATIC: { symbol: "sMATIC", address: "0x3A58a54C066FdC0f2D55FC9C89F0415C92eBf3C4", decimals: 18 },
     WBTC: { symbol: "WBTC", address: "0x1BFD67037B42Cf73acF2047067bd4F2C47D9BfD6", decimals: 8 },
     USDC: { symbol: "USDC", address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174", decimals: 6 },
@@ -77,7 +95,13 @@ export const erc20sData = {
     ORBS: { symbol: "ORBS", address: "0x614389EaAE0A6821DC49062D56BDA3d9d45Fa2ff", decimals: 18 },
   },
   arb: {
-    WETH: { symbol: "WETH", address: "0x82af49447d8a07e3bd95bd0d56f35241523fbab1", decimals: 18, weth: true },
+    WETH: {
+      symbol: "WETH",
+      address: "0x82af49447d8a07e3bd95bd0d56f35241523fbab1",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+    },
     WBTC: { symbol: "WBTC", address: "0x2f2a2543b76a4166549f7aab2e75bef0aefc5b0f", decimals: 8 },
     USDC: { symbol: "USDC", address: "0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8", decimals: 6 },
     USDT: { symbol: "USDT", address: "0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9", decimals: 6 },
@@ -87,7 +111,13 @@ export const erc20sData = {
     TUSD: { symbol: "TUSD", address: "0x4D15a3A2286D883AF0AA1B3f21367843FAc63E07", decimals: 18 },
   },
   avax: {
-    WAVAX: { symbol: "WAVAX", address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7", decimals: 18, weth: true },
+    WAVAX: {
+      symbol: "WAVAX",
+      address: "0xB31f66AA3C1e785363F0875A1B74E27b85FD66c7",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7.png",
+    },
     WBTCe: { symbol: "WBTC.e", address: "0x50b7545627a5162F82A992c33b87aDc75187B218", decimals: 8 },
     USDC: { symbol: "USDC", address: "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E", decimals: 6 },
     USDCe: { symbol: "USDC.e", address: "0xA7D7079b0FEaD91F3e65f86E8915Cb59c1a4C664", decimals: 6 },
@@ -99,7 +129,13 @@ export const erc20sData = {
     ORBS: { symbol: "ORBS", address: "0x340fE1D898ECCAad394e2ba0fC1F93d27c7b717A", decimals: 18 },
   },
   ftm: {
-    WFTM: { symbol: "WFTM", address: "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83", decimals: 18, weth: true },
+    WFTM: {
+      symbol: "WFTM",
+      address: "0x21be370D5312f44cB42ce377BC9b8a0cEF1A4C83",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0x4e15361fd6b4bb609fa63c81a2be19d873717870.png",
+    },
     WBTC: { symbol: "WBTC", address: "0x321162Cd933E2Be498Cd2267a90534A804051b11", decimals: 8 },
     WETH: { symbol: "WETH", address: "0x74b23882a30290451A17c44f4F05243b6b58C76d", decimals: 18 },
     USDC: { symbol: "USDC", address: "0x04068DA6C83AFCFA0e13ba15A6696662335D5B75", decimals: 6 },
@@ -108,7 +144,13 @@ export const erc20sData = {
     ORBS: { symbol: "ORBS", address: "0x3E01B7E242D5AF8064cB9A8F9468aC0f8683617c", decimals: 18 },
   },
   oeth: {
-    WETH: { symbol: "WETH", address: "0x4200000000000000000000000000000000000006", decimals: 18, weth: true },
+    WETH: {
+      symbol: "WETH",
+      address: "0x4200000000000000000000000000000000000006",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+    },
     WBTC: { symbol: "WBTC", address: "0x68f180fcCe6836688e9084f035309E29Bf0A2095", decimals: 8 },
     USDC: { symbol: "USDC", address: "0x7F5c764cBc14f9669B88837ca1490cCa17c31607", decimals: 6 },
     USDT: { symbol: "USDT", address: "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58", decimals: 6 },
