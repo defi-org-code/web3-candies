@@ -158,13 +158,28 @@ export const erc20sData = {
     OP: { symbol: "OP", address: "0x4200000000000000000000000000000000000042", decimals: 18 },
     FRAX: { symbol: "FRAX", address: "0x2E3D870790dC77A83DD1d18184Acc7439A53f475", decimals: 18 },
   },
+  glmr: {
+    WGLMR: {
+      symbol: "WGLMR",
+      address: "0xAcc15dC74880C9944775448304B263D191c6077F",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://moonscan.io/images/svg/brands/mainbrand-1.svg",
+    },
+  },
 };
 
 /*
  *  erc20 instances of common base assets
  *  extend: `const myerc20s = _.merge(erc20s, { eth: ...})`
  */
-export const erc20s = _.mapValues(erc20sData, (tokens) => _.mapValues(tokens, (t) => () => erc20<IWETH>(t.symbol, t.address, t.decimals, (t as any).weth ? iwethabi : undefined)));
+export const erc20s = _.mapValues(erc20sData, (tokens) =>
+  _.mapValues(tokens, (t: TokenData) => () => erc20<IWETH>(t.symbol, t.address, t.decimals, (t as any).weth ? iwethabi : undefined))
+);
+
+export function erc20FromData(token: TokenData) {
+  return erc20(token.symbol, token.address, token.decimals);
+}
 
 export async function erc20Data(address: string): Promise<TokenData> {
   const e = erc20("", address);

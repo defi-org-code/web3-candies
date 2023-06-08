@@ -82,6 +82,16 @@ export const networks = {
     logoUrl: "https://app.1inch.io/assets/images/network-logos/fantom.svg",
     explorer: "https://ftmscan.com",
   },
+  glmr: {
+    id: 1284,
+    name: "Moonbeam",
+    shortname: "glmr",
+    native: { address: zeroAddress, symbol: "GLMR", decimals: 18, logoUrl: "https://moonscan.io/images/svg/brands/mainbrand-1.svg" },
+    wToken: erc20sData.glmr.WGLMR,
+    publicRpcUrl: "https://rpc.api.moonbeam.network",
+    logoUrl: "https://moonscan.io/images/svg/brands/mainbrand-1.svg",
+    explorer: "https://moonscan.io/",
+  },
 };
 
 /**
@@ -226,6 +236,7 @@ export async function estimateGasPrice(
     const slow = median(_.map(history.reward, (r) => bn(r[0], 16)));
     const med = median(_.map(history.reward, (r) => bn(r[1], 16)));
     const fast = median(_.map(history.reward, (r) => bn(r[2], 16)));
+    console.log(pendingBlock);
 
     return {
       slow: { max: baseFeePerGas.times(1.25).plus(slow).integerValue(), tip: slow.integerValue() },
