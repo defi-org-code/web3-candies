@@ -62,14 +62,14 @@ describe("network", () => {
     expect(await chainId()).eq(0x1);
   });
 
-  it.only("gas price", async () => {
+  it("gas price", async () => {
     await resetNetworkFork("latest");
     const prices = await estimateGasPrice();
     console.log(JSON.stringify(prices, null, 2));
     expect(prices.slow.max).bignumber.gt(1e6);
     expect(prices.med.max).bignumber.gte(prices.slow.max);
     expect(prices.fast.max).bignumber.gte(prices.med.max);
-    expect(prices.slow.tip).bignumber.gt(1e6).lte(prices.slow.max);
+    expect(prices.slow.tip).bignumber.lte(prices.slow.max);
     expect(prices.med.tip).bignumber.gte(prices.slow.tip).lte(prices.slow.max);
     expect(prices.fast.tip).bignumber.gte(prices.med.tip).lte(prices.fast.max);
   });

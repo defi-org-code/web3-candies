@@ -6,8 +6,8 @@ import type { BlockTransactionString } from "web3-eth";
 import type { NonPayableTransactionObject, PayableTransactionObject } from "./abi/types";
 import BN from "bignumber.js";
 import { bn } from "./utils";
-import { web3 } from "./network";
 import _ from "lodash";
+import { chainId, network, networks, web3 } from "./network";
 
 const debug = require("debug")("web3-candies");
 
@@ -58,28 +58,37 @@ export function parseEvents(receipt: Receipt, contractOrAbi: Contract | Abi): Ev
   });
   return result;
 }
-
 export async function sendAndWaitForConfirmations<T extends Contract | Receipt = Receipt>(
-  tx: NonPayableTransactionObject<any> | PayableTransactionObject<any> | ContractSendMethod,
-  opts: Options,
+  tx: NonPayableTransactionObject<any> | PayableTransactionObject<any> | ContractSendMethod | null,
+  opts: Options & { to?: string },
   confirmations: number = 0
 ) {
-  const nonce = await web3().eth.getTransactionCount(opts.from);
-  let options = {
+  if (!tx && !opts.to) throw new Error("tx or opts.to must be specified");
+
+  const [nonce, chain] = await Promise.all([web3().eth.getTransactionCount(opts.from), chainId()]);
+  const legacyGas = chain === networks.bsc.id;
+
+  const options = {
+    value: opts.value ? bn(opts.value).toFixed(0) : 0,
     from: opts.from,
-    nonce,
-    maxPriorityFeePerGas: opts.maxPriorityFeePerGas ? bn(opts.maxPriorityFeePerGas).toFixed(0) : undefined,
-    maxFeePerGas: opts.maxFeePerGas ? bn(opts.maxFeePerGas).toFixed(0) : undefined,
-    value: opts.value ? bn(opts.value).toFixed(0) : undefined,
+    to: opts.to,
     gas: 0,
+    nonce,
+    maxPriorityFeePerGas: !legacyGas && opts.maxPriorityFeePerGas ? bn(opts.maxPriorityFeePerGas).toFixed(0) : undefined,
+    maxFeePerGas: !legacyGas && opts.maxFeePerGas ? bn(opts.maxFeePerGas).toFixed(0) : undefined,
+    gasPrice: legacyGas && opts.maxFeePerGas ? bn(opts.maxFeePerGas).toFixed(0) : undefined,
   };
+  if (legacyGas) delete options.maxPriorityFeePerGas && delete options.maxFeePerGas;
+  else delete options.gasPrice;
 
-  debug(`estimating tx from ${options.from} nonce ${nonce} priority ${options.maxPriorityFeePerGas} maxFee ${options.maxFeePerGas} value ${options.value}`);
-  const gas = Math.floor((await tx.estimateGas(options)) * 1.2);
-  options = { ...options, gas };
+  debug(`estimating gas...`);
+  const estimated = await (tx?.estimateGas({ ...options }) || web3().eth.estimateGas({ ...options }));
+  debug(`estimated gas: ${estimated} +20% buffer`);
+  options.gas = Math.floor(estimated * 1.2);
 
-  debug(`sending tx with gas ${options.gas}`);
-  const promiEvent = tx.send(options);
+  debug(`sending tx...`);
+  debug(options);
+  const promiEvent = tx ? tx.send(options) : web3().eth.sendTransaction(options);
 
   let sentBlock = Number.POSITIVE_INFINITY;
   promiEvent.once("receipt", (r) => (sentBlock = r.blockNumber));

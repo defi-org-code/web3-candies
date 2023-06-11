@@ -1,9 +1,9 @@
-import type { ERC20, IWETH } from "./abi";
 import BN from "bignumber.js";
-import { bne, bnm, convertDecimals, parsebn } from "./utils";
-import { Abi, Contract, contract } from "./contracts";
-import { chainId, network, networks, web3 } from "./network";
 import _ from "lodash";
+import Web3 from "web3";
+import type { ERC20, IWETH } from "./abi";
+import { Abi, Contract, contract } from "./contracts";
+import { bne, bnm, convertDecimals, parsebn } from "./utils";
 
 export const erc20abi = require("./abi/ERC20.json") as Abi;
 export const iwethabi = require("./abi/IWETH.json") as Abi;
@@ -173,7 +173,7 @@ export const erc20sData = {
  *  erc20 instances of common base assets
  *  extend: `const myerc20s = _.merge(erc20s, { eth: ...})`
  */
-export const erc20s = _.mapValues(erc20sData, (tokens) =>
+export const erc20s: { [network: string]: { [symbol: string]: () => Token & IWETH } } = _.mapValues(erc20sData, (tokens) =>
   _.mapValues(tokens, (t: TokenData) => () => erc20<IWETH>(t.symbol, t.address, t.decimals, (t as any).weth ? iwethabi : undefined))
 );
 
@@ -181,24 +181,24 @@ export function erc20FromData(token: TokenData) {
   return erc20(token.symbol, token.address, token.decimals);
 }
 
-export async function erc20Data(address: string): Promise<TokenData> {
-  const e = erc20("", address);
-  const [decimals, symbol] = await Promise.all([e.decimals(), e.methods.symbol().call()]);
-  return { address: web3().utils.toChecksumAddress(address), decimals, symbol };
-}
-
 export function iweth(chainId: number) {
-  const wToken = network(chainId).wToken;
+  const wToken = require("./network")(chainId).wToken;
   return erc20<IWETH>(wToken.symbol, wToken.address, wToken.decimals, iwethabi);
 }
 
 export function erc20<T>(name: string, address: string, decimals?: number, extendAbi?: Abi): Token & T {
   const abi = extendAbi ? [...erc20abi, ...extendAbi] : erc20abi;
-  address = web3().utils.toChecksumAddress(address);
+  address = Web3.utils.toChecksumAddress(address);
   const result = contract<Token & T>(abi, address);
   wrapToken(result, name, address, decimals, abi);
   tryTag(address, name);
   return result;
+}
+
+export async function fetchErc20(address: string): Promise<TokenData> {
+  const e = erc20("", address);
+  const [decimals, symbol] = await Promise.all([e.decimals(), e.methods.symbol().call()]);
+  return { address: Web3.utils.toChecksumAddress(address), decimals, symbol };
 }
 
 export function wrapToken(token: Contract, name: string, address: string, decimals: number = 0, abi: Abi) {

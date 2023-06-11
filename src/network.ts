@@ -4,7 +4,7 @@ import Web3 from "web3";
 import type { BlockInfo, BlockNumber } from "./contracts";
 import { erc20sData } from "./erc20";
 import { keepTrying } from "./timing";
-import { bn, eqIgnoreCase, median, zeroAddress } from "./utils";
+import { bn, bn9, eqIgnoreCase, median, zero, zeroAddress } from "./utils";
 
 const debug = require("debug")("web3-candies");
 
@@ -13,7 +13,7 @@ const debug = require("debug")("web3-candies");
  */
 export const networks = {
   eth: {
-    id: 0x1,
+    id: 1,
     name: "Ethereum",
     shortname: "eth",
     native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg" },
@@ -23,7 +23,7 @@ export const networks = {
     explorer: "https://etherscan.io",
   },
   bsc: {
-    id: 0x38,
+    id: 56,
     name: "BinanceSmartChain",
     shortname: "bsc",
     native: { address: zeroAddress, symbol: "BNB", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/bsc_2.svg" },
@@ -31,9 +31,10 @@ export const networks = {
     publicRpcUrl: "https://bsc-dataseed.binance.org",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/bsc_2.svg",
     explorer: "https://bscscan.com",
+    baseGasPrice: 3 * 1e9,
   },
   poly: {
-    id: 0x89,
+    id: 137,
     name: "Polygon",
     shortname: "poly",
     native: { address: zeroAddress, symbol: "MATIC", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/polygon.svg" },
@@ -51,6 +52,7 @@ export const networks = {
     publicRpcUrl: "https://arb1.arbitrum.io/rpc",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/arbitrum.svg",
     explorer: "https://arbiscan.io",
+    baseGasPrice: 0.12 * 1e9,
   },
   avax: {
     id: 43114,
@@ -90,7 +92,7 @@ export const networks = {
     wToken: erc20sData.glmr.WGLMR,
     publicRpcUrl: "https://rpc.api.moonbeam.network",
     logoUrl: "https://moonscan.io/images/svg/brands/mainbrand-1.svg",
-    explorer: "https://moonscan.io/",
+    explorer: "https://moonscan.io",
   },
 };
 
@@ -120,11 +122,11 @@ export function network(chainId: number) {
   return _.find(networks, (n) => n.id === chainId)!;
 }
 
-export async function chainId() {
+export async function chainId(w3?: Web3) {
   if (process.env.NETWORK) {
     return _.find(networks, (n) => n.shortname === process.env.NETWORK?.toLowerCase())!.id;
   }
-  return await web3().eth.getChainId();
+  return await (w3 || web3()).eth.getChainId();
 }
 
 export function isWrappedToken(chainId: number, address: string) {
@@ -226,24 +228,24 @@ export async function estimateGasPrice(
   w3 = w3 || web3();
 
   return await keepTrying(async () => {
-    const [pendingBlock, latestBlockNumber, history] = await Promise.all([
+    const [chain, pendingBlock, history] = await Promise.all([
+      chainId(w3),
       w3!.eth.getBlock("pending"),
-      w3!.eth.getBlockNumber(),
       w3!.eth.getFeeHistory(length, "pending", percentiles).catch(() => ({ reward: [] })),
     ]);
-    const baseFeePerGas = bn(pendingBlock.baseFeePerGas || 1e8);
+
+    const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, (network(chain) as any).baseGasPrice || 0);
 
     const slow = median(_.map(history.reward, (r) => bn(r[0], 16)));
     const med = median(_.map(history.reward, (r) => bn(r[1], 16)));
     const fast = median(_.map(history.reward, (r) => bn(r[2], 16)));
-    console.log(pendingBlock);
 
     return {
-      slow: { max: baseFeePerGas.times(1.25).plus(slow).integerValue(), tip: slow.integerValue() },
-      med: { max: baseFeePerGas.times(1.25).plus(med).integerValue(), tip: med.integerValue() },
+      slow: { max: baseFeePerGas.times(1).plus(slow).integerValue(), tip: slow.integerValue() },
+      med: { max: baseFeePerGas.times(1.1).plus(med).integerValue(), tip: med.integerValue() },
       fast: { max: baseFeePerGas.times(1.25).plus(fast).integerValue(), tip: fast.integerValue() },
       baseFeePerGas,
-      pendingBlockNumber: latestBlockNumber + 1,
+      pendingBlockNumber: pendingBlock.number,
       pendingBlockTimestamp: bn(pendingBlock.timestamp).toNumber(),
     };
   });

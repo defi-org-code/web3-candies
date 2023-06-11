@@ -8,7 +8,7 @@ import "hardhat-spdx-license-identifier";
 import { task } from "hardhat/config";
 import "hardhat-tracer";
 
-import { BN, account, block, erc20s, estimateGasPrice, ether, web3 } from "./src";
+import { sendAndWaitForConfirmations, account, block, erc20s, estimateGasPrice, ether, web3 } from "./src";
 import { askDeployer, deploy } from "./src/hardhat/deploy";
 import { hardhatDefaultConfig, hre, isHardhatNetwork } from "./src/hardhat";
 

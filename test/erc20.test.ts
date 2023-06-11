@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import _ from "lodash";
-import { account, bn, bn18, bn6, erc20, erc20Data, erc20s, networks, zero, zeroAddress } from "../src";
+import { account, bn, bn18, bn6, erc20, erc20FromData, erc20s, fetchErc20, networks, zero, zeroAddress } from "../src";
 import { resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 
 useChaiBigNumber();
@@ -94,6 +94,6 @@ describe("erc20", () => {
   });
 
   it("erc20Data", async () => {
-    expect(await erc20Data(token.address)).deep.eq({ address: token.address, decimals: 18, symbol: "WETH" });
+    expect(await fetchErc20(token.address)).deep.eq({ address: token.address, decimals: 18, symbol: "WETH" });
   });
 });

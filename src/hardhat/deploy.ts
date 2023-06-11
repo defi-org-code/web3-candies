@@ -112,9 +112,7 @@ export async function askDeployer() {
   });
 
   const account = web3().eth.accounts.privateKeyToAccount(privateKey);
-  web3().eth.accounts.wallet.add(account);
-
-  return account.address as string;
+  return web3().eth.accounts.wallet.add(account).address;
 }
 
 export async function askFees() {
