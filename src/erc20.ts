@@ -182,7 +182,7 @@ export function erc20FromData(token: TokenData) {
 }
 
 export function iweth(chainId: number) {
-  const wToken = require("./network")(chainId).wToken;
+  const wToken = require("./network").network(chainId).wToken;
   return erc20<IWETH>(wToken.symbol, wToken.address, wToken.decimals, iwethabi);
 }
 
