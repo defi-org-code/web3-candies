@@ -231,7 +231,7 @@ export async function estimateGasPrice(
     const [chain, pendingBlock, history] = await Promise.all([
       chainId(w3),
       w3!.eth.getBlock("pending"),
-      w3!.eth.getFeeHistory(length, "pending", percentiles).catch(() => ({ reward: [] })),
+      !!w3!.eth.getFeeHistory ? w3!.eth.getFeeHistory(length, "pending", percentiles) : Promise.resolve({ reward: [] }),
     ]);
 
     const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, (network(chain) as any).baseGasPrice || 0);
