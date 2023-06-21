@@ -66,8 +66,7 @@
     "prebuild": "npm run clean && npm run prettier && npm run typechain",
     "build": "hardhat compile && solhint 'contracts/**/*.sol' && tsc && cp -r src/hardhat/types dist/hardhat/types",
     "prepublishOnly": "npm run build",
-    "pretest": "npm run build",
-    "test": "DEBUG=web3-candies BLOCK=12345678 hardhat test",
+    "test": "DEBUG=web3-candies hardhat test",
     "deploy": "hardhat deploy --network $1"
   },
   "prettier": {

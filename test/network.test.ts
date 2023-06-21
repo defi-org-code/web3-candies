@@ -1,6 +1,22 @@
 import { expect } from "chai";
 import Web3 from "web3";
-import { account, bn, chainId, network, estimateGasPrice, findBlock, hasWeb3Instance, networks, setWeb3Instance, web3, zero, zeroAddress } from "../src";
+import {
+  account,
+  bn,
+  chainId,
+  network,
+  estimateGasPrice,
+  findBlock,
+  hasWeb3Instance,
+  networks,
+  setWeb3Instance,
+  web3,
+  zero,
+  zeroAddress,
+  erc20s,
+  getPastEvents,
+  block,
+} from "../src";
 import { artifact, expectRevert, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 import exp from "constants";
 
@@ -72,5 +88,24 @@ describe("network", () => {
     expect(prices.slow.tip).bignumber.lte(prices.slow.max);
     expect(prices.med.tip).bignumber.gte(prices.slow.tip).lte(prices.slow.max);
     expect(prices.fast.tip).bignumber.gte(prices.med.tip).lte(prices.fast.max);
+  });
+
+  it("get past events", async () => {
+    await resetNetworkFork("latest");
+    const contract = erc20s.eth.WETH();
+
+    await contract.methods.deposit().send({ from: await account(), value: 1 });
+    let result = await getPastEvents({ contract, eventName: "Deposit", filter: { dst: await account() }, fromBlock: (await web3().eth.getBlockNumber()) - 10 });
+    expect(result).length(1);
+    expect(result[0].returnValues[0]).eq(await account());
+  });
+
+  it("get past events with lots of data", async () => {
+    await resetNetworkFork("latest");
+    const contract = erc20s.eth.WETH();
+
+    await contract.methods.deposit().send({ from: await account(), value: 1 });
+    let result = await getPastEvents({ contract, eventName: "Deposit", filter: {}, fromBlock: (await web3().eth.getBlockNumber()) - 5000, minDistance: 2000 });
+    expect(result.length).gt(1);
   });
 });

@@ -1,10 +1,11 @@
 import BN from "bignumber.js";
 import _ from "lodash";
 import Web3 from "web3";
-import type { BlockInfo, BlockNumber } from "./contracts";
+import type { BlockInfo, BlockNumber, Contract } from "./contracts";
 import { erc20sData } from "./erc20";
-import { keepTrying } from "./timing";
-import { bn, bn9, eqIgnoreCase, median, zero, zeroAddress } from "./utils";
+import { keepTrying, timeout } from "./timing";
+import { eqIgnoreCase, median, zeroAddress } from "./utils";
+import type { EventData } from "web3-eth-contract";
 
 const debug = require("debug")("web3-candies");
 
@@ -236,9 +237,9 @@ export async function estimateGasPrice(
 
     const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, (network(chain) as any).baseGasPrice || 0);
 
-    const slow = median(_.map(history.reward, (r) => bn(r[0], 16)));
-    const med = median(_.map(history.reward, (r) => bn(r[1], 16)));
-    const fast = median(_.map(history.reward, (r) => bn(r[2], 16)));
+    const slow = median(_.map(history.reward, (r) => BN(r[0], 16)));
+    const med = median(_.map(history.reward, (r) => BN(r[1], 16)));
+    const fast = median(_.map(history.reward, (r) => BN(r[2], 16)));
 
     return {
       slow: { max: baseFeePerGas.times(1).plus(slow).integerValue(), tip: slow.integerValue() },
@@ -246,7 +247,45 @@ export async function estimateGasPrice(
       fast: { max: baseFeePerGas.times(1.25).plus(fast).integerValue(), tip: fast.integerValue() },
       baseFeePerGas,
       pendingBlockNumber: pendingBlock.number,
-      pendingBlockTimestamp: bn(pendingBlock.timestamp).toNumber(),
+      pendingBlockTimestamp: BN(pendingBlock.timestamp).toNumber(),
     };
   });
+}
+
+export async function getPastEvents(params: {
+  contract: Contract;
+  eventName: string | "all";
+  filter: { [key: string]: string | number };
+  fromBlock: number;
+  toBlock?: number;
+  minDistance?: number;
+  latestBlock?: number;
+  timeoutMs?: number;
+}): Promise<EventData[]> {
+  params.toBlock = params.toBlock || Number.MAX_VALUE;
+  params.minDistance = params.minDistance || 1000;
+  params.timeoutMs = params.timeoutMs || 3000;
+  if ((params.toBlock || Number.MAX_VALUE) < params.fromBlock) return [];
+
+  params.latestBlock = params.latestBlock || (await web3().eth.getBlockNumber());
+  params.toBlock = Math.min(params.latestBlock, params.toBlock!);
+  const distance = params.toBlock - params.fromBlock;
+  debug(`getPastEvents ${params.eventName} ${params.fromBlock} - ${params.toBlock} (${distance})`);
+
+  const p = params.contract.getPastEvents((params.eventName === "all" ? undefined : params.eventName) as any, {
+    filter: params.filter,
+    fromBlock: params.fromBlock,
+    toBlock: params.toBlock,
+  });
+  if (distance <= params.minDistance!) return await p;
+
+  try {
+    return await timeout(() => p, params.timeoutMs!);
+  } catch (e: any) {}
+
+  const [r0, r1] = await Promise.all([
+    getPastEvents({ ...params, toBlock: Math.floor(params.fromBlock + distance / 2) }),
+    getPastEvents({ ...params, fromBlock: Math.floor(params.fromBlock + distance / 2) + 1 }),
+  ]);
+  return r0.concat(r1);
 }
