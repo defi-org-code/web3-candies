@@ -95,7 +95,7 @@ describe("network", () => {
     const contract = erc20s.eth.WETH();
 
     await contract.methods.deposit().send({ from: await account(), value: 1 });
-    let result = await getPastEvents({ contract, eventName: "Deposit", filter: { dst: await account() }, fromBlock: (await web3().eth.getBlockNumber()) - 10 });
+    const result = await getPastEvents({ contract, eventName: "Deposit", filter: { dst: await account() }, fromBlock: -10 });
     expect(result).length(1);
     expect(result[0].returnValues[0]).eq(await account());
   });
@@ -105,7 +105,7 @@ describe("network", () => {
     const contract = erc20s.eth.WETH();
 
     await contract.methods.deposit().send({ from: await account(), value: 1 });
-    let result = await getPastEvents({ contract, eventName: "Deposit", filter: {}, fromBlock: (await web3().eth.getBlockNumber()) - 5000, minDistance: 2000 });
+    const result = await getPastEvents({ contract, eventName: "Deposit", filter: {}, fromBlock: -10_000 });
     expect(result.length).gt(1);
   });
 });

@@ -260,14 +260,14 @@ export async function getPastEvents(params: {
   toBlock?: number;
   minDistance?: number;
   latestBlock?: number;
-  timeoutMs?: number;
+  iterationTimeoutMs?: number;
 }): Promise<EventData[]> {
   params.toBlock = params.toBlock || Number.MAX_VALUE;
   params.minDistance = params.minDistance || 1000;
-  params.timeoutMs = params.timeoutMs || 3000;
-  if ((params.toBlock || Number.MAX_VALUE) < params.fromBlock) return [];
+  params.iterationTimeoutMs = params.iterationTimeoutMs || 5000;
 
   params.latestBlock = params.latestBlock || (await web3().eth.getBlockNumber());
+  params.fromBlock = params.fromBlock < 0 ? params.latestBlock + params.fromBlock : params.fromBlock;
   params.toBlock = Math.min(params.latestBlock, params.toBlock!);
   const distance = params.toBlock - params.fromBlock;
   debug(`getPastEvents ${params.eventName} ${params.fromBlock} - ${params.toBlock} (${distance})`);
@@ -280,12 +280,10 @@ export async function getPastEvents(params: {
   if (distance <= params.minDistance!) return await p;
 
   try {
-    return await timeout(() => p, params.timeoutMs!);
+    return await timeout(() => p, params.iterationTimeoutMs!);
   } catch (e: any) {}
 
-  const [r0, r1] = await Promise.all([
-    getPastEvents({ ...params, toBlock: Math.floor(params.fromBlock + distance / 2) }),
-    getPastEvents({ ...params, fromBlock: Math.floor(params.fromBlock + distance / 2) + 1 }),
-  ]);
-  return r0.concat(r1);
+  return (await getPastEvents({ ...params, toBlock: Math.floor(params.fromBlock + distance / 2) })).concat(
+    await getPastEvents({ ...params, fromBlock: Math.floor(params.fromBlock + distance / 2) + 1 })
+  );
 }
