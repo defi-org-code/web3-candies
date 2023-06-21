@@ -267,15 +267,14 @@ export async function getPastEvents(params: {
   params.maxDistanceBlocks = params.maxDistanceBlocks || Number.MAX_VALUE;
   params.minDistanceBlocks = Math.min(params.minDistanceBlocks || 1000, params.maxDistanceBlocks);
   params.iterationTimeoutMs = params.iterationTimeoutMs || 5000;
-
   params.latestBlock = params.latestBlock || (await web3().eth.getBlockNumber());
   params.fromBlock = params.fromBlock < 0 ? params.latestBlock + params.fromBlock : params.fromBlock;
-  params.toBlock = Math.min(params.latestBlock, params.toBlock!);
+  params.toBlock = Math.min(params.latestBlock, params.toBlock);
   const distance = params.toBlock - params.fromBlock;
   debug(`getPastEvents ${params.eventName} ${params.fromBlock} - ${params.toBlock} (${distance})`);
 
   try {
-    if (!params.maxDistanceBlocks || distance <= params.maxDistanceBlocks!)
+    if (!params.maxDistanceBlocks || distance <= params.maxDistanceBlocks)
       return await timeout(
         () =>
           params.contract.getPastEvents((params.eventName === "all" ? undefined : params.eventName) as any, {
@@ -287,7 +286,9 @@ export async function getPastEvents(params: {
       );
   } catch (e: any) {}
 
-  return (await getPastEvents({ ...params, toBlock: Math.floor(params.fromBlock + distance / 2) })).concat(
-    await getPastEvents({ ...params, fromBlock: Math.floor(params.fromBlock + distance / 2) + 1 })
-  );
+  if (distance <= params.minDistanceBlocks) return await getPastEvents(params);
+  else
+    return (await getPastEvents({ ...params, toBlock: Math.floor(params.fromBlock + distance / 2) })).concat(
+      await getPastEvents({ ...params, fromBlock: Math.floor(params.fromBlock + distance / 2) + 1 })
+    );
 }
