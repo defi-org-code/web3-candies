@@ -258,12 +258,12 @@ export async function getPastEvents(params: {
   filter: { [key: string]: string | number };
   fromBlock: number;
   toBlock?: number;
-  minDistance?: number;
+  minDistanceBlocks?: number;
   latestBlock?: number;
   iterationTimeoutMs?: number;
 }): Promise<EventData[]> {
   params.toBlock = params.toBlock || Number.MAX_VALUE;
-  params.minDistance = params.minDistance || 1000;
+  params.minDistanceBlocks = params.minDistanceBlocks || 1000;
   params.iterationTimeoutMs = params.iterationTimeoutMs || 5000;
 
   params.latestBlock = params.latestBlock || (await web3().eth.getBlockNumber());
@@ -272,15 +272,16 @@ export async function getPastEvents(params: {
   const distance = params.toBlock - params.fromBlock;
   debug(`getPastEvents ${params.eventName} ${params.fromBlock} - ${params.toBlock} (${distance})`);
 
-  const p = params.contract.getPastEvents((params.eventName === "all" ? undefined : params.eventName) as any, {
-    filter: params.filter,
-    fromBlock: params.fromBlock,
-    toBlock: params.toBlock,
-  });
-  if (distance <= params.minDistance!) return await p;
-
   try {
-    return await timeout(() => p, params.iterationTimeoutMs!);
+    return await timeout(
+      () =>
+        params.contract.getPastEvents((params.eventName === "all" ? undefined : params.eventName) as any, {
+          filter: params.filter,
+          fromBlock: params.fromBlock,
+          toBlock: params.toBlock,
+        }),
+      distance > params.minDistanceBlocks ? params.iterationTimeoutMs : 5 * 60 * 1000
+    );
   } catch (e: any) {}
 
   return (await getPastEvents({ ...params, toBlock: Math.floor(params.fromBlock + distance / 2) })).concat(
