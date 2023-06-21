@@ -108,4 +108,13 @@ describe("network", () => {
     const result = await getPastEvents({ contract, eventName: "Deposit", filter: {}, fromBlock: -10_000 });
     expect(result.length).gt(1);
   });
+
+  it("get past events with maxDistance", async () => {
+    await resetNetworkFork("latest");
+    const contract = erc20s.eth.WETH();
+
+    await contract.methods.deposit().send({ from: await account(), value: 1 });
+    const result = await getPastEvents({ contract, eventName: "Deposit", filter: {}, fromBlock: -1000, maxDistanceBlocks: 100 });
+    expect(result.length).gt(1);
+  });
 });
