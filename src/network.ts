@@ -22,6 +22,8 @@ export const networks = {
     publicRpcUrl: "https://eth.llamarpc.com",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg",
     explorer: "https://etherscan.io",
+    baseGasPrice: 0,
+    eip1559: true,
   },
   bsc: {
     id: 56,
@@ -33,6 +35,7 @@ export const networks = {
     logoUrl: "https://app.1inch.io/assets/images/network-logos/bsc_2.svg",
     explorer: "https://bscscan.com",
     baseGasPrice: 3 * 1e9,
+    eip1559: false,
   },
   poly: {
     id: 137,
@@ -43,6 +46,8 @@ export const networks = {
     publicRpcUrl: "https://polygon-rpc.com",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/polygon.svg",
     explorer: "https://polygonscan.com",
+    baseGasPrice: 0,
+    eip1559: true,
   },
   arb: {
     id: 42161,
@@ -54,6 +59,7 @@ export const networks = {
     logoUrl: "https://app.1inch.io/assets/images/network-logos/arbitrum.svg",
     explorer: "https://arbiscan.io",
     baseGasPrice: 0.12 * 1e9,
+    eip1559: true,
   },
   avax: {
     id: 43114,
@@ -64,6 +70,8 @@ export const networks = {
     publicRpcUrl: "https://api.avax.network/ext/bc/C/rpc",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/avalanche.svg",
     explorer: "https://snowtrace.io",
+    baseGasPrice: 0,
+    eip1559: true,
   },
   oeth: {
     id: 10,
@@ -74,6 +82,8 @@ export const networks = {
     publicRpcUrl: "https://mainnet.optimism.io",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/optimism.svg",
     explorer: "https://optimistic.etherscan.io",
+    baseGasPrice: 0,
+    eip1559: true,
   },
   ftm: {
     id: 250,
@@ -84,6 +94,8 @@ export const networks = {
     publicRpcUrl: "https://rpc.ftm.tools",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/fantom.svg",
     explorer: "https://ftmscan.com",
+    baseGasPrice: 0,
+    eip1559: true,
   },
   glmr: {
     id: 1284,
@@ -94,6 +106,8 @@ export const networks = {
     publicRpcUrl: "https://rpc.api.moonbeam.network",
     logoUrl: "https://moonscan.io/images/svg/brands/mainbrand-1.svg",
     explorer: "https://moonscan.io",
+    baseGasPrice: 0,
+    eip1559: true,
   },
 };
 
@@ -235,7 +249,7 @@ export async function estimateGasPrice(
       !!w3!.eth.getFeeHistory ? w3!.eth.getFeeHistory(length, "pending", percentiles) : Promise.resolve({ reward: [] }),
     ]);
 
-    const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, (network(chain) as any).baseGasPrice || 0);
+    const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, network(chain).baseGasPrice);
 
     const slow = median(_.map(history.reward, (r) => BN(r[0], 16)));
     const med = median(_.map(history.reward, (r) => BN(r[1], 16)));

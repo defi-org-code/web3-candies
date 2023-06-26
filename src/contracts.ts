@@ -66,7 +66,6 @@ export async function sendAndWaitForConfirmations<T extends Contract | Receipt =
   if (!tx && !opts.to) throw new Error("tx or opts.to must be specified");
 
   const [nonce, chain] = await Promise.all([web3().eth.getTransactionCount(opts.from), chainId()]);
-  const legacyGas = chain === networks.bsc.id;
 
   const options = {
     value: opts.value ? bn(opts.value).toFixed(0) : 0,
@@ -74,12 +73,15 @@ export async function sendAndWaitForConfirmations<T extends Contract | Receipt =
     to: opts.to,
     gas: 0,
     nonce,
-    maxPriorityFeePerGas: !legacyGas && opts.maxPriorityFeePerGas ? bn(opts.maxPriorityFeePerGas).toFixed(0) : undefined,
-    maxFeePerGas: !legacyGas && opts.maxFeePerGas ? bn(opts.maxFeePerGas).toFixed(0) : undefined,
-    gasPrice: legacyGas && opts.maxFeePerGas ? bn(opts.maxFeePerGas).toFixed(0) : undefined,
+    maxPriorityFeePerGas: opts.maxPriorityFeePerGas ? bn(opts.maxPriorityFeePerGas).toFixed(0) : undefined,
+    maxFeePerGas: opts.maxFeePerGas ? bn(opts.maxFeePerGas).toFixed(0) : undefined,
   };
-  if (legacyGas) delete options.maxPriorityFeePerGas && delete options.maxFeePerGas;
-  else delete options.gasPrice;
+
+  if (!network(chain).eip1559) {
+    (options as any).gasPrice = options.maxFeePerGas;
+    delete options.maxPriorityFeePerGas;
+    delete options.maxFeePerGas;
+  }
 
   debug(`estimating gas...`);
   const estimated = await (tx?.estimateGas({ ...options }) || web3().eth.estimateGas({ ...options }));

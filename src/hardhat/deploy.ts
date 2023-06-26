@@ -1,73 +1,61 @@
 import BN from "bignumber.js";
-import path from "path";
-import { web3 } from "../network";
 import { execSync } from "child_process";
-import { deployArtifact, hre } from "./index";
+import path from "path";
 import prompts from "prompts";
-import type { Abi } from "../contracts";
+import { Abi } from "../contracts";
+import { chainId, estimateGasPrice, network, web3 } from "../network";
 import { bn9, bnm } from "../utils";
+import { deployArtifact, hre } from "./index";
+import fs from "fs-extra";
+import _ from "lodash";
 
 export type DeployParams = {
-  chainId: number;
-  account: string;
-  balance: string;
   contractName: string;
-  args: string[];
-  gasLimit: number;
-  maxFeePerGas: string;
-  maxPriorityFeePerGas: string;
-  initialETH: string;
-  uploadSources: boolean;
-  useLegacyTxType: boolean;
+  args: any[];
+  deployer?: string;
+  maxFeePerGas?: BN;
+  maxPriorityFeePerGas?: BN;
+  uploadSources?: boolean;
+  waitForConfirmations?: number;
 };
 
-export async function deploy(
-  contractName: string,
-  constructorArgs: any[],
-  gasLimit: number,
-  initialETH: BN | string | number,
-  uploadSources: boolean,
-  waitForConfirmations: number
-): Promise<string> {
-  const timestamp = new Date().getTime();
-  const deployer = await askDeployer();
+export async function deploy(params: DeployParams): Promise<string> {
+  if (!params.deployer) params.deployer = await askDeployer();
 
-  const { maxFeePerGas, maxPriorityFeePerGas } = await askFees();
-
-  const useLegacyTxType = await askUseLegacy();
+  if (!params.maxFeePerGas || !params.maxPriorityFeePerGas) {
+    const fees = await askFees();
+    params.maxFeePerGas = fees.max;
+    params.maxPriorityFeePerGas = fees.tip;
+  }
+  const n = network(await chainId());
 
   await confirm({
-    chainId: await web3().eth.getChainId(),
-    account: deployer,
-    balance: bnm(await web3().eth.getBalance(deployer)).toFormat(),
-    contractName,
-    args: constructorArgs,
-    gasLimit,
-    maxPriorityFeePerGas: bnm(maxPriorityFeePerGas, 9).toFormat({ suffix: " gwei" }),
-    maxFeePerGas: bnm(maxFeePerGas, 9).toFormat({ suffix: " gwei" }),
-    initialETH: bnm(initialETH).toFormat(),
-    uploadSources,
-    useLegacyTxType,
+    chainId: await web3().eth.getChainId(), // to explicitly state if hardhat
+    network: n.name,
+    balance: bnm(await web3().eth.getBalance(params.deployer)).toFormat() + " " + n.native.symbol,
+    tip: bnm(params.maxPriorityFeePerGas, 9).toFormat(1) + " gwei",
+    max: bnm(params.maxFeePerGas, 9).toFormat(1) + " gwei",
+    ...params,
   });
 
-  const backup = backupArtifacts(timestamp);
+  const backup = await backupArtifacts();
 
-  const opts = useLegacyTxType
-    ? { from: deployer, value: initialETH, gas: gasLimit, gasPrice: maxFeePerGas }
-    : { from: deployer, value: initialETH, gas: gasLimit, maxFeePerGas, maxPriorityFeePerGas };
-  const result = await deployArtifact(contractName, opts, constructorArgs, waitForConfirmations);
+  const result = await deployArtifact(
+    params.contractName,
+    { from: params.deployer, maxFeePerGas: params.maxFeePerGas, maxPriorityFeePerGas: params.maxPriorityFeePerGas },
+    params.args,
+    params.waitForConfirmations
+  );
   const address = result.options.address;
+  console.log("🚀 DEPLOYED!", address);
+  console.log("constructor args:", abiEncodedConstructorArgs(result.options.jsonInterface, params.args));
+  await fs.rename(backup, `${backup}-${address}`);
 
-  execSync(`mv ${backup} ${backup}/../${timestamp}-${address}`);
-
-  console.log("constructor args abi-encoded:", abiEncodedConstructorArgs(result.options.jsonInterface, constructorArgs));
-
-  if (uploadSources) {
-    await etherscanVerify(address, constructorArgs);
+  if (params.uploadSources) {
+    await etherscanVerify(address, params.args);
   }
 
   console.log("done");
-
   return address;
 }
 
@@ -96,61 +84,58 @@ export function abiEncodedConstructorArgs(abi: Abi, constructorArgs: any[]) {
   return web3().eth.abi.encodeFunctionCall(ctrAbi!, constructorArgs);
 }
 
-function backupArtifacts(timestamp: number) {
+async function backupArtifacts() {
+  const timestamp = Date.now();
   const dest = path.resolve(`./deployments/${timestamp}`);
   console.log("creating backup at", dest);
   execSync(`mkdir -p ${dest}`);
   execSync(`cp -r ./artifacts ${dest}`);
+  const r = execSync(`find ${dest}/artifacts/build-info -type f`).toString().trim();
+  const input = (await fs.readJson(r)).input;
+  console.log("Contracts:");
+  console.log(_.keys(input.sources));
+  await fs.writeJson(`${dest}/solc.json`, input, { spaces: 2 });
   return dest;
 }
 
 export async function askDeployer() {
-  const { privateKey } = await prompts({
-    type: "password",
-    name: "privateKey",
-    message: "burner deployer private key with some ETH",
-  });
-
+  const privateKey =
+    process.env.DEPLOYER ||
+    (
+      await prompts({
+        type: "password",
+        name: "privateKey",
+        message: "burner deployer private key with some gas",
+      })
+    ).privateKey;
   const account = web3().eth.accounts.privateKeyToAccount(privateKey);
   return web3().eth.accounts.wallet.add(account).address;
 }
 
 export async function askFees() {
-  const { maxPriorityFeePerGas, maxFeePerGas } = await prompts([
-    {
-      type: "number",
-      name: "maxPriorityFeePerGas",
-      message: "max priority fee (tip) in gwei",
-      validate: (s: any) => !!parseInt(s),
-    },
-    {
-      type: "number",
-      name: "maxFeePerGas",
-      message: "max total fees in gwei",
-      validate: (s: any) => !!parseInt(s),
-    },
-  ]);
-  return { maxPriorityFeePerGas: bn9(maxPriorityFeePerGas), maxFeePerGas: bn9(maxFeePerGas) };
-}
-
-async function askUseLegacy() {
-  const { useLegacyTxType } = await prompts({
-    type: "confirm",
-    name: "useLegacyTxType",
-    message: "Use legacy transaction type?",
-    initial: false,
+  const price = await estimateGasPrice();
+  const { selection } = await prompts({
+    type: "select",
+    choices: [
+      { description: "fast", title: `${price.fast.tip.div(1e9).toFormat(1)} / ${price.fast.max.div(1e9).toFormat(1)} gwei`, value: price.fast },
+      { description: "med", title: `${price.med.tip.div(1e9).toFormat(1)} / ${price.med.max.div(1e9).toFormat(1)} gwei`, value: price.med },
+      { description: "slow", title: `${price.slow.tip.div(1e9).toFormat(1)} / ${price.slow.max.div(1e9).toFormat(1)} gwei`, value: price.slow },
+    ],
+    name: "selection",
+    message: "gas price",
   });
-  return !!useLegacyTxType;
+  if (!selection) throw new Error("aborted");
+  return { max: BN(selection.max), tip: BN(selection.tip) };
 }
 
-async function confirm(params: DeployParams) {
+async function confirm(params: any) {
   console.log("DEPLOYING!");
   console.log(params);
   const { ok } = await prompts({
     type: "confirm",
     name: "ok",
     message: "ALL OK?",
-    initial: false,
+    initial: true,
   });
   if (!ok) throw new Error("aborted");
 }
