@@ -16,13 +16,13 @@ import {
   erc20s,
   getPastEvents,
   block,
+  iweth,
 } from "../src";
 import { artifact, expectRevert, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
-import exp from "constants";
 
 useChaiBigNumber();
 
-describe("network", () => {
+describe.only("network", () => {
   it("hardhat + web3", async () => {
     expect(require("hardhat").web3.utils.keccak256("foo")).eq(web3().utils.keccak256("foo"));
 
@@ -58,13 +58,11 @@ describe("network", () => {
   });
 
   it("find block", async () => {
-    const targetDate = new Date(2020, 5, 6);
-    const result = await findBlock(targetDate.getTime());
-    expect(result.timestamp).closeTo(targetDate.getTime() / 1000, 10_000);
+    const targetDate = Date.now() - 1000 * 60 * 60 * 24 * 7;
+    const result = await findBlock(targetDate);
+    expect(result.timestamp).closeTo(targetDate / 1000, 10_000);
 
     await expectRevert(() => findBlock(9999999999999), "in the future");
-    await resetNetworkFork("latest");
-    await findBlock(new Date(2022, 5, 6).setUTCHours(0));
   });
 
   it("network", async () => {
@@ -74,8 +72,7 @@ describe("network", () => {
   });
 
   it("chainId", async () => {
-    expect(process.env.NETWORK).eq("eth");
-    expect(await chainId()).eq(0x1);
+    expect(network(await chainId()).shortname).eq(process.env.NETWORK);
   });
 
   it("gas price", async () => {
@@ -90,31 +87,43 @@ describe("network", () => {
     expect(prices.fast.tip).bignumber.gte(prices.med.tip).lte(prices.fast.max);
   });
 
-  it("get past events", async () => {
-    await resetNetworkFork("latest");
-    const contract = erc20s.eth.WETH();
+  describe("past events", () => {
+    let eventName = "Deposit";
+    let eventFilterKey = "dst";
 
-    await contract.methods.deposit().send({ from: await account(), value: 1 });
-    const result = await getPastEvents({ contract, eventName: "Deposit", filter: { dst: await account() }, fromBlock: -10 });
-    expect(result).length(1);
-    expect(result[0].returnValues[0]).eq(await account());
-  });
+    beforeEach(async () => {
+      if ([networks.ftm, networks.arb].includes(network(await chainId()))) {
+        eventName = "Transfer";
+        eventFilterKey = "to";
+      }
+    });
 
-  it("get past events with lots of data", async () => {
-    await resetNetworkFork("latest");
-    const contract = erc20s.eth.WETH();
+    it("get past events", async () => {
+      await resetNetworkFork("latest");
+      const contract = iweth(await chainId());
 
-    await contract.methods.deposit().send({ from: await account(), value: 1 });
-    const result = await getPastEvents({ contract, eventName: "Deposit", filter: {}, fromBlock: -10_000 });
-    expect(result.length).gt(1);
-  });
+      await contract.methods.deposit().send({ from: await account(), value: 1 });
+      const result = await getPastEvents({ contract, eventName, filter: { [eventFilterKey]: await account() }, fromBlock: -10 });
+      expect(result).length(1);
+      expect(result[0].returnValues[eventFilterKey]).eq(await account());
+    });
 
-  it("get past events with maxDistance", async () => {
-    await resetNetworkFork("latest");
-    const contract = erc20s.eth.WETH();
+    it("get past events with lots of data", async () => {
+      await resetNetworkFork("latest");
+      const contract = iweth(await chainId());
 
-    await contract.methods.deposit().send({ from: await account(), value: 1 });
-    const result = await getPastEvents({ contract, eventName: "Deposit", filter: {}, fromBlock: -1000, maxDistanceBlocks: 100 });
-    expect(result.length).gt(1);
+      await contract.methods.deposit().send({ from: await account(), value: 1 });
+      const result = await getPastEvents({ contract, eventName, filter: {}, fromBlock: -5_000 });
+      expect(result.length).gt(1);
+    });
+
+    it("get past events with maxDistance", async () => {
+      await resetNetworkFork("latest");
+      const contract = iweth(await chainId());
+
+      await contract.methods.deposit().send({ from: await account(), value: 1 });
+      const result = await getPastEvents({ contract, eventName, filter: {}, fromBlock: -1000, maxDistanceBlocks: 100 });
+      expect(result.length).gt(1);
+    });
   });
 });

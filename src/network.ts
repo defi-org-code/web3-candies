@@ -159,12 +159,12 @@ export async function block(blockHashOrBlockNumber?: BlockNumber | string): Prom
 }
 
 export async function findBlock(timestamp: number): Promise<BlockInfo> {
-  const targetTimestampSecs = timestamp / 1000;
+  const targetTimestampSecs = Math.floor(timestamp / 1000);
   const currentBlock = await block();
   if (targetTimestampSecs > currentBlock.timestamp) throw new Error(`findBlock: ${new Date(timestamp)} is in the future`);
 
   let candidate = await block(currentBlock.number - 10_000);
-  const avgBlockDurationSec = Math.max(1, (currentBlock.timestamp - candidate.timestamp) / 10_000);
+  const avgBlockDurationSec = Math.max(1, Math.ceil((currentBlock.timestamp - candidate.timestamp) / 10_000));
   debug(
     "searching for blocknumber at",
     new Date(timestamp).toString(),
@@ -287,22 +287,26 @@ export async function getPastEvents(params: {
   const distance = params.toBlock - params.fromBlock;
   debug(`getPastEvents ${params.eventName} ${params.fromBlock} - ${params.toBlock} (${distance})`);
 
-  try {
-    if (!params.maxDistanceBlocks || distance <= params.maxDistanceBlocks)
-      return await timeout(
-        () =>
-          params.contract.getPastEvents((params.eventName === "all" ? undefined : params.eventName) as any, {
-            filter: params.filter,
-            fromBlock: params.fromBlock,
-            toBlock: params.toBlock,
-          }),
-        distance > params.minDistanceBlocks ? params.iterationTimeoutMs : 5 * 60 * 1000
-      );
-  } catch (e: any) {}
+  const call = () =>
+    params.contract.getPastEvents((params.eventName === "all" ? undefined : params.eventName) as any, {
+      filter: params.filter,
+      fromBlock: params.fromBlock,
+      toBlock: params.toBlock,
+    });
 
-  if (distance <= params.minDistanceBlocks) return await getPastEvents(params);
-  else
+  if (!params.maxDistanceBlocks || distance <= params.maxDistanceBlocks) {
+    try {
+      return await timeout(call, distance > params.minDistanceBlocks ? params.iterationTimeoutMs : 5 * 60 * 1000);
+    } catch (e: any) {
+      console.log(e?.message);
+    }
+  }
+
+  if (distance <= params.minDistanceBlocks) {
+    return await call();
+  } else {
     return (await getPastEvents({ ...params, toBlock: Math.floor(params.fromBlock + distance / 2) })).concat(
       await getPastEvents({ ...params, fromBlock: Math.floor(params.fromBlock + distance / 2) + 1 })
     );
+  }
 }
