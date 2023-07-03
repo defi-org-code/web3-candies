@@ -22,7 +22,7 @@ import { artifact, expectRevert, resetNetworkFork, useChaiBigNumber } from "../s
 
 useChaiBigNumber();
 
-describe.only("network", () => {
+describe("network", () => {
   it("hardhat + web3", async () => {
     expect(require("hardhat").web3.utils.keccak256("foo")).eq(web3().utils.keccak256("foo"));
 

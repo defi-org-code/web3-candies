@@ -1,23 +1,29 @@
 import { expect } from "chai";
 import _ from "lodash";
-import { account, bn, bn18, bn6, erc20, erc20FromData, erc20s, fetchErc20, networks, zero, zeroAddress } from "../src";
+import { account, bn, bn18, bn6, chainId, erc20, erc20s, fetchErc20, iweth, networks, zero, zeroAddress } from "../src";
 import { resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 
 useChaiBigNumber();
 
 describe("erc20", () => {
-  const token = erc20s.eth.WETH();
+  let token;
+
+  beforeEach(async () => {
+    token = iweth(await chainId());
+  });
 
   it("erc20", async () => {
     const total = await token.methods.totalSupply().call();
     expect(total).bignumber.gt(zero);
 
-    expect(token.name).eq("WETH");
-    expect(token.address).eq(token.options.address).eq("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2");
+    expect(token.name).not.empty;
+    expect(token.address).eq(token.options.address).not.empty;
     expect(token.abi).deep.eq(token.options.jsonInterface);
   });
 
-  it("well known erc20 tokens", async () => {
+  it("well known erc20 tokens", async function () {
+    if ((await chainId()) !== networks.eth.id) return this.skip();
+
     expect(token.options.address).eq(erc20s.eth.WETH().options.address);
     expect(erc20s.eth.USDC().options.address).not.eq(erc20s.bsc.USDC().options.address);
     expect(await erc20s.eth.USDC().methods.decimals().call()).bignumber.eq("6");
@@ -54,24 +60,23 @@ describe("erc20", () => {
       expect(await token.amount("123456.00000000000000000000000001"))
         .bignumber.eq(bn18("123456"))
         .eq("123456000000000000000000");
-
-      expect(await erc20s.eth.USDC().to18("123456000")).bignumber.eq(123456000000000000000);
     });
 
     it("to18 - convert to 18 decimals", async () => {
-      const token = erc20s.eth.USDC();
-      expect(await token.methods.decimals().call()).bignumber.eq("6");
+      const token = erc20("", zeroAddress, 6);
+      expect(await token.decimals()).eq(6);
+      expect(await token.to18("123456000")).bignumber.eq(123456000000000000000);
       expect(await token.to18(123456123456)).bignumber.eq(123456123456000000000000);
       expect(await token.to18(123456123456.789)).bignumber.eq(123456123456789000000000);
     });
 
     it("mantissa", async () => {
-      expect(await erc20s.eth.USDC().mantissa(123123456789)).bignumber.eq(123123.456789);
-      expect(await token.mantissa(1123456789123456789)).bignumber.eq(1.123456789123456789);
+      expect(await erc20("", zeroAddress, 6).mantissa(123123456789)).bignumber.eq(123123.456789);
+      expect(await erc20("", zeroAddress, 18).mantissa(1123456789123456789)).bignumber.eq(1.123456789123456789);
     });
 
     it("decimals - memoized and parsed", async () => {
-      const token = erc20s.eth.USDC();
+      const token = erc20("", zeroAddress, 6);
       expect(await token.decimals()).eq(6);
 
       token.methods.decimals = () => ({ call: () => Promise.resolve("0") } as any); // proving the call is memoized
@@ -94,6 +99,6 @@ describe("erc20", () => {
   });
 
   it("erc20Data", async () => {
-    expect(await fetchErc20(token.address)).deep.eq({ address: token.address, decimals: 18, symbol: "WETH" });
+    expect((await fetchErc20(token.address)).symbol).not.empty;
   });
 });

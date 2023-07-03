@@ -154,6 +154,7 @@ export async function account(num: number = 0): Promise<string> {
 
 export async function block(blockHashOrBlockNumber?: BlockNumber | string): Promise<BlockInfo> {
   const r = await web3().eth.getBlock(blockHashOrBlockNumber || "latest");
+  if (!r || !r.timestamp) throw new Error(`block ${blockHashOrBlockNumber} not found`);
   r.timestamp = typeof r.timestamp == "number" ? r.timestamp : parseInt(r.timestamp);
   return r as BlockInfo;
 }
@@ -164,7 +165,7 @@ export async function findBlock(timestamp: number): Promise<BlockInfo> {
   if (targetTimestampSecs > currentBlock.timestamp) throw new Error(`findBlock: ${new Date(timestamp)} is in the future`);
 
   let candidate = await block(currentBlock.number - 10_000);
-  const avgBlockDurationSec = Math.max(1, Math.ceil((currentBlock.timestamp - candidate.timestamp) / 10_000));
+  const avgBlockDurationSec = Math.max(0.1, (currentBlock.timestamp - candidate.timestamp) / 10_000);
   debug(
     "searching for blocknumber at",
     new Date(timestamp).toString(),
@@ -185,7 +186,7 @@ export async function findBlock(timestamp: number): Promise<BlockInfo> {
 
     closestDistance = Math.abs(estDistanceInBlocks);
     const targeting = candidate.number - estDistanceInBlocks;
-    if (targeting < 0) throw new Error(`findBlock: target block is before the genesis block at ${new Date((await block(0)).timestamp * 1000)}}`);
+    if (targeting < 0) throw new Error("findBlock: target block is before the genesis block");
     debug({ distanceInSeconds, estDistanceInBlocks, targeting });
     candidate = await block(targeting);
   }

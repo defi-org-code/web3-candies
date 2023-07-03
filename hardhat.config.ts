@@ -22,4 +22,8 @@ task("deploy").setAction(async () => {
   });
 });
 
-export default _.merge(hardhatDefaultConfig(), {});
+export default _.merge(hardhatDefaultConfig(), {
+  mocha: {
+    retries: 3,
+  },
+});

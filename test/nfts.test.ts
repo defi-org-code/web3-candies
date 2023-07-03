@@ -1,10 +1,14 @@
 import { expect } from "chai";
-import { erc1155, erc721, zero, zeroAddress } from "../src";
+import { chainId, erc1155, erc721, networks, zero, zeroAddress } from "../src";
 import { useChaiBigNumber } from "../src/hardhat";
 
 useChaiBigNumber();
 
 describe("nfts", () => {
+  before(async function () {
+    if ((await chainId()) !== networks.eth.id) return this.skip();
+  });
+
   it("erc721", async () => {
     const token = erc721("CryptoKitties", "0x06012c8cf97BEaD5deAe237070F9587f8E7A266d");
     expect(await token.methods.totalSupply().call()).bignumber.gt(zero);

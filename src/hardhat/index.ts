@@ -170,7 +170,7 @@ export function hardhatDefaultConfig() {
   }
   process.env.NETWORK = process.env.NETWORK || "eth";
   const network = _.find(networks, (n) => n.shortname === process.env.NETWORK?.toLowerCase()) || networks.eth;
-  console.log(forking ? "⑃ hardhat forking" : "🌐 using", network.name, "blocknumber", process.env.BLOCK ? parseInt(process.env.BLOCK!) : "latest");
+  console.log(forking ? "⑃ hardhat forking" : "🌐 using", network.name, "blocknumber", process.env.BLOCK ? parseInt(process.env.BLOCK!) : "latest", "\n");
 
   let networkUrl = (process.env as any)[`NETWORK_URL_${process.env.NETWORK.toUpperCase()}`];
   if (!networkUrl) debug(`missing env NETWORK_URL_${process.env.NETWORK.toUpperCase()}, fallback to public RPC`);
