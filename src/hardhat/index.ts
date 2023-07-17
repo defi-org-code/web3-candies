@@ -51,36 +51,21 @@ export async function setBalance(address: string, balance: BN.Value) {
 }
 
 /**
- * @param blockNumber: number | 'latest', defaults to getNetworkForkingBlockNumber()
+ * @param blockNumber: number | 'latest' | undefined, defaults to getHardhatForking()
  */
-export async function resetNetworkFork(blockNumber?: number | "latest") {
-  if (!blockNumber) blockNumber = getNetworkForkingBlockNumber();
-  if (blockNumber === "latest") blockNumber = undefined;
-  debug("resetNetworkFork to", blockNumber || "latest");
+export async function resetNetworkFork(blockNumber: number | "latest") {
+  blockNumber = blockNumber || getHardhatForking()?.blockNumber || "latest";
+  debug("resetNetworkFork to", blockNumber);
 
-  await hre().network.provider.send("hardhat_reset", [
-    {
-      forking: {
-        blockNumber,
-        jsonRpcUrl: getNetworkForkingUrl(),
-      },
-    },
-  ]);
+  const forking = { jsonRpcUrl: getHardhatForking().url };
+  if (blockNumber !== "latest") (forking as any).bignumber = blockNumber;
+
+  await hre().network.provider.send("hardhat_reset", [{ forking }]);
   debug("now block", await web3().eth.getBlockNumber());
 }
 
-/**
- * @returns forking blockNumber from hardhat config
- */
-export function getNetworkForkingBlockNumber(): number {
-  return _.get(hre().network.config, ["forking", "blockNumber"]);
-}
-
-/**
- * @returns forking url from hardhat config
- */
-export function getNetworkForkingUrl(): string {
-  return _.get(hre().network.config, ["forking", "url"]);
+export function getHardhatForking(): { url: string; blockNumber?: number } {
+  return _.get(hre().network.config, ["forking"]);
 }
 
 export async function mineBlocks(seconds: number, secondsPerBlock: number) {
