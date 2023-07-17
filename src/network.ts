@@ -24,6 +24,7 @@ export const networks = {
     explorer: "https://etherscan.io",
     baseGasPrice: 0,
     eip1559: true,
+    pendingBlocks: true,
   },
   bsc: {
     id: 56,
@@ -36,6 +37,7 @@ export const networks = {
     explorer: "https://bscscan.com",
     baseGasPrice: 3 * 1e9,
     eip1559: false,
+    pendingBlocks: true,
   },
   poly: {
     id: 137,
@@ -48,6 +50,7 @@ export const networks = {
     explorer: "https://polygonscan.com",
     baseGasPrice: 0,
     eip1559: true,
+    pendingBlocks: true,
   },
   arb: {
     id: 42161,
@@ -60,6 +63,7 @@ export const networks = {
     explorer: "https://arbiscan.io",
     baseGasPrice: 0.12 * 1e9,
     eip1559: true,
+    pendingBlocks: true,
   },
   avax: {
     id: 43114,
@@ -72,6 +76,7 @@ export const networks = {
     explorer: "https://snowtrace.io",
     baseGasPrice: 0,
     eip1559: true,
+    pendingBlocks: true,
   },
   oeth: {
     id: 10,
@@ -84,6 +89,7 @@ export const networks = {
     explorer: "https://optimistic.etherscan.io",
     baseGasPrice: 0,
     eip1559: true,
+    pendingBlocks: true,
   },
   ftm: {
     id: 250,
@@ -96,6 +102,7 @@ export const networks = {
     explorer: "https://ftmscan.com",
     baseGasPrice: 0,
     eip1559: true,
+    pendingBlocks: true,
   },
   glmr: {
     id: 1284,
@@ -108,6 +115,7 @@ export const networks = {
     explorer: "https://moonscan.io",
     baseGasPrice: 0,
     eip1559: true,
+    pendingBlocks: false,
   },
 };
 
@@ -244,13 +252,14 @@ export async function estimateGasPrice(
   w3 = w3 || web3();
 
   return await keepTrying(async () => {
-    const [chain, pendingBlock, history] = await Promise.all([
-      chainId(w3),
-      w3!.eth.getBlock("pending"),
-      !!w3!.eth.getFeeHistory ? w3!.eth.getFeeHistory(length, "pending", percentiles) : Promise.resolve({ reward: [] }),
+    const chain = network(await chainId(w3));
+    const pending = chain.pendingBlocks ? "pending" : "latest";
+    const [pendingBlock, history] = await Promise.all([
+      w3!.eth.getBlock(pending),
+      !!w3!.eth.getFeeHistory ? w3!.eth.getFeeHistory(length, pending, percentiles) : Promise.resolve({ reward: [] }),
     ]);
 
-    const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, network(chain).baseGasPrice);
+    const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, chain.baseGasPrice);
 
     const slow = median(_.map(history.reward, (r) => BN(r[0], 16)));
     const med = median(_.map(history.reward, (r) => BN(r[1], 16)));

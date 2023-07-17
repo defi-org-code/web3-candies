@@ -53,13 +53,11 @@ export async function setBalance(address: string, balance: BN.Value) {
 /**
  * @param blockNumber: number | 'latest' | undefined, defaults to getHardhatForking()
  */
-export async function resetNetworkFork(blockNumber: number | "latest") {
+export async function resetNetworkFork(blockNumber?: number | "latest") {
   blockNumber = blockNumber || getHardhatForking()?.blockNumber || "latest";
   debug("resetNetworkFork to", blockNumber);
 
-  const forking = { jsonRpcUrl: getHardhatForking().url };
-  if (blockNumber !== "latest") (forking as any).blockNumber = blockNumber;
-
+  const forking = { jsonRpcUrl: getHardhatForking().url, blockNumber: blockNumber !== "latest" ? blockNumber : undefined };
   await hre().network.provider.send("hardhat_reset", [{ forking }]);
   debug("now block", await web3().eth.getBlockNumber());
 }

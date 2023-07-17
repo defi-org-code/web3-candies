@@ -19,17 +19,18 @@
     ".solhint.json",
     "tsconfig.json",
     "hardhat.config.ts",
-    "typechain-web3-bignumber"
+    "typechain-web3-bignumber",
+    "patches"
   ],
   "dependencies": {
     "@types/lodash": "4.x",
-    "isomorphic-fetch": "3.x",
     "bignumber.js": "9.x",
     "debug": "4.x",
+    "ethereum-multicall": "2.x",
+    "isomorphic-fetch": "3.x",
     "lodash": "4.x",
     "prettier": "2.x",
     "prettier-plugin-solidity": "latest",
-    "ethereum-multicall": "2.x",
     "web3": "1.x"
   },
   "optionalDependencies": {
@@ -53,6 +54,7 @@
     "hardhat-tracer": "1.x",
     "mocha": "10.x",
     "prompts": "2.x",
+    "patch-package": "7.x",
     "solhint": "3.x",
     "ts-generator": "0.1.x",
     "ts-node": "10.x",
@@ -66,7 +68,7 @@
     "prebuild": "npm run clean && npm run prettier && npm run typechain",
     "build": "hardhat compile && solhint 'contracts/**/*.sol' && tsc && cp -r src/hardhat/types dist/hardhat/types",
     "prepublishOnly": "npm run build",
-    "test": "for n in eth bsc ftm poly avax arb; do NETWORK=$n DEBUG=web3-candies hardhat test || break; done;",
+    "test": "for n in eth bsc ftm poly avax arb oeth glmr; do NETWORK=$n DEBUG=web3-candies hardhat test || break; done;",
     "deploy": "hardhat deploy --network $1"
   },
   "prettier": {
