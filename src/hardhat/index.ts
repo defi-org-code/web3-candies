@@ -6,6 +6,8 @@ import { contract, Contract, Options, sendAndWaitForConfirmations } from "../con
 import { bn, bn18 } from "../utils";
 import { HardhatUserConfig } from "hardhat/types";
 import BN from "bignumber.js";
+import { execSync } from "child_process";
+import { relative } from "path";
 
 export * from "./testing";
 export * from "./deploy";
@@ -157,7 +159,8 @@ export function hardhatDefaultConfig() {
   console.log(forking ? "⑃ hardhat forking" : "🌐 using", network.name, "blocknumber", process.env.BLOCK ? parseInt(process.env.BLOCK!) : "latest", "\n");
 
   if (network.id === networks.glmr.id) {
-    require("child_process").execSync(`npx patch-package`);
+    const patchDir = relative(process.cwd(), __dirname + "/../../patches");
+    execSync(`npx patch-package --patch-dir ${patchDir}`, { stdio: "inherit" });
   }
 
   let networkUrl = (process.env as any)[`NETWORK_URL_${process.env.NETWORK.toUpperCase()}`];
