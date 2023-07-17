@@ -58,7 +58,7 @@ export async function resetNetworkFork(blockNumber: number | "latest") {
   debug("resetNetworkFork to", blockNumber);
 
   const forking = { jsonRpcUrl: getHardhatForking().url };
-  if (blockNumber !== "latest") (forking as any).bignumber = blockNumber;
+  if (blockNumber !== "latest") (forking as any).blockNumber = blockNumber;
 
   await hre().network.provider.send("hardhat_reset", [{ forking }]);
   debug("now block", await web3().eth.getBlockNumber());
