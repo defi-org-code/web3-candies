@@ -145,6 +145,7 @@ export function isHardhatNetwork() {
 
 export function hardhatDefaultConfig() {
   require("dotenv").config();
+
   let forking = true;
   const argIndex = _.findIndex(process.argv, (s) => s.toLowerCase() === "--network");
   if (argIndex >= 0) {
@@ -154,6 +155,10 @@ export function hardhatDefaultConfig() {
   process.env.NETWORK = process.env.NETWORK || "eth";
   const network = _.find(networks, (n) => n.shortname === process.env.NETWORK?.toLowerCase()) || networks.eth;
   console.log(forking ? "⑃ hardhat forking" : "🌐 using", network.name, "blocknumber", process.env.BLOCK ? parseInt(process.env.BLOCK!) : "latest", "\n");
+
+  if (network.id === networks.glmr.id) {
+    require("child_process").execSync(`npx patch-package`);
+  }
 
   let networkUrl = (process.env as any)[`NETWORK_URL_${process.env.NETWORK.toUpperCase()}`];
   if (!networkUrl) debug(`missing env NETWORK_URL_${process.env.NETWORK.toUpperCase()}, fallback to public RPC`);

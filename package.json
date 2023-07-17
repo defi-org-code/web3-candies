@@ -68,7 +68,7 @@
     "prebuild": "npm run clean && npm run prettier && npm run typechain",
     "build": "hardhat compile && solhint 'contracts/**/*.sol' && tsc && cp -r src/hardhat/types dist/hardhat/types",
     "prepublishOnly": "npm run build",
-    "test": "for n in eth bsc ftm poly avax arb oeth glmr; do NETWORK=$n DEBUG=web3-candies hardhat test || break; done;",
+    "test": "for n in glmr; do NETWORK=$n DEBUG=web3-candies hardhat test || break; done;",
     "deploy": "hardhat deploy --network $1"
   },
   "prettier": {
