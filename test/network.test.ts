@@ -17,6 +17,7 @@ import {
   getPastEvents,
   block,
   iweth,
+  signEIP712,
 } from "../src";
 import { artifact, expectRevert, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 
@@ -124,6 +125,29 @@ describe("network", () => {
       await contract.methods.deposit().send({ from: await account(), value: 1 });
       const result = await getPastEvents({ contract, eventName, filter: {}, fromBlock: -1000, maxDistanceBlocks: 100 });
       expect(result.length).gt(1);
+    });
+  });
+
+  describe("sign", () => {
+    it("sign with EIP712", async () => {
+      const domain = {
+        name: "Test",
+        version: "1",
+        chainId: await chainId(),
+        verifyingContract: zeroAddress,
+      };
+      const types = {
+        Test: [
+          { name: "value", type: "uint256" },
+          { name: "account", type: "address" },
+        ],
+      };
+      const values = {
+        value: 123456,
+        account: await account(0),
+      };
+      const signature = await signEIP712(await account(0), { domain, types, values });
+      expect(signature).length(132);
     });
   });
 });

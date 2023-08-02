@@ -1,11 +1,14 @@
+import type { TypedDataDomain, TypedDataField } from "@ethersproject/abstract-signer";
+import { _TypedDataEncoder } from "@ethersproject/hash";
 import BN from "bignumber.js";
 import _ from "lodash";
+import { type } from "os";
 import Web3 from "web3";
+import type { EventData } from "web3-eth-contract";
 import type { BlockInfo, BlockNumber, Contract } from "./contracts";
 import { erc20sData } from "./erc20";
 import { keepTrying, timeout } from "./timing";
 import { eqIgnoreCase, median, zeroAddress } from "./utils";
-import type { EventData } from "web3-eth-contract";
 
 const debug = require("debug")("web3-candies");
 
@@ -308,7 +311,7 @@ export async function getPastEvents(params: {
     try {
       return await timeout(call, distance > params.minDistanceBlocks ? params.iterationTimeoutMs : 5 * 60 * 1000);
     } catch (e: any) {
-      console.log(e?.message);
+      debug(e?.message);
     }
   }
 
@@ -319,4 +322,46 @@ export async function getPastEvents(params: {
       await getPastEvents({ ...params, fromBlock: Math.floor(params.fromBlock + distance / 2) + 1 })
     );
   }
+}
+
+export type TypedData = { domain: TypedDataDomain; types: Record<string, TypedDataField[]>; values: any };
+
+/**
+ * signs with EIP-712 falling back to eth_sign
+ */
+export async function signEIP712(signer: string, data: TypedData) {
+  // Populate any ENS names (in-place)
+  const populated = await _TypedDataEncoder.resolveNames(data.domain, data.types, data.values, async (name: string) => web3().eth.ens.getAddress(name));
+  const typedDataMessage = _TypedDataEncoder.getPayload(populated.domain, data.types, populated.value);
+
+  try {
+    debug("🔐🔐🔐 eth_signTypedData_v4", signer);
+    return await signAsync("eth_signTypedData_v4", signer, typedDataMessage);
+  } catch (e: any) {
+    try {
+      debug("🔐🔐 eth_signTypedData...", signer, e.message);
+      return await signAsync("eth_signTypedData", signer, typedDataMessage);
+    } catch (e: any) {
+      debug("🔐 eth_sign...", signer, e.message);
+      return await signAsync("eth_sign", signer, _TypedDataEncoder.hash(populated.domain, data.types, populated.value));
+    }
+  }
+}
+
+export async function signAsync(method: "eth_signTypedData_v4" | "eth_signTypedData" | "eth_sign", signer: string, payload: string | TypedData) {
+  return await new Promise<string>((resolve, reject) => {
+    (web3().currentProvider as any).send(
+      {
+        id: 1,
+        method,
+        params: [signer, typeof payload === "string" ? payload : JSON.stringify(payload)],
+        from: signer,
+      },
+      (e: any, r: any) => {
+        if (e || !r.result) return reject(e);
+        debug("🔏", r.result);
+        return resolve(r.result);
+      }
+    );
+  });
 }

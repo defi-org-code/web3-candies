@@ -32,6 +32,7 @@ export function tag(address: string, name: string) {
   try {
     if ((hre() as any).tracer) {
       (hre() as any).tracer.nameTags[address] = name;
+      debug("🏷️ ", name, address);
     }
   } catch (ignore) {}
 }
