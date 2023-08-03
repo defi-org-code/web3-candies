@@ -4,4 +4,5 @@
 export type { ERC1155 } from "./ERC1155";
 export type { ERC20 } from "./ERC20";
 export type { ERC721 } from "./ERC721";
+export type { IPermit2 } from "./IPermit2";
 export type { IWETH } from "./IWETH";

@@ -230,7 +230,7 @@ export function wrapToken(token: Contract, name: string, address: string, decima
 
 const decimalsCache = new Map<string, number>();
 
-function tryTag(address: string, name: string) {
+export function tryTag(address: string, name: string) {
   try {
     if (process.env.NODE) eval("require")("./hardhat").tag(address, name);
   } catch (ignore) {}

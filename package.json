@@ -24,6 +24,7 @@
   ],
   "dependencies": {
     "@types/lodash": "4.x",
+    "@uniswap/permit2-sdk": "1.x",
     "bignumber.js": "9.x",
     "debug": "4.x",
     "ethereum-multicall": "2.x",
@@ -68,7 +69,8 @@
     "prebuild": "npm run clean && npm run prettier && npm run typechain",
     "build": "hardhat compile && solhint 'contracts/**/*.sol' && tsc && cp -r src/hardhat/types dist/hardhat/types",
     "prepublishOnly": "npm run build",
-    "test": "for n in eth bsc arb poly avax ftm glmr; do NETWORK=$n DEBUG=web3-candies hardhat test || break; done;",
+    "test": "DEBUG=web3-candies hardhat test --logs",
+    "test:all": "for n in eth bsc arb poly avax ftm glmr; do NETWORK=$n hardhat test || break; done;",
     "deploy": "hardhat deploy --network $1"
   },
   "prettier": {

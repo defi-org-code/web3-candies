@@ -1,14 +1,20 @@
-import type { TypedDataDomain, TypedDataField } from "@ethersproject/abstract-signer";
 import { _TypedDataEncoder } from "@ethersproject/hash";
+import { recoverPublicKey } from "@ethersproject/signing-key";
+import { computeAddress } from "@ethersproject/transactions";
+import { MaxAllowanceExpiration, MaxAllowanceTransferAmount, PERMIT2_ADDRESS } from "@uniswap/permit2-sdk";
+import { PermitData } from "@uniswap/permit2-sdk/dist/domain";
 import BN from "bignumber.js";
 import _ from "lodash";
-import { type } from "os";
 import Web3 from "web3";
 import type { EventData } from "web3-eth-contract";
-import type { BlockInfo, BlockNumber, Contract } from "./contracts";
-import { erc20sData } from "./erc20";
+import type { IPermit2 } from "./abi/IPermit2";
+import permit2Abi from "./abi/IPermit2.json";
+import { BlockInfo, BlockNumber, contract, Contract } from "./contracts";
+import { erc20sData, TokenData, tryTag } from "./erc20";
 import { keepTrying, timeout } from "./timing";
 import { eqIgnoreCase, median, zeroAddress } from "./utils";
+
+export { joinSignature, splitSignature, zeroPad } from "@ethersproject/bytes";
 
 const debug = require("debug")("web3-candies");
 
@@ -295,8 +301,8 @@ export async function getPastEvents(params: {
   params.minDistanceBlocks = Math.min(params.minDistanceBlocks || 1000, params.maxDistanceBlocks);
   params.iterationTimeoutMs = params.iterationTimeoutMs || 5000;
   params.latestBlock = params.latestBlock || (await web3().eth.getBlockNumber());
-  params.fromBlock = params.fromBlock < 0 ? params.latestBlock + params.fromBlock : params.fromBlock;
-  params.toBlock = Math.min(params.latestBlock, params.toBlock);
+  params.fromBlock = params.fromBlock < 0 ? params.latestBlock! + params.fromBlock : params.fromBlock;
+  params.toBlock = Math.min(params.latestBlock!, params.toBlock);
   const distance = params.toBlock - params.fromBlock;
   debug(`getPastEvents ${params.eventName} ${params.fromBlock} - ${params.toBlock} (${distance})`);
 
@@ -324,12 +330,10 @@ export async function getPastEvents(params: {
   }
 }
 
-export type TypedData = { domain: TypedDataDomain; types: Record<string, TypedDataField[]>; values: any };
-
 /**
  * signs with EIP-712 falling back to eth_sign
  */
-export async function signEIP712(signer: string, data: TypedData) {
+export async function signEIP712(signer: string, data: PermitData) {
   // Populate any ENS names (in-place)
   const populated = await _TypedDataEncoder.resolveNames(data.domain, data.types, data.values, async (name: string) => web3().eth.ens.getAddress(name));
   const typedDataMessage = _TypedDataEncoder.getPayload(populated.domain, data.types, populated.value);
@@ -339,16 +343,16 @@ export async function signEIP712(signer: string, data: TypedData) {
     return await signAsync("eth_signTypedData_v4", signer, typedDataMessage);
   } catch (e: any) {
     try {
-      debug("🔐🔐 eth_signTypedData...", signer, e.message);
+      debug("🔐🔐 eth_signTypedData", signer, e.message);
       return await signAsync("eth_signTypedData", signer, typedDataMessage);
     } catch (e: any) {
-      debug("🔐 eth_sign...", signer, e.message);
+      debug("🔐 eth_sign", signer, e.message);
       return await signAsync("eth_sign", signer, _TypedDataEncoder.hash(populated.domain, data.types, populated.value));
     }
   }
 }
 
-export async function signAsync(method: "eth_signTypedData_v4" | "eth_signTypedData" | "eth_sign", signer: string, payload: string | TypedData) {
+export async function signAsync(method: "eth_signTypedData_v4" | "eth_signTypedData" | "eth_sign", signer: string, payload: string | PermitData) {
   return await new Promise<string>((resolve, reject) => {
     (web3().currentProvider as any).send(
       {
@@ -364,4 +368,26 @@ export async function signAsync(method: "eth_signTypedData_v4" | "eth_signTypedD
       }
     );
   });
+}
+
+export function recoverEIP712Signer(signature: string, data: PermitData) {
+  const hash = _TypedDataEncoder.hash(data.domain, data.types, data.values);
+  return computeAddress(recoverPublicKey(hash, signature));
+}
+
+export const permit2Address = PERMIT2_ADDRESS;
+
+export function permit2Approve(
+  token: TokenData,
+  spender: string,
+  amount: BN.Value = MaxAllowanceTransferAmount.toString(),
+  deadline: BN.Value = MaxAllowanceExpiration.toString()
+) {
+  tryTag(permit2Address, "Permit2");
+  return contract<IPermit2>(permit2Abi as any, permit2Address).methods.approve(token.address, spender, BN(amount).toFixed(0), BN(deadline).toFixed(0));
+}
+
+export function permit2TransferFrom(from: string, to: string, amount: BN.Value, token: TokenData) {
+  tryTag(permit2Address, "Permit2");
+  return contract(permit2Abi as any, permit2Address).methods.transferFrom(from, to, BN(amount).toFixed(0), token.address);
 }

@@ -3,23 +3,28 @@ import Web3 from "web3";
 import {
   account,
   bn,
+  bn18,
   chainId,
-  network,
+  erc20FromData,
   estimateGasPrice,
   findBlock,
+  getPastEvents,
   hasWeb3Instance,
+  iweth,
+  maxUint256,
+  network,
   networks,
+  permit2Address,
+  permit2Approve,
+  permit2TransferFrom,
+  recoverEIP712Signer,
   setWeb3Instance,
+  signEIP712,
   web3,
   zero,
   zeroAddress,
-  erc20s,
-  getPastEvents,
-  block,
-  iweth,
-  signEIP712,
 } from "../src";
-import { artifact, expectRevert, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
+import { artifact, expectRevert, resetNetworkFork, tag, useChaiBigNumber } from "../src/hardhat";
 
 useChaiBigNumber();
 
@@ -128,26 +133,46 @@ describe("network", () => {
     });
   });
 
-  describe("sign", () => {
+  describe("sign and permit", () => {
     it("sign with EIP712", async () => {
-      const domain = {
-        name: "Test",
-        version: "1",
-        chainId: await chainId(),
-        verifyingContract: zeroAddress,
+      const typedData = {
+        domain: {
+          name: "Test",
+          version: "1",
+          chainId: await chainId(),
+          verifyingContract: zeroAddress,
+        },
+        types: {
+          Test: [
+            { name: "value", type: "uint256" },
+            { name: "account", type: "address" },
+          ],
+        },
+        values: {
+          value: 123456,
+          account: await account(0),
+        },
       };
-      const types = {
-        Test: [
-          { name: "value", type: "uint256" },
-          { name: "account", type: "address" },
-        ],
-      };
-      const values = {
-        value: 123456,
-        account: await account(0),
-      };
-      const signature = await signEIP712(await account(0), { domain, types, values });
+      const signature = await signEIP712(await account(0), typedData);
       expect(signature).length(132);
+      expect(recoverEIP712Signer(signature, typedData)).eq(await account(0));
+    });
+
+    it("permit2 approve for transfer", async () => {
+      const token = network(await chainId()).wToken;
+      const user1 = await account(1);
+      const user2 = await account(2);
+      const user3 = await account(3);
+
+      await iweth(await chainId())
+        .methods.deposit()
+        .send({ from: user1, value: 1e18 });
+      await erc20FromData(token).methods.approve(permit2Address, maxUint256).send({ from: user1 });
+
+      await permit2Approve(token, user2).send({ from: user1 });
+      await permit2TransferFrom(user1, user3, 1e18, token).send({ from: user2 });
+
+      expect(await erc20FromData(token).methods.balanceOf(user3).call()).bignumber.eq(1e18);
     });
   });
 });
