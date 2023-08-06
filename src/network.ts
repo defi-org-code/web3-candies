@@ -353,8 +353,9 @@ export async function signEIP712(signer: string, data: PermitData) {
 }
 
 export async function signAsync(method: "eth_signTypedData_v4" | "eth_signTypedData" | "eth_sign", signer: string, payload: string | PermitData) {
+  const provider: any = (web3().currentProvider as any).send ? web3().currentProvider : web3().givenProvider;
   return await new Promise<string>((resolve, reject) => {
-    (web3().currentProvider as any).send(
+    provider.send(
       {
         id: 1,
         method,
