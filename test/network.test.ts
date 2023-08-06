@@ -1,4 +1,5 @@
 import { expect } from "chai";
+import _ from "lodash";
 import Web3 from "web3";
 import {
   account,
