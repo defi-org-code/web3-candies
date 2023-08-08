@@ -54,7 +54,7 @@ describe("network", () => {
     const prev = web3();
     expect(prev).not.undefined;
     setWeb3Instance(null);
-    expect(hasWeb3Instance()).is.false;
+    expect(hasWeb3Instance()).is.true; // hardhat web3
 
     const instance = new Web3("");
     setWeb3Instance(instance);

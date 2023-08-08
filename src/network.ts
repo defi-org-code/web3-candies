@@ -147,7 +147,11 @@ export function setWeb3Instance(web3: any) {
 }
 
 export function hasWeb3Instance() {
-  return !!web3Instance;
+  try {
+    return !!web3();
+  } catch (ignore) {
+    return !!web3Instance;
+  }
 }
 
 export function network(chainId: number) {
