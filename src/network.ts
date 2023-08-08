@@ -343,10 +343,10 @@ export async function signEIP712(signer: string, data: PermitData) {
     return await signAsync("eth_signTypedData_v4", signer, typedDataMessage);
   } catch (e: any) {
     try {
-      debug("🔐🔐 eth_signTypedData", signer, e.message);
+      debug("🔐🔐 eth_signTypedData", signer, e?.message);
       return await signAsync("eth_signTypedData", signer, typedDataMessage);
     } catch (e: any) {
-      debug("🔐 eth_sign", signer, e.message);
+      debug("🔐 eth_sign", signer, e?.message);
       return await signAsync("eth_sign", signer, _TypedDataEncoder.hash(populated.domain, data.types, populated.value));
     }
   }
@@ -363,7 +363,7 @@ export async function signAsync(method: "eth_signTypedData_v4" | "eth_signTypedD
         from: signer,
       },
       (e: any, r: any) => {
-        if (e || !r.result) return reject(e);
+        if (e || !r?.result) return reject(e);
         debug("🔏", r.result);
         return resolve(r.result);
       }
