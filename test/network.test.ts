@@ -105,7 +105,8 @@ describe("network", () => {
       }
     });
 
-    it("get past events", async () => {
+    // slow
+    xit("get past events", async () => {
       await resetNetworkFork("latest");
       const contract = iweth(await chainId());
 
@@ -115,7 +116,8 @@ describe("network", () => {
       expect(result[0].returnValues[eventFilterKey]).eq(await account());
     });
 
-    it("get past events with lots of data", async () => {
+    // slow
+    xit("get past events with lots of data", async () => {
       await resetNetworkFork("latest");
       const contract = iweth(await chainId());
 

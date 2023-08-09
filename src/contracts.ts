@@ -7,7 +7,7 @@ import type { NonPayableTransactionObject, PayableTransactionObject } from "./ab
 import BN from "bignumber.js";
 import { bn } from "./utils";
 import _ from "lodash";
-import { chainId, network, networks, web3 } from "./network";
+import { chainId, estimateGasPrice, network, networks, web3 } from "./network";
 
 const debug = require("debug")("web3-candies");
 
@@ -61,11 +61,14 @@ export function parseEvents(receipt: Receipt, contractOrAbi: Contract | Abi): Ev
 export async function sendAndWaitForConfirmations<T extends Contract | Receipt = Receipt>(
   tx: NonPayableTransactionObject<any> | PayableTransactionObject<any> | ContractSendMethod | null,
   opts: Options & { to?: string },
-  confirmations: number = 0
+  confirmations: number = 0,
+  autoGas?: "fast" | "med" | "slow"
 ) {
   if (!tx && !opts.to) throw new Error("tx or opts.to must be specified");
 
-  const [nonce, chain] = await Promise.all([web3().eth.getTransactionCount(opts.from), chainId()]);
+  const [nonce, chain, price] = await Promise.all([web3().eth.getTransactionCount(opts.from), chainId(), autoGas ? estimateGasPrice() : Promise.resolve()]);
+  const maxFeePerGas = BN.max(autoGas ? price?.[autoGas]?.max || 0 : 0, bn(opts.maxFeePerGas || 0), 0);
+  const maxPriorityFeePerGas = BN.max(autoGas ? price?.[autoGas]?.tip || 0 : 0, bn(opts.maxPriorityFeePerGas || 0), 0);
 
   const options = {
     value: opts.value ? bn(opts.value).toFixed(0) : 0,
@@ -73,14 +76,14 @@ export async function sendAndWaitForConfirmations<T extends Contract | Receipt =
     to: opts.to,
     gas: 0,
     nonce,
-    maxPriorityFeePerGas: opts.maxPriorityFeePerGas ? bn(opts.maxPriorityFeePerGas).toFixed(0) : undefined,
-    maxFeePerGas: opts.maxFeePerGas ? bn(opts.maxFeePerGas).toFixed(0) : undefined,
+    maxFeePerGas: maxFeePerGas.isZero() ? undefined : maxFeePerGas.toFixed(0),
+    maxPriorityFeePerGas: maxPriorityFeePerGas.isZero() ? undefined : maxPriorityFeePerGas.toFixed(0),
   };
 
   if (!network(chain).eip1559) {
     (options as any).gasPrice = options.maxFeePerGas;
-    delete options.maxPriorityFeePerGas;
     delete options.maxFeePerGas;
+    delete options.maxPriorityFeePerGas;
   }
 
   debug(`estimating gas...`);
