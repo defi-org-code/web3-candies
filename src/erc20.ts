@@ -166,6 +166,19 @@ export const erc20sData = {
       weth: true,
       logoUrl: "https://moonscan.io/images/svg/brands/mainbrand-1.svg",
     },
+    USDC: { symbol: "USDC", address: "0x8f552a71EFE5eeFc207Bf75485b356A0b3f01eC9", decimals: 6 },
+    WETH: { symbol: "WETH", address: "0x30D2a9F5FDf90ACe8c17952cbb4eE48a55D916A7", decimals: 18 },
+  },
+  base: {
+    WETH: {
+      symbol: "WETH",
+      address: "0x4200000000000000000000000000000000000006",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+    },
+    USDC: { symbol: "USDC", address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", decimals: 6 },
+    DAI: { symbol: "DAI", address: "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb", decimals: 18 },
   },
 };
 

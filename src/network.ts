@@ -126,6 +126,19 @@ export const networks = {
     eip1559: true,
     pendingBlocks: false,
   },
+  base: {
+    id: 8453,
+    name: "Base",
+    shortname: "base",
+    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg" },
+    wToken: erc20sData.base.WETH,
+    publicRpcUrl: "https://mainnet.base.org",
+    logoUrl: "https://app.1inch.io/assets/images/network-logos/base.svg",
+    explorer: "https://basescan.org",
+    baseGasPrice: 0,
+    eip1559: true,
+    pendingBlocks: true,
+  },
 };
 
 /**
