@@ -119,6 +119,7 @@ export async function askFees() {
     choices: [
       { description: "fast", title: `${price.fast.tip.div(1e9).toFormat(3)} / ${price.fast.max.div(1e9).toFormat(3)} gwei`, value: price.fast },
       { description: "med", title: `${price.med.tip.div(1e9).toFormat(3)} / ${price.med.max.div(1e9).toFormat(3)} gwei`, value: price.med },
+      { description: "slow", title: `${price.slow.tip.div(1e9).toFormat(3)} / ${price.slow.max.div(1e9).toFormat(3)} gwei`, value: price.slow },
     ],
     name: "selection",
     message: "gas price",
