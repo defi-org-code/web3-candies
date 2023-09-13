@@ -136,7 +136,7 @@ export const networks = {
     logoUrl: "https://app.1inch.io/assets/images/network-logos/base.svg",
     explorer: "https://basescan.org",
     baseGasPrice: 0,
-    eip1559: true,
+    eip1559: false,
     pendingBlocks: true,
   },
 };

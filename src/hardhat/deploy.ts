@@ -33,8 +33,8 @@ export async function deploy(params: DeployParams): Promise<string> {
     chainId: await web3().eth.getChainId(), // to explicitly state if hardhat
     network: n.name,
     balance: bnm(await web3().eth.getBalance(params.deployer)).toFormat() + " " + n.native.symbol,
-    tip: bnm(params.maxPriorityFeePerGas, 9).toFormat(1) + " gwei",
-    max: bnm(params.maxFeePerGas, 9).toFormat(1) + " gwei",
+    tip: bnm(params.maxPriorityFeePerGas, 9).toFormat(3) + " gwei",
+    max: bnm(params.maxFeePerGas, 9).toFormat(3) + " gwei",
     ...params,
   });
 
@@ -117,9 +117,8 @@ export async function askFees() {
   const { selection } = await prompts({
     type: "select",
     choices: [
-      { description: "fast", title: `${price.fast.tip.div(1e9).toFormat(1)} / ${price.fast.max.div(1e9).toFormat(1)} gwei`, value: price.fast },
-      { description: "med", title: `${price.med.tip.div(1e9).toFormat(1)} / ${price.med.max.div(1e9).toFormat(1)} gwei`, value: price.med },
-      { description: "slow", title: `${price.slow.tip.div(1e9).toFormat(1)} / ${price.slow.max.div(1e9).toFormat(1)} gwei`, value: price.slow },
+      { description: "fast", title: `${price.fast.tip.div(1e9).toFormat(3)} / ${price.fast.max.div(1e9).toFormat(3)} gwei`, value: price.fast },
+      { description: "med", title: `${price.med.tip.div(1e9).toFormat(3)} / ${price.med.max.div(1e9).toFormat(3)} gwei`, value: price.med },
     ],
     name: "selection",
     message: "gas price",
