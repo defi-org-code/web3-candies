@@ -70,7 +70,7 @@ export const networks = {
     publicRpcUrl: "https://arb1.arbitrum.io/rpc",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/arbitrum.svg",
     explorer: "https://arbiscan.io",
-    baseGasPrice: 0.12 * 1e9,
+    baseGasPrice: 0.1 * 1e9,
     eip1559: true,
     pendingBlocks: true,
   },
@@ -287,9 +287,9 @@ export async function estimateGasPrice(
 
     const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, chain.baseGasPrice);
 
-    const slow = median(_.map(history.reward, (r) => BN(r[0], 16)));
-    const med = median(_.map(history.reward, (r) => BN(r[1], 16)));
-    const fast = median(_.map(history.reward, (r) => BN(r[2], 16)));
+    const slow = BN.max(1, median(_.map(history.reward, (r) => BN(r[0], 16))));
+    const med = BN.max(1, median(_.map(history.reward, (r) => BN(r[1], 16))));
+    const fast = BN.max(1, median(_.map(history.reward, (r) => BN(r[2], 16))));
 
     return {
       slow: { max: baseFeePerGas.times(1).plus(slow).integerValue(), tip: slow.integerValue() },
