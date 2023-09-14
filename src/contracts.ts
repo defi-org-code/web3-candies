@@ -91,8 +91,7 @@ export async function sendAndWaitForConfirmations<T extends Contract | Receipt =
   debug(`estimated gas: ${estimated} +20% buffer`);
   options.gas = Math.floor(estimated * 1.2);
 
-  debug(`sending tx...`);
-  debug(options);
+  debug(`sending tx...`, JSON.stringify(options));
   const promiEvent = tx ? tx.send(options) : web3().eth.sendTransaction(options);
 
   let sentBlock = Number.POSITIVE_INFINITY;

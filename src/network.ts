@@ -285,11 +285,11 @@ export async function estimateGasPrice(
       !!w3!.eth.getFeeHistory ? w3!.eth.getFeeHistory(length, pending, percentiles) : Promise.resolve({ reward: [] }),
     ]);
 
-    const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, chain.baseGasPrice);
+    const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, chain.baseGasPrice, 0);
 
-    const slow = BN.max(1, median(_.map(history.reward, (r) => BN(r[0], 16))));
-    const med = BN.max(1, median(_.map(history.reward, (r) => BN(r[1], 16))));
-    const fast = BN.max(1, median(_.map(history.reward, (r) => BN(r[2], 16))));
+    const slow = BN.max(0, median(_.map(history.reward, (r) => BN(r[0], 16))));
+    const med = BN.max(0, median(_.map(history.reward, (r) => BN(r[1], 16))));
+    const fast = BN.max(0, median(_.map(history.reward, (r) => BN(r[2], 16))));
 
     return {
       slow: { max: baseFeePerGas.times(1).plus(slow).integerValue(), tip: slow.integerValue() },
