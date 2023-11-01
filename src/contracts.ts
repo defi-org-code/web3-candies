@@ -8,6 +8,7 @@ import BN from "bignumber.js";
 import { bn } from "./utils";
 import _ from "lodash";
 import { chainId, estimateGasPrice, network, networks, web3 } from "./network";
+import Web3 from "web3";
 
 const debug = require("debug")("web3-candies");
 
@@ -18,8 +19,9 @@ export type BlockInfo = BlockTransactionString & { timestamp: number };
 export type Receipt = TransactionReceipt;
 export type Abi = AbiItem[];
 
-export function contract<T extends Contract>(abi: Abi, address: string, options?: ContractOptions): T {
-  const c = new (web3().eth.Contract)(abi, address, options) as T;
+export function contract<T extends Contract>(abi: Abi, address: string, options?: ContractOptions, w3?: Web3): T {
+  const c = new (w3 ?? web3()).eth.Contract(abi, address, options) as T;
+
   c.handleRevert = false;
   return c;
 }

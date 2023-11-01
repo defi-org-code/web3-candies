@@ -1,9 +1,10 @@
 import { expect } from "chai";
-import { account, networks, contract, parseEvents, web3, zero, iwethabi, bn18, erc20sData, erc20s, currentNetwork, erc20, chainId } from "../src";
+import { account, networks, contract, parseEvents, web3, zero, iwethabi, bn18, chainId, Abi } from "../src";
 import { artifact, deployArtifact, expectRevert, mineBlocks, useChaiBigNumber } from "../src/hardhat";
 import type { IWETH } from "../src/abi";
 import type { Example } from "../typechain-hardhat/contracts/Example.sol";
 import _ from "lodash";
+import sinon from "sinon";
 
 useChaiBigNumber();
 
@@ -45,5 +46,42 @@ describe("Contracts", () => {
     const c = await deployExample();
     expect(await c.methods.assertNotZero("123").call()).bignumber.eq("123");
     await expectRevert(() => c.methods.assertNotZero(zero).call(), "n should not be zero");
+  });
+
+  it("uses web3 instance from arguments if provided", async () => {});
+});
+
+describe("contract()", () => {
+  const mockWeb3 = {
+    eth: {
+      Contract: sinon.stub().returns({
+        foo: "bar",
+      }),
+    },
+  };
+
+  const abi: Abi = [];
+  const address = "0x1234567890abcdef1234567890abcdef12345678";
+  const options = {};
+
+  it("should use the passed w3 argument", () => {
+    contract(abi, address, options, mockWeb3);
+    sinon.assert.calledOnce(mockWeb3.eth.Contract);
+    sinon.assert.calledWith(mockWeb3.eth.Contract, abi, address, options);
+  });
+
+  it("should create a new Web3 instance if no w3 argument is passed", () => {
+    const web3Stub = sinon.stub(require("../src/network"), "web3").returns({ eth: { Contract: sinon.stub().returns({}) } });
+    contract(abi, address, options);
+    sinon.assert.calledOnce(web3Stub);
+    web3Stub.restore();
+  });
+
+  it("should return the contract instance", () => {
+    const contractInstance = contract(abi, address, options, mockWeb3);
+    expect(contractInstance).to.deep.equal({
+      foo: "bar",
+      handleRevert: false,
+    });
   });
 });
