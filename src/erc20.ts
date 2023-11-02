@@ -199,10 +199,12 @@ export function iweth(chainId: number) {
   return erc20<IWETH>(wToken.symbol, wToken.address, wToken.decimals, iwethabi);
 }
 
-export function erc20<T>(name: string, address: string, decimals?: number, extendAbi?: Abi): Token & T {
+export function erc20<T>(name: string, address: string, decimals?: number, extendAbi?: Abi, w3?: Web3): Token & T {
+  if (!w3) w3 = require("./network").web3();
+
   const abi = extendAbi ? [...erc20abi, ...extendAbi] : erc20abi;
   address = Web3.utils.toChecksumAddress(address);
-  const result = contract<Token & T>(abi, address);
+  const result = contract<Token & T>(abi, address, undefined, w3);
   wrapToken(result, name, address, decimals, abi);
   tryTag(address, name);
   return result;
