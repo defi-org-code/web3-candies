@@ -139,7 +139,19 @@ export const networks = {
     eip1559: false,
     pendingBlocks: true,
   },
-};
+  linea: {
+    id: 59144,
+    name: "Linea",
+    shortname: "linea",
+    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg" },
+    wToken: erc20sData.linea.WETH,
+    publicRpcUrl: "https://rpc.linea.build",
+    logoUrl: "https://lineascan.build/images/logo.svg",
+    explorer: "https://lineascan.build",
+    baseGasPrice: 0,
+    eip1559: false,
+    pendingBlocks: true,
+  },};
 
 /**
  * hardhat injected web3 instance, or the global singleton
