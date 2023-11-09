@@ -151,7 +151,8 @@ export const networks = {
     baseGasPrice: 0,
     eip1559: false,
     pendingBlocks: true,
-  },};
+  },
+};
 
 /**
  * hardhat injected web3 instance, or the global singleton
