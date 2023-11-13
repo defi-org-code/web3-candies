@@ -8,8 +8,9 @@ import _ from "lodash";
 import Web3 from "web3";
 import type { EventData } from "web3-eth-contract";
 import type { IPermit2 } from "./abi/IPermit2";
+import optimisimOracleAbi from "./abi/optimisimOracle.json"
 import permit2Abi from "./abi/IPermit2.json";
-import { BlockInfo, BlockNumber, contract, Contract } from "./contracts";
+import { Abi, BlockInfo, BlockNumber, contract, Contract } from "./contracts";
 import { erc20sData, TokenData, tryTag } from "./erc20";
 import { keepTrying, timeout } from "./timing";
 import { eqIgnoreCase, median, zeroAddress } from "./utils";
@@ -138,6 +139,7 @@ export const networks = {
     baseGasPrice: 0,
     eip1559: false,
     pendingBlocks: true,
+    gasPriceOracle: "0x420000000000000000000000000000000000000F"
   },
   linea: {
     id: 59144,
@@ -311,6 +313,45 @@ export async function estimateGasPrice(
       pendingBlockNumber: pendingBlock.number,
       pendingBlockTimestamp: BN(pendingBlock.timestamp).toNumber(),
     };
+  });
+}
+
+// https://community.optimism.io/docs/developers/build/transaction-fees/#priority-fee
+// tx_data_gas = count_zero_bytes(tx_data) * 4 + count_non_zero_bytes(tx_data) * 16
+function estimateOptimismL1TxDataGasUnits(tx: string): BN {
+
+  let zeroCount = 0;
+  let nonZeroCount = 0;
+
+  for (const char of tx) {    
+      const codeUnit = char.charCodeAt(0);
+      codeUnit === 0 ? zeroCount++ : nonZeroCount++;
+  }
+
+  return new BN(zeroCount * 4 + nonZeroCount * 16);
+}
+
+// https://community.optimism.io/docs/developers/build/transaction-fees/#priority-fee
+// l1_data_fee = l1_gas_price * (tx_data_gas + fixed_overhead + noncalldata_gas) * dynamic_overhead
+export async function estimateOptimismL1GasPrice(tx: string, w3?: Web3): Promise<number> {
+
+  if (process.env.NETWORK_URL && !w3) w3 = new Web3(process.env.NETWORK_URL);
+  w3 = w3 || web3();
+
+  const chain = network(await chainId(w3));
+
+  if (!('gasPriceOracle' in chain)) throw new Error(`can not find gasPriceOracle in ${chain.name} chain`)
+  const OracelAddress = chain.gasPriceOracle;
+  
+  return await keepTrying(async () => {
+
+    const decimals = await (contract(optimisimOracleAbi as Abi, OracelAddress, undefined, w3) as Contract).methods.decimals().call();
+    const txDataGas = estimateOptimismL1TxDataGasUnits(tx)
+    const l1BaseFee = (new BN(await (contract(optimisimOracleAbi as Abi, OracelAddress, undefined, w3) as Contract).methods.l1BaseFee().call())).dividedBy(new BN(10).pow(chain.native.decimals));
+    const overhead = (new BN(await (contract(optimisimOracleAbi as Abi, OracelAddress, undefined, w3) as Contract).methods.overhead().call()))//.dividedBy(new BN(10).pow(decimals));
+    const scalar = (new BN(await (contract(optimisimOracleAbi as Abi, OracelAddress, undefined, w3) as Contract).methods.scalar().call())).dividedBy(new BN(10).pow(decimals));
+
+    return l1BaseFee.multipliedBy(txDataGas.plus(overhead)).multipliedBy(scalar).toNumber();
   });
 }
 
