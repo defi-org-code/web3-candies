@@ -288,6 +288,7 @@ export async function estimateGasPrice(
   baseFeePerGas: BN;
   pendingBlockNumber: number;
   pendingBlockTimestamp: number;
+  l1GasOracle: {decimals: number, l1BaseFee: BN, overhead: BN, scalar: BN} | undefined;
 }> {
   if (process.env.NETWORK_URL && !w3) w3 = new Web3(process.env.NETWORK_URL);
   w3 = w3 || web3();
@@ -305,6 +306,7 @@ export async function estimateGasPrice(
     const slow = BN.max(1, median(_.map(history.reward, (r) => BN(r[0], 16))));
     const med = BN.max(1, median(_.map(history.reward, (r) => BN(r[1], 16))));
     const fast = BN.max(1, median(_.map(history.reward, (r) => BN(r[2], 16))));
+    const l1GasOracle = await getL1GasOracle(w3);
 
     return {
       slow: { max: baseFeePerGas.times(1).plus(slow).integerValue(), tip: slow.integerValue() },
@@ -313,13 +315,14 @@ export async function estimateGasPrice(
       baseFeePerGas,
       pendingBlockNumber: pendingBlock.number,
       pendingBlockTimestamp: BN(pendingBlock.timestamp).toNumber(),
+      l1GasOracle: l1GasOracle
     };
   });
 }
 
 // https://community.optimism.io/docs/developers/build/transaction-fees/#priority-fee
 // l1_data_fee = l1_gas_price * (tx_data_gas + fixed_overhead + noncalldata_gas) * dynamic_overhead
-export async function estimateL1GasPrice(tx: string, w3?: Web3, oracle?: {decimals: number, l1BaseFee: BN, overhead: BN, scalar: BN}) {
+export async function estimateL1Fees(tx: string, w3?: Web3, oracle?: {decimals: number, l1BaseFee: BN, overhead: BN, scalar: BN}) {
 
   if (process.env.NETWORK_URL && !w3) w3 = new Web3(process.env.NETWORK_URL);
   w3 = w3 || web3();
@@ -349,7 +352,6 @@ export async function estimateL1GasPrice(tx: string, w3?: Web3, oracle?: {decima
     default:
       throw new Error(`unable to calculate l1 gas price, chain ${chain.shortname} is not supported`);
   }
-
 }
 
 // https://community.optimism.io/docs/developers/build/transaction-fees/#priority-fee
@@ -387,7 +389,7 @@ export async function getL1GasOracle(w3?: Web3) {
 
   const chain = network(await chainId(w3));
 
-  if (!('gasPriceOracle' in chain)) throw new Error(`can not find gasPriceOracle in ${chain.name} chain`);
+  if (!('gasPriceOracle' in chain)) return undefined;
   const OracelAddress = chain.gasPriceOracle;
   
   switch(chain.shortname) {
@@ -405,7 +407,7 @@ export async function getL1GasOracle(w3?: Web3) {
       });
 
     default:
-      throw new Error(`unable to extract l1 gas units for chain ${chain.shortname}, chain is not supported`);
+      return undefined;
   }
 
 }
