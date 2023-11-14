@@ -153,7 +153,8 @@ export const networks = {
     baseGasPrice: 0,
     eip1559: false,
     pendingBlocks: true,
-  },};
+  },
+};
 
 /**
  * hardhat injected web3 instance, or the global singleton
@@ -406,7 +407,7 @@ export async function getL1GasOracle(w3?: Web3) {
     default:
       throw new Error(`unable to extract l1 gas units for chain ${chain.shortname}, chain is not supported`);
   }
-  
+
 }
 
 export async function getPastEvents(params: {
