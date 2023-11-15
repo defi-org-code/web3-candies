@@ -6,3 +6,4 @@ export type { ERC20 } from "./ERC20";
 export type { ERC721 } from "./ERC721";
 export type { IPermit2 } from "./IPermit2";
 export type { IWETH } from "./IWETH";
+export type { OpOracle } from "./OpOracle";
