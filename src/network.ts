@@ -153,7 +153,7 @@ export const networks = {
     baseGasPrice: 0,
     eip1559: false,
     pendingBlocks: true,
-  }
+  },
 };
 
 /**
@@ -301,7 +301,7 @@ export async function estimateGasPrice(
       !!w3!.eth.getFeeHistory ? w3!.eth.getFeeHistory(length, pending, percentiles) : Promise.resolve({ reward: [] }),
       getL1GasOracle(w3),
     ]);
-    
+
     const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, chain.baseGasPrice, 0);
 
     const slow = BN.max(1, median(_.map(history.reward, (r) => BN(r[0], 16))));
