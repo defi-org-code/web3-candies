@@ -532,15 +532,3 @@ export function permit2TransferFrom(from: string, to: string, amount: BN.Value, 
   tryTag(permit2Address, "Permit2");
   return contract(permit2Abi as any, permit2Address).methods.transferFrom(from, to, BN(amount).toFixed(0), token.address);
 }
-
-
-// estimateL1Fees("testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest", new Web3('https://mainnet.base.org')).then(console.log);
-
-// getL1GasOracle(new Web3('https://mainnet.base.org')).then(console.log)
-
-estimateGasPrice([10, 50, 90], 5, new Web3('https://mainnet.base.org')).then((res) => {
-  console.log(res);
-  estimateL1Fees("testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest", 
-  new Web3('https://mainnet.base.org'), 
-  res.l1GasOracle).then(console.log);  
-})
