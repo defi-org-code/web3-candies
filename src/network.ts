@@ -296,17 +296,17 @@ export async function estimateGasPrice(
   return await keepTrying(async () => {
     const chain = network(await chainId(w3));
     const pending = chain.pendingBlocks ? "pending" : "latest";
-    const [pendingBlock, history] = await Promise.all([
+    const [pendingBlock, history, l1GasOracle] = await Promise.all([
       w3!.eth.getBlock(pending),
       !!w3!.eth.getFeeHistory ? w3!.eth.getFeeHistory(length, pending, percentiles) : Promise.resolve({ reward: [] }),
+      getL1GasOracle(w3)
     ]);
-
+    
     const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, chain.baseGasPrice, 0);
 
     const slow = BN.max(1, median(_.map(history.reward, (r) => BN(r[0], 16))));
     const med = BN.max(1, median(_.map(history.reward, (r) => BN(r[1], 16))));
     const fast = BN.max(1, median(_.map(history.reward, (r) => BN(r[2], 16))));
-    const l1GasOracle = await getL1GasOracle(w3);
 
     return {
       slow: { max: baseFeePerGas.times(1).plus(slow).integerValue(), tip: slow.integerValue() },
@@ -388,7 +388,7 @@ export async function getL1GasOracle(w3?: Web3) {
   w3 = w3 || web3();
 
   const chain = network(await chainId(w3));
-
+  
   if (!('gasPriceOracle' in chain)) return undefined;
   const OracelAddress = chain.gasPriceOracle;
   
@@ -519,3 +519,15 @@ export function permit2TransferFrom(from: string, to: string, amount: BN.Value, 
   tryTag(permit2Address, "Permit2");
   return contract(permit2Abi as any, permit2Address).methods.transferFrom(from, to, BN(amount).toFixed(0), token.address);
 }
+
+
+// estimateL1Fees("testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest", new Web3('https://mainnet.base.org')).then(console.log);
+
+// getL1GasOracle(new Web3('https://mainnet.base.org')).then(console.log)
+
+estimateGasPrice([10, 50, 90], 5, new Web3('https://mainnet.base.org')).then((res) => {
+  console.log(res);
+  estimateL1Fees("testtesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttesttest", 
+  new Web3('https://mainnet.base.org'), 
+  res.l1GasOracle).then(console.log);  
+})
