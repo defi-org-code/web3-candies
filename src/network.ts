@@ -8,7 +8,7 @@ import _ from "lodash";
 import Web3 from "web3";
 import type { EventData } from "web3-eth-contract";
 import type { IPermit2 } from "./abi/IPermit2";
-import optimisimOracleAbi from "./abi/optimisimOracle.json"
+import opOracle from "./abi/opOracle.json"
 import permit2Abi from "./abi/IPermit2.json";
 import { Abi, BlockInfo, BlockNumber, contract, Contract } from "./contracts";
 import { erc20sData, TokenData, tryTag } from "./erc20";
@@ -341,10 +341,10 @@ export async function estimateL1Fees(tx: string, w3?: Web3, oracle?: {decimals: 
     
       return await keepTrying(async () => {
     
-        const decimals = await (contract(optimisimOracleAbi as Abi, OracelAddress, undefined, w3) as Contract).methods.decimals().call();
-        const l1BaseFee = (new BN(await (contract(optimisimOracleAbi as Abi, OracelAddress, undefined, w3) as Contract).methods.l1BaseFee().call())).dividedBy(new BN(10).pow(chain.native.decimals));
-        const overhead = (new BN(await (contract(optimisimOracleAbi as Abi, OracelAddress, undefined, w3) as Contract).methods.overhead().call()));
-        const scalar = (new BN(await (contract(optimisimOracleAbi as Abi, OracelAddress, undefined, w3) as Contract).methods.scalar().call())).dividedBy(new BN(10).pow(decimals));
+        const decimals = await (contract(opOracle as Abi, OracelAddress, undefined, w3) as Contract).methods.decimals().call();
+        const l1BaseFee = (new BN(await (contract(opOracle as Abi, OracelAddress, undefined, w3) as Contract).methods.l1BaseFee().call())).dividedBy(new BN(10).pow(chain.native.decimals));
+        const overhead = (new BN(await (contract(opOracle as Abi, OracelAddress, undefined, w3) as Contract).methods.overhead().call()));
+        const scalar = (new BN(await (contract(opOracle as Abi, OracelAddress, undefined, w3) as Contract).methods.scalar().call())).dividedBy(new BN(10).pow(decimals));
     
         return l1BaseFee.multipliedBy(txDataGas.plus(overhead)).multipliedBy(scalar).toNumber();
       });
