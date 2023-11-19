@@ -288,7 +288,6 @@ export async function estimateGasPrice(
   baseFeePerGas: BN;
   pendingBlockNumber: number;
   pendingBlockTimestamp: number;
-  l1GasOracle: { decimals: number; l1BaseFee: BN; overhead: BN; scalar: BN } | undefined;
 }> {
   if (process.env.NETWORK_URL && !w3) w3 = new Web3(process.env.NETWORK_URL);
   w3 = w3 || web3();
@@ -296,10 +295,9 @@ export async function estimateGasPrice(
   return await keepTrying(async () => {
     const chain = network(await chainId(w3));
     const pending = chain.pendingBlocks ? "pending" : "latest";
-    const [pendingBlock, history, l1GasOracle] = await Promise.all([
+    const [pendingBlock, history] = await Promise.all([
       w3!.eth.getBlock(pending),
       !!w3!.eth.getFeeHistory ? w3!.eth.getFeeHistory(length, pending, percentiles) : Promise.resolve({ reward: [] }),
-      getL1GasOracle(w3),
     ]);
 
     const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, chain.baseGasPrice, 0);
@@ -315,7 +313,6 @@ export async function estimateGasPrice(
       baseFeePerGas,
       pendingBlockNumber: pendingBlock.number,
       pendingBlockTimestamp: BN(pendingBlock.timestamp).toNumber(),
-      l1GasOracle: l1GasOracle,
     };
   });
 }
