@@ -317,78 +317,44 @@ export async function estimateGasPrice(
   });
 }
 
-// // https://community.optimism.io/docs/developers/build/transaction-fees/#priority-fee
-// // l1_data_fee = l1_gas_price * (tx_data_gas + fixed_overhead + noncalldata_gas) * dynamic_overhead
-// export async function estimateL1Fees(tx: string, w3?: Web3, oracle?: { decimals: number; l1BaseFee: BN; overhead: BN; scalar: BN }) {
-//   if (process.env.NETWORK_URL && !w3) w3 = new Web3(process.env.NETWORK_URL);
-//   w3 = w3 || web3();
-
-//   const chain = network(await chainId(w3));
-
-//   if (!("gasPriceOracle" in chain)) throw new Error(`can not find gasPriceOracle in ${chain.name} chain`);
-//   const OracelAddress = chain.gasPriceOracle;
-
-//   switch (chain.shortname) {
-//     case "base":
-//       const txDataGas = await estimateL1TxDataGasUnits(tx, w3);
-
-//       if (oracle) return oracle.l1BaseFee.multipliedBy(txDataGas.plus(oracle.overhead)).multipliedBy(oracle.scalar).toNumber();
-
-//       return await keepTrying(async () => {
-//         const decimals = await (contract(opOracle as Abi, OracelAddress, undefined, w3) as Contract).methods.decimals().call();
-//         const l1BaseFee = new BN(await (contract(opOracle as Abi, OracelAddress, undefined, w3) as Contract).methods.l1BaseFee().call()).dividedBy(
-//           new BN(10).pow(chain.native.decimals)
-//         );
-//         const overhead = new BN(await (contract(opOracle as Abi, OracelAddress, undefined, w3) as Contract).methods.overhead().call());
-//         const scalar = new BN(await (contract(opOracle as Abi, OracelAddress, undefined, w3) as Contract).methods.scalar().call()).dividedBy(new BN(10).pow(decimals));
-
-//         return l1BaseFee.multipliedBy(txDataGas.plus(overhead)).multipliedBy(scalar).toNumber();
-//       });
-
-//     default:
-//       throw new Error(`unable to calculate l1 gas price, chain ${chain.shortname} is not supported`);
-//   }
-// }
-
-// https://community.optimism.io/docs/developers/build/transaction-fees/#priority-fee
-// tx_data_gas = count_zero_bytes(tx_data) * 4 + count_non_zero_bytes(tx_data) * 16
-export function calculateL1GasUnits(tx: string): BN {
-  let zeroCount = 0;
-  let nonZeroCount = 0;
-
-  for (const char of tx) {
-    const codeUnit = char.charCodeAt(0);
-    codeUnit === 0 ? zeroCount++ : nonZeroCount++;
-  }
-
-  return new BN(zeroCount * 4 + nonZeroCount * 16);
+/**
+ * l1_data_fee = l1_gas_price * (tx_data_gas + fixed_overhead + noncalldata_gas) * dynamic_overhead
+ */
+export function calculateL1GasCost(txData: string, l1GasPrice: { l1BaseFee: BN; overhead: BN; scalar: BN }): BN {
+  return l1GasPrice.l1BaseFee.multipliedBy(calculateL1GasUnits(txData, l1GasPrice.overhead)).multipliedBy(l1GasPrice.scalar).integerValue(BN.ROUND_FLOOR);
 }
 
-export async function getL1GasOracle(w3?: Web3) {
+/**
+ * @param txData: Unsigned fully RLP-encoded transaction to get the L1 gas for
+ *  https://community.optimism.io/docs/developers/build/transaction-fees/#priority-fee
+ *  tx_data_gas = count_zero_bytes(tx_data) * 4 + count_non_zero_bytes(tx_data) * 16
+ */
+export function calculateL1GasUnits(txData: string, overhead: BN = BN(188)): BN {
+  let zeroCount = 0;
+  let nonZeroCount = 0;
+  const bytes = Web3.utils.hexToBytes(txData);
+
+  for (const b of bytes) {
+    !b ? zeroCount++ : nonZeroCount++;
+  }
+
+  return new BN(zeroCount * 4 + nonZeroCount * 16).plus(overhead);
+}
+
+export async function estimateL1GasPrice(w3?: Web3) {
   if (process.env.NETWORK_URL && !w3) w3 = new Web3(process.env.NETWORK_URL);
   w3 = w3 || web3();
 
   const chain = network(await chainId(w3));
 
-  if (!("gasPriceOracle" in chain)) return undefined;
-  const OracelAddress = chain.gasPriceOracle;
-
-  switch (chain.shortname) {
-    case "base":
-      return await keepTrying(async () => {
-        const decimals = await (contract(opOracle as Abi, OracelAddress, undefined, w3) as Contract).methods.decimals().call();
-        const l1BaseFee = new BN(await (contract(opOracle as Abi, OracelAddress, undefined, w3) as Contract).methods.l1BaseFee().call()).dividedBy(
-          new BN(10).pow(chain.native.decimals)
-        );
-        const overhead = new BN(await (contract(opOracle as Abi, OracelAddress, undefined, w3) as Contract).methods.overhead().call()); //.dividedBy(new BN(10).pow(decimals));
-        const scalar = new BN(await (contract(opOracle as Abi, OracelAddress, undefined, w3) as Contract).methods.scalar().call()).dividedBy(new BN(10).pow(decimals));
-
-        return { decimals, l1BaseFee, overhead, scalar };
-      });
-
-    default:
-      return undefined;
-  }
+  if (!("gasPriceOracle" in chain)) throw new Error("invalid chain");
+  const c = contract(opOracle as Abi, chain.gasPriceOracle, undefined, w3);
+  const [l1BaseFee, overhead, scalar] = await Promise.all([c.methods.l1BaseFee().call().then(BN), c.methods.overhead().call().then(BN), c.methods.scalar().call().then(BN)]);
+  return {
+    l1BaseFee,
+    overhead,
+    scalar: scalar.div(1e6),
+  };
 }
 
 export async function getPastEvents(params: {
