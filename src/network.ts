@@ -280,7 +280,8 @@ export async function switchMetaMaskNetwork(chainId: number) {
 export async function estimateGasPrice(
   percentiles: number[] = [10, 50, 90],
   length: number = 5,
-  w3?: Web3
+  w3?: Web3,
+  timeoutMillis: number = 1000
 ): Promise<{
   slow: { max: BN; tip: BN };
   med: { max: BN; tip: BN };
@@ -292,29 +293,33 @@ export async function estimateGasPrice(
   if (process.env.NETWORK_URL && !w3) w3 = new Web3(process.env.NETWORK_URL);
   w3 = w3 || web3();
 
-  return await keepTrying(async () => {
-    const chain = network(await chainId(w3));
-    const pending = chain.pendingBlocks ? "pending" : "latest";
-    const [pendingBlock, history] = await Promise.all([
-      w3!.eth.getBlock(pending),
-      !!w3!.eth.getFeeHistory ? w3!.eth.getFeeHistory(length, pending, percentiles) : Promise.resolve({ reward: [] }),
-    ]);
+  return await keepTrying(
+    async () => {
+      const chain = network(await chainId(w3));
+      const pending = chain.pendingBlocks ? "pending" : "latest";
+      const [pendingBlock, history] = await Promise.all([
+        w3!.eth.getBlock(pending),
+        !!w3!.eth.getFeeHistory ? w3!.eth.getFeeHistory(length, pending, percentiles) : Promise.resolve({ reward: [] }),
+      ]);
 
-    const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, chain.baseGasPrice, 0);
+      const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, chain.baseGasPrice, 0);
 
-    const slow = BN.max(1, median(_.map(history.reward, (r) => BN(r[0], 16))));
-    const med = BN.max(1, median(_.map(history.reward, (r) => BN(r[1], 16))));
-    const fast = BN.max(1, median(_.map(history.reward, (r) => BN(r[2], 16))));
+      const slow = BN.max(1, median(_.map(history.reward, (r) => BN(r[0], 16))));
+      const med = BN.max(1, median(_.map(history.reward, (r) => BN(r[1], 16))));
+      const fast = BN.max(1, median(_.map(history.reward, (r) => BN(r[2], 16))));
 
-    return {
-      slow: { max: baseFeePerGas.times(1).plus(slow).integerValue(), tip: slow.integerValue() },
-      med: { max: baseFeePerGas.times(1.1).plus(med).integerValue(), tip: med.integerValue() },
-      fast: { max: baseFeePerGas.times(1.25).plus(fast).integerValue(), tip: fast.integerValue() },
-      baseFeePerGas,
-      pendingBlockNumber: pendingBlock.number,
-      pendingBlockTimestamp: BN(pendingBlock.timestamp).toNumber(),
-    };
-  });
+      return {
+        slow: { max: baseFeePerGas.times(1).plus(slow).integerValue(), tip: slow.integerValue() },
+        med: { max: baseFeePerGas.times(1.1).plus(med).integerValue(), tip: med.integerValue() },
+        fast: { max: baseFeePerGas.times(1.25).plus(fast).integerValue(), tip: fast.integerValue() },
+        baseFeePerGas,
+        pendingBlockNumber: pendingBlock.number,
+        pendingBlockTimestamp: BN(pendingBlock.timestamp).toNumber(),
+      };
+    },
+    3,
+    timeoutMillis
+  );
 }
 
 /**
