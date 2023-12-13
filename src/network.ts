@@ -154,6 +154,19 @@ export const networks = {
     eip1559: false,
     pendingBlocks: true,
   },
+  zkSync: {
+    id: 324,
+    name: "zkSync",
+    shortname: "zkSync",
+    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg" },
+    wToken: erc20sData.zkSync.WETH,
+    publicRpcUrl: "https://mainnet.era.zksync.io",
+    logoUrl: "https://raw.githubusercontent.com/matter-labs/zksync/0a4ca2145a0c95b5bafa84c2f095c644907a8825/zkSyncLogo.svg",
+    explorer: "https://explorer.zksync.io/",
+    baseGasPrice: 0,
+    eip1559: true,
+    pendingBlocks: true,
+  },
 };
 
 /**
