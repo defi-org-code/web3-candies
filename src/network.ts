@@ -156,10 +156,10 @@ export const networks = {
   },
   zksync: {
     id: 324,
-    name: "zkSync",
+    name: "zksync",
     shortname: "zksync",
     native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg" },
-    wToken: erc20sData.zkSync.WETH,
+    wToken: erc20sData.zksync.WETH,
     publicRpcUrl: "https://mainnet.era.zksync.io",
     logoUrl: "https://raw.githubusercontent.com/matter-labs/zksync/0a4ca2145a0c95b5bafa84c2f095c644907a8825/zkSyncLogo.svg",
     explorer: "https://explorer.zksync.io/",

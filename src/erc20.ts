@@ -191,7 +191,7 @@ export const erc20sData = {
     USDC: { symbol: "USDC", address: "0x176211869cA2b568f2A7D4EE941E073a821EE1ff", decimals: 6 },
     DAI: { symbol: "DAI", address: "0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5", decimals: 18 },
   },
-  zkSync: {
+  zksync: {
     WETH: {
       symbol: "WETH",
       address: "0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91",
