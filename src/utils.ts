@@ -16,7 +16,7 @@ export const nativeTokenAddresses = [
   "0x0000000000000000000000000000000000001010",
   "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
   "0x000000000000000000000000000000000000dEaD",
-  "0x000000000000000000000000000000000000800A"
+  "0x000000000000000000000000000000000000800A",
 ];
 
 export const isNativeAddress = (address: string) => !!nativeTokenAddresses.find((a) => eqIgnoreCase(a, address));
