@@ -167,6 +167,19 @@ export const networks = {
     eip1559: true,
     pendingBlocks: false,
   },
+  zkevm: {
+    id: 1101,
+    name: "zkevm",
+    shortname: "zkevm",
+    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/polygon.svg" },
+    wToken: erc20sData.zkevm.WETH,
+    publicRpcUrl: "https://zkevm-rpc.com",
+    logoUrl: "https://user-images.githubusercontent.com/18598517/235932702-bc47eae5-d672-4dd9-9da2-8ea8f51a93f3.png",
+    explorer: "https://zkevm.polygonscan.com/",
+    baseGasPrice: 0,
+    eip1559: true,
+    pendingBlocks: true,
+  },
 };
 
 /**
