@@ -180,6 +180,19 @@ export const networks = {
     eip1559: true,
     pendingBlocks: true,
   },
+  manta: {
+    id: 169,
+    name: "manta",
+    shortname: "manta",
+    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://icons.llamao.fi/icons/chains/rsz_manta.jpg" },
+    wToken: erc20sData.manta.WETH,
+    publicRpcUrl: "https://pacific-rpc.manta.network/http",
+    logoUrl: "https://icons.llamao.fi/icons/chains/rsz_manta.jpg",
+    explorer: "https://manta.socialscan.io/",
+    baseGasPrice: 0,
+    eip1559: true,
+    pendingBlocks: true,
+  },
 };
 
 /**
