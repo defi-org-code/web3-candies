@@ -64,7 +64,11 @@ export async function sendAndWaitForConfirmations<T extends Contract | Receipt =
   tx: NonPayableTransactionObject<any> | PayableTransactionObject<any> | ContractSendMethod | null,
   opts: Options & { to?: string },
   confirmations: number = 0,
-  autoGas?: "fast" | "med" | "slow"
+  autoGas?: "fast" | "med" | "slow",
+  callback?: {
+    onTxHash?: (txHash: string) => void;
+    onTxReceipt?: (receipt: Receipt) => void;
+  }
 ) {
   if (!tx && !opts.to) throw new Error("tx or opts.to must be specified");
 
@@ -97,7 +101,14 @@ export async function sendAndWaitForConfirmations<T extends Contract | Receipt =
   const promiEvent = tx ? tx.send(options) : web3().eth.sendTransaction(options);
 
   let sentBlock = Number.POSITIVE_INFINITY;
-  promiEvent.once("receipt", (r) => (sentBlock = r.blockNumber));
+
+  promiEvent.once("transactionHash", (r) => {
+    callback?.onTxHash?.(r);
+  });
+  promiEvent.once("receipt", (r) => {
+    sentBlock = r.blockNumber;
+    callback?.onTxReceipt?.(r);
+  });
 
   debug(`waiting for ${confirmations} confirmations...`);
   const result = await promiEvent;
