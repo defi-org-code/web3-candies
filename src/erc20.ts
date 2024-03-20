@@ -224,6 +224,16 @@ export const erc20sData = {
     USDC: { symbol: "USDC", address: "0xb73603C5d87fA094B7314C74ACE2e64D165016fb", decimals: 6 },
     DAI: { symbol: "DAI", address: "0x1c466b9371f8aBA0D7c458bE10a62192Fcb8Aa71", decimals: 18 },
   },
+  blast: {
+    WETH: {
+      symbol: "WETH",
+      address: "0x4300000000000000000000000000000000000004",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+    },
+    USDB: { symbol: "USDB", address: "0x4300000000000000000000000000000000000003", decimals: 18 }
+  }
 };
 
 /*

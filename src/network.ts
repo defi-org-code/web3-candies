@@ -193,6 +193,19 @@ export const networks = {
     eip1559: true,
     pendingBlocks: true,
   },
+  blast: {
+    id: 81457,
+    name: "blast",
+    shortname: "blast",
+    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://icons.llamao.fi/icons/chains/rsz_blast" },
+    wToken: erc20sData.blast.WETH,
+    publicRpcUrl: "https://rpc.ankr.com/blast",
+    logoUrl: "https://icons.llamao.fi/icons/chains/rsz_blast",
+    explorer: "https://blastscan.io/",
+    baseGasPrice: 0,
+    eip1559: true,
+    pendingBlocks: true,
+  },
 };
 
 /**
