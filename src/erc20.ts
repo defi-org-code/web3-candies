@@ -230,10 +230,10 @@ export const erc20sData = {
       address: "0x4300000000000000000000000000000000000004",
       decimals: 18,
       weth: true,
-      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
     },
-    USDB: { symbol: "USDB", address: "0x4300000000000000000000000000000000000003", decimals: 18 }
-  }
+    USDB: { symbol: "USDB", address: "0x4300000000000000000000000000000000000003", decimals: 18 },
+  },
 };
 
 /*
