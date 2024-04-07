@@ -2,7 +2,8 @@ import { expect } from "chai";
 import Web3 from "web3";
 import {
   account,
-  bn, chainId,
+  bn,
+  chainId,
   erc20FromData,
   estimateGasPrice,
   estimateL1GasPrice,
@@ -21,7 +22,7 @@ import {
   signEIP712,
   web3,
   zero,
-  zeroAddress
+  zeroAddress,
 } from "../src";
 import { artifact, expectRevert, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 

@@ -363,10 +363,10 @@ export function calculateL1GasUnits(txData: string): BN {
 
 export async function estimateL1GasPrice(txData: string = "0x00", w3?: Web3) {
   if (process.env.NETWORK_URL && !w3) w3 = new Web3(process.env.NETWORK_URL);
-  w3 = w3 || web3(); 
+  w3 = w3 || web3();
 
-  const ORACLE = "0x420000000000000000000000000000000000000F"
-  
+  const ORACLE = "0x420000000000000000000000000000000000000F";
+
   const c = contract(opOracle as any, ORACLE, undefined, w3);
   return c.methods.getL1Fee(txData).call();
 }
