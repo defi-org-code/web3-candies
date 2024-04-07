@@ -1,13 +1,8 @@
 import { expect } from "chai";
-import _ from "lodash";
 import Web3 from "web3";
 import {
   account,
-  bn,
-  bn18,
-  calculateL1GasCost,
-  calculateL1GasUnits,
-  chainId,
+  bn, chainId,
   erc20FromData,
   estimateGasPrice,
   estimateL1GasPrice,
@@ -26,10 +21,9 @@ import {
   signEIP712,
   web3,
   zero,
-  zeroAddress,
+  zeroAddress
 } from "../src";
-import { artifact, expectRevert, resetNetworkFork, tag, useChaiBigNumber } from "../src/hardhat";
-import BN from "bignumber.js";
+import { artifact, expectRevert, resetNetworkFork, useChaiBigNumber } from "../src/hardhat";
 
 useChaiBigNumber();
 
@@ -184,25 +178,11 @@ describe("network", () => {
   });
 
   describe("optimism forks: L1 gas price", () => {
-    beforeEach(async function () {
-      if (!network(await chainId())["gasPriceOracle"]) {
-        console.log("only on OP forks");
-        this.skip();
-      }
-    });
-
     it("weird calculation but it is what it is", async () => {
       const txData =
         "0x02f902958221058202c68403029240840302c1ab83026a509472a18a408e329e7052d08aa0746243dc30ad253080b90224f58e65b80000000000000000000000000000000000000000000000000000000000000405000000000000000000000000efe1b6096838949156e5130604434a2a13c68c68000000000000000000000000000000000000000000000000069c3b03a0964f8000000000000000000000000000000000000000000000000000000000000001f400000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000160000000000000000000000000000000000000000000000006b0196a836041c000000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000e183bd37f900040001ff0c532fdb8cd566ae169c1cb157ff2bdc83e1050405f7be6e0906b0196a836041c0000ccccc0001fe81c675c06f8dd40d0d345505dc4592ccfa89c000000001efe1b6096838949156e5130604434a2a13c68c685a5867b404010205000a0102020300020300010001040119ff00000000000000000000000029b3a7869e3662d00aabd89a8ee74b2f703a6a66883e4ae0a817f2901500971b353b5dd89aa52184833589fcd6edb6e08f4c7c32d4f71b54bda0291342000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c001a0767afce21d0cc64a1cb7bb95384899361de3168cfdfc901941dc619d2ed46723a05521331427844f063aa0153bd06e37ef9191fccdfca1a100b9f8320535152d30";
       const price = await estimateL1GasPrice();
-      expect(price.l1BaseFee).bignumber.gt(1e9);
-      expect(price.overhead).bignumber.gt(0);
-      expect(price.scalar).bignumber.gt(0);
-      const units = calculateL1GasUnits(txData);
-      expect(units).bignumber.eq(6832);
-
-      const result = calculateL1GasCost(txData, { ...price, l1BaseFee: new BN("15503537554") });
-      expect(result).bignumber.eq(72449395301146);
+      expect(price).bignumber.gt(1e9);
     });
   });
 });

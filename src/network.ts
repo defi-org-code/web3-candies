@@ -32,9 +32,7 @@ export const networks = {
     publicRpcUrl: "https://eth.llamarpc.com",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg",
     explorer: "https://etherscan.io",
-    baseGasPrice: 0,
     eip1559: true,
-    pendingBlocks: true,
   },
   bsc: {
     id: 56,
@@ -45,9 +43,7 @@ export const networks = {
     publicRpcUrl: "https://bsc-dataseed.binance.org",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/bsc_2.svg",
     explorer: "https://bscscan.com",
-    baseGasPrice: 3 * 1e9,
     eip1559: false,
-    pendingBlocks: true,
   },
   poly: {
     id: 137,
@@ -58,9 +54,7 @@ export const networks = {
     publicRpcUrl: "https://polygon-rpc.com",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/polygon.svg",
     explorer: "https://polygonscan.com",
-    baseGasPrice: 0,
     eip1559: true,
-    pendingBlocks: true,
   },
   arb: {
     id: 42161,
@@ -71,9 +65,7 @@ export const networks = {
     publicRpcUrl: "https://arb1.arbitrum.io/rpc",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/arbitrum.svg",
     explorer: "https://arbiscan.io",
-    baseGasPrice: 0.1 * 1e9,
     eip1559: true,
-    pendingBlocks: true,
   },
   avax: {
     id: 43114,
@@ -84,9 +76,7 @@ export const networks = {
     publicRpcUrl: "https://api.avax.network/ext/bc/C/rpc",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/avalanche.svg",
     explorer: "https://snowtrace.io",
-    baseGasPrice: 0,
     eip1559: true,
-    pendingBlocks: true,
   },
   oeth: {
     id: 10,
@@ -97,9 +87,7 @@ export const networks = {
     publicRpcUrl: "https://mainnet.optimism.io",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/optimism.svg",
     explorer: "https://optimistic.etherscan.io",
-    baseGasPrice: 0,
     eip1559: true,
-    pendingBlocks: true,
   },
   ftm: {
     id: 250,
@@ -110,9 +98,7 @@ export const networks = {
     publicRpcUrl: "https://rpc.ftm.tools",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/fantom.svg",
     explorer: "https://ftmscan.com",
-    baseGasPrice: 0,
     eip1559: true,
-    pendingBlocks: true,
   },
   glmr: {
     id: 1284,
@@ -123,9 +109,7 @@ export const networks = {
     publicRpcUrl: "https://rpc.api.moonbeam.network",
     logoUrl: "https://moonscan.io/images/svg/brands/mainbrand-1.svg",
     explorer: "https://moonscan.io",
-    baseGasPrice: 0,
     eip1559: true,
-    pendingBlocks: false,
   },
   base: {
     id: 8453,
@@ -136,10 +120,7 @@ export const networks = {
     publicRpcUrl: "https://mainnet.base.org",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/base.svg",
     explorer: "https://basescan.org",
-    baseGasPrice: 0,
     eip1559: false,
-    pendingBlocks: true,
-    gasPriceOracle: "0x420000000000000000000000000000000000000F",
   },
   linea: {
     id: 59144,
@@ -150,9 +131,7 @@ export const networks = {
     publicRpcUrl: "https://rpc.linea.build",
     logoUrl: "https://lineascan.build/images/logo.svg",
     explorer: "https://lineascan.build",
-    baseGasPrice: 0,
     eip1559: false,
-    pendingBlocks: true,
   },
   zksync: {
     id: 324,
@@ -163,9 +142,7 @@ export const networks = {
     publicRpcUrl: "https://mainnet.era.zksync.io",
     logoUrl: "https://raw.githubusercontent.com/matter-labs/zksync/0a4ca2145a0c95b5bafa84c2f095c644907a8825/zkSyncLogo.svg",
     explorer: "https://explorer.zksync.io/",
-    baseGasPrice: 0,
     eip1559: true,
-    pendingBlocks: false,
   },
   zkevm: {
     id: 1101,
@@ -176,9 +153,7 @@ export const networks = {
     publicRpcUrl: "https://zkevm-rpc.com",
     logoUrl: "https://user-images.githubusercontent.com/18598517/235932702-bc47eae5-d672-4dd9-9da2-8ea8f51a93f3.png",
     explorer: "https://zkevm.polygonscan.com/",
-    baseGasPrice: 0,
     eip1559: true,
-    pendingBlocks: true,
   },
   manta: {
     id: 169,
@@ -189,9 +164,7 @@ export const networks = {
     publicRpcUrl: "https://pacific-rpc.manta.network/http",
     logoUrl: "https://icons.llamao.fi/icons/chains/rsz_manta.jpg",
     explorer: "https://manta.socialscan.io/",
-    baseGasPrice: 0,
     eip1559: true,
-    pendingBlocks: true,
   },
   blast: {
     id: 81457,
@@ -202,9 +175,7 @@ export const networks = {
     publicRpcUrl: "https://rpc.ankr.com/blast",
     logoUrl: "https://icons.llamao.fi/icons/chains/rsz_blast",
     explorer: "https://blastscan.io/",
-    baseGasPrice: 0,
     eip1559: true,
-    pendingBlocks: true,
   },
 };
 
@@ -348,13 +319,12 @@ export async function estimateGasPrice(
   return await keepTrying(
     async () => {
       const chain = network(await chainId(w3));
-      const pending = chain.pendingBlocks ? "pending" : "latest";
-      const [pendingBlock, history] = await Promise.all([
-        w3!.eth.getBlock(pending),
-        !!w3!.eth.getFeeHistory ? w3!.eth.getFeeHistory(length, pending, percentiles) : Promise.resolve({ reward: [] }),
+      const [block, history] = await Promise.all([
+        w3!.eth.getBlock("latest"),
+        !!w3!.eth.getFeeHistory ? w3!.eth.getFeeHistory(length, "latest", percentiles) : Promise.resolve({ reward: [] }),
       ]);
 
-      const baseFeePerGas = BN.max(pendingBlock.baseFeePerGas || 0, chain.baseGasPrice, 0);
+      const baseFeePerGas = BN(block.baseFeePerGas || 0);
 
       const slow = BN.max(1, median(_.map(history.reward, (r) => BN(r[0], 16))));
       const med = BN.max(1, median(_.map(history.reward, (r) => BN(r[1], 16))));
@@ -365,8 +335,8 @@ export async function estimateGasPrice(
         med: { max: baseFeePerGas.times(1.1).plus(med).integerValue(), tip: med.integerValue() },
         fast: { max: baseFeePerGas.times(1.25).plus(fast).integerValue(), tip: fast.integerValue() },
         baseFeePerGas,
-        pendingBlockNumber: pendingBlock.number,
-        pendingBlockTimestamp: BN(pendingBlock.timestamp).toNumber(),
+        pendingBlockNumber: block.number,
+        pendingBlockTimestamp: BN(block.timestamp).toNumber(),
       };
     },
     3,
@@ -375,18 +345,11 @@ export async function estimateGasPrice(
 }
 
 /**
- * l1_data_fee = l1_gas_price * (tx_data_gas + fixed_overhead + noncalldata_gas) * dynamic_overhead
- */
-export function calculateL1GasCost(txData: string, l1GasPrice: { l1BaseFee: BN; overhead: BN; scalar: BN }): BN {
-  return l1GasPrice.l1BaseFee.multipliedBy(calculateL1GasUnits(txData, l1GasPrice.overhead)).multipliedBy(l1GasPrice.scalar).integerValue(BN.ROUND_FLOOR);
-}
-
-/**
  * @param txData: Unsigned fully RLP-encoded transaction to get the L1 gas for
  *  https://community.optimism.io/docs/developers/build/transaction-fees/#priority-fee
  *  tx_data_gas = count_zero_bytes(tx_data) * 4 + count_non_zero_bytes(tx_data) * 16
  */
-export function calculateL1GasUnits(txData: string, overhead: BN = BN(188)): BN {
+export function calculateL1GasUnits(txData: string): BN {
   let zeroCount = 0;
   let nonZeroCount = 0;
   const bytes = Web3.utils.hexToBytes(txData);
@@ -395,23 +358,17 @@ export function calculateL1GasUnits(txData: string, overhead: BN = BN(188)): BN 
     !b ? zeroCount++ : nonZeroCount++;
   }
 
-  return new BN(zeroCount * 4 + nonZeroCount * 16).plus(overhead);
+  return new BN(zeroCount * 4 + nonZeroCount * 16);
 }
 
-export async function estimateL1GasPrice(w3?: Web3) {
+export async function estimateL1GasPrice(txData: string = "0x00", w3?: Web3) {
   if (process.env.NETWORK_URL && !w3) w3 = new Web3(process.env.NETWORK_URL);
-  w3 = w3 || web3();
+  w3 = w3 || web3(); 
 
-  const chain = network(await chainId(w3));
-
-  if (!("gasPriceOracle" in chain)) throw new Error("invalid chain");
-  const c = contract(opOracle as Abi, chain.gasPriceOracle, undefined, w3);
-  const [l1BaseFee, overhead, scalar] = await Promise.all([c.methods.l1BaseFee().call().then(BN), c.methods.overhead().call().then(BN), c.methods.scalar().call().then(BN)]);
-  return {
-    l1BaseFee,
-    overhead,
-    scalar: scalar.div(1e6),
-  };
+  const ORACLE = "0x420000000000000000000000000000000000000F"
+  
+  const c = contract(opOracle as any, ORACLE, undefined, w3);
+  return c.methods.getL1Fee(txData).call();
 }
 
 export async function getPastEvents(params: {
