@@ -432,13 +432,13 @@ export async function signEIP712(signer: string, data: PermitData) {
       debug("🔐🔐 eth_signTypedData", signer, e?.message);
       return await signAsync("eth_signTypedData", signer, typedDataMessage);
     } catch (e: any) {
-      debug("🔐 eth_sign", signer, e?.message);
-      return await signAsync("eth_sign", signer, _TypedDataEncoder.hash(populated.domain, data.types, populated.value));
+
+      throw e;
     }
   }
 }
 
-export async function signAsync(method: "eth_signTypedData_v4" | "eth_signTypedData" | "eth_sign", signer: string, payload: string | PermitData) {
+export async function signAsync(method: "eth_signTypedData_v4" | "eth_signTypedData", signer: string, payload: string | PermitData) {
   const provider: any = (web3().currentProvider as any).send ? web3().currentProvider : (web3() as any)._provider;
   return await new Promise<string>((resolve, reject) => {
     provider.send(
