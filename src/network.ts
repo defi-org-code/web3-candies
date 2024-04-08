@@ -432,7 +432,6 @@ export async function signEIP712(signer: string, data: PermitData) {
       debug("🔐🔐 eth_signTypedData", signer, e?.message);
       return await signAsync("eth_signTypedData", signer, typedDataMessage);
     } catch (e: any) {
-
       throw e;
     }
   }
