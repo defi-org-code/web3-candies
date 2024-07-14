@@ -10,7 +10,7 @@ import type { EventData } from "web3-eth-contract";
 import type { IPermit2 } from "./abi/IPermit2";
 import opOracle from "./abi/opOracle.json";
 import permit2Abi from "./abi/IPermit2.json";
-import { Abi, BlockInfo, BlockNumber, contract, Contract } from "./contracts";
+import { BlockInfo, BlockNumber, contract, Contract } from "./contracts";
 import { erc20sData, TokenData, tryTag } from "./erc20";
 import { keepTrying, timeout } from "./timing";
 import { eqIgnoreCase, median, zeroAddress } from "./utils";
@@ -27,156 +27,226 @@ export const networks = {
     id: 1,
     name: "Ethereum",
     shortname: "eth",
-    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg" },
+    native: {
+      address: zeroAddress,
+      symbol: "ETH",
+      decimals: 18,
+      logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg"
+    },
     wToken: erc20sData.eth.WETH,
     publicRpcUrl: "https://eth.llamarpc.com",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg",
     explorer: "https://etherscan.io",
-    eip1559: true,
+    eip1559: true
   },
   bsc: {
     id: 56,
     name: "BinanceSmartChain",
     shortname: "bsc",
-    native: { address: zeroAddress, symbol: "BNB", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/bsc_2.svg" },
+    native: {
+      address: zeroAddress,
+      symbol: "BNB",
+      decimals: 18,
+      logoUrl: "https://app.1inch.io/assets/images/network-logos/bsc_2.svg"
+    },
     wToken: erc20sData.bsc.WBNB,
     publicRpcUrl: "https://bsc-dataseed.binance.org",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/bsc_2.svg",
     explorer: "https://bscscan.com",
-    eip1559: false,
+    eip1559: false
   },
   poly: {
     id: 137,
     name: "Polygon",
     shortname: "poly",
-    native: { address: zeroAddress, symbol: "MATIC", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/polygon.svg" },
+    native: {
+      address: zeroAddress,
+      symbol: "MATIC",
+      decimals: 18,
+      logoUrl: "https://app.1inch.io/assets/images/network-logos/polygon.svg"
+    },
     wToken: erc20sData.poly.WMATIC,
     publicRpcUrl: "https://polygon-rpc.com",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/polygon.svg",
     explorer: "https://polygonscan.com",
-    eip1559: true,
+    eip1559: true
   },
   arb: {
     id: 42161,
     name: "Arbitrum",
     shortname: "arb",
-    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg" },
+    native: {
+      address: zeroAddress,
+      symbol: "ETH",
+      decimals: 18,
+      logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg"
+    },
     wToken: erc20sData.arb.WETH,
     publicRpcUrl: "https://arb1.arbitrum.io/rpc",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/arbitrum.svg",
     explorer: "https://arbiscan.io",
-    eip1559: true,
+    eip1559: true
   },
   avax: {
     id: 43114,
     name: "Avalanche",
     shortname: "avax",
-    native: { address: zeroAddress, symbol: "AVAX", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/avalanche.svg" },
+    native: {
+      address: zeroAddress,
+      symbol: "AVAX",
+      decimals: 18,
+      logoUrl: "https://app.1inch.io/assets/images/network-logos/avalanche.svg"
+    },
     wToken: erc20sData.avax.WAVAX,
     publicRpcUrl: "https://api.avax.network/ext/bc/C/rpc",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/avalanche.svg",
     explorer: "https://snowtrace.io",
-    eip1559: true,
+    eip1559: true
   },
   oeth: {
     id: 10,
     name: "Optimism",
     shortname: "oeth",
-    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg" },
+    native: {
+      address: zeroAddress,
+      symbol: "ETH",
+      decimals: 18,
+      logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg"
+    },
     wToken: erc20sData.oeth.WETH,
     publicRpcUrl: "https://mainnet.optimism.io",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/optimism.svg",
     explorer: "https://optimistic.etherscan.io",
-    eip1559: true,
+    eip1559: true
   },
   ftm: {
     id: 250,
     name: "Fantom",
     shortname: "ftm",
-    native: { address: zeroAddress, symbol: "FTM", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/fantom.svg" },
+    native: {
+      address: zeroAddress,
+      symbol: "FTM",
+      decimals: 18,
+      logoUrl: "https://app.1inch.io/assets/images/network-logos/fantom.svg"
+    },
     wToken: erc20sData.ftm.WFTM,
     publicRpcUrl: "https://rpc.ftm.tools",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/fantom.svg",
     explorer: "https://ftmscan.com",
-    eip1559: true,
+    eip1559: true
   },
   glmr: {
     id: 1284,
     name: "Moonbeam",
     shortname: "glmr",
-    native: { address: zeroAddress, symbol: "GLMR", decimals: 18, logoUrl: "https://moonscan.io/images/svg/brands/mainbrand-1.svg" },
+    native: {
+      address: zeroAddress,
+      symbol: "GLMR",
+      decimals: 18,
+      logoUrl: "https://moonscan.io/images/svg/brands/mainbrand-1.svg"
+    },
     wToken: erc20sData.glmr.WGLMR,
     publicRpcUrl: "https://rpc.api.moonbeam.network",
     logoUrl: "https://moonscan.io/images/svg/brands/mainbrand-1.svg",
     explorer: "https://moonscan.io",
-    eip1559: true,
+    eip1559: true
   },
   base: {
     id: 8453,
     name: "Base",
     shortname: "base",
-    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg" },
+    native: {
+      address: zeroAddress,
+      symbol: "ETH",
+      decimals: 18,
+      logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg"
+    },
     wToken: erc20sData.base.WETH,
     publicRpcUrl: "https://mainnet.base.org",
     logoUrl: "https://app.1inch.io/assets/images/network-logos/base.svg",
     explorer: "https://basescan.org",
-    eip1559: false,
+    eip1559: false
   },
   linea: {
     id: 59144,
     name: "Linea",
     shortname: "linea",
-    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg" },
+    native: {
+      address: zeroAddress,
+      symbol: "ETH",
+      decimals: 18,
+      logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg"
+    },
     wToken: erc20sData.linea.WETH,
     publicRpcUrl: "https://rpc.linea.build",
     logoUrl: "https://lineascan.build/images/logo.svg",
     explorer: "https://lineascan.build",
-    eip1559: false,
+    eip1559: false
   },
   zksync: {
     id: 324,
     name: "zksync",
     shortname: "zksync",
-    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg" },
+    native: {
+      address: zeroAddress,
+      symbol: "ETH",
+      decimals: 18,
+      logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg"
+    },
     wToken: erc20sData.zksync.WETH,
     publicRpcUrl: "https://mainnet.era.zksync.io",
     logoUrl: "https://raw.githubusercontent.com/matter-labs/zksync/0a4ca2145a0c95b5bafa84c2f095c644907a8825/zkSyncLogo.svg",
     explorer: "https://explorer.zksync.io/",
-    eip1559: true,
+    eip1559: true
   },
   zkevm: {
     id: 1101,
     name: "zkevm",
     shortname: "zkevm",
-    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg" },
+    native: {
+      address: zeroAddress,
+      symbol: "ETH",
+      decimals: 18,
+      logoUrl: "https://app.1inch.io/assets/images/network-logos/ethereum.svg"
+    },
     wToken: erc20sData.zkevm.WETH,
     publicRpcUrl: "https://zkevm-rpc.com",
     logoUrl: "https://user-images.githubusercontent.com/18598517/235932702-bc47eae5-d672-4dd9-9da2-8ea8f51a93f3.png",
     explorer: "https://zkevm.polygonscan.com/",
-    eip1559: true,
+    eip1559: true
   },
   manta: {
     id: 169,
     name: "manta",
     shortname: "manta",
-    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://icons.llamao.fi/icons/chains/rsz_manta.jpg" },
+    native: {
+      address: zeroAddress,
+      symbol: "ETH",
+      decimals: 18,
+      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_manta.jpg"
+    },
     wToken: erc20sData.manta.WETH,
     publicRpcUrl: "https://pacific-rpc.manta.network/http",
     logoUrl: "https://icons.llamao.fi/icons/chains/rsz_manta.jpg",
     explorer: "https://manta.socialscan.io/",
-    eip1559: true,
+    eip1559: true
   },
   blast: {
     id: 81457,
     name: "blast",
     shortname: "blast",
-    native: { address: zeroAddress, symbol: "ETH", decimals: 18, logoUrl: "https://icons.llamao.fi/icons/chains/rsz_blast" },
+    native: {
+      address: zeroAddress,
+      symbol: "ETH",
+      decimals: 18,
+      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_blast"
+    },
     wToken: erc20sData.blast.WETH,
     publicRpcUrl: "https://rpc.ankr.com/blast",
     logoUrl: "https://icons.llamao.fi/icons/chains/rsz_blast",
     explorer: "https://blastscan.io/",
-    eip1559: true,
-  },
+    eip1559: true
+  }
 };
 
 /**
@@ -274,7 +344,7 @@ export async function switchMetaMaskNetwork(chainId: number) {
   try {
     await provider.request({
       method: "wallet_switchEthereumChain",
-      params: [{ chainId: Web3.utils.toHex(chainId) }],
+      params: [{ chainId: Web3.utils.toHex(chainId) }]
     });
   } catch (error: any) {
     // if unknown chain, add chain
@@ -289,9 +359,9 @@ export async function switchMetaMaskNetwork(chainId: number) {
             nativeCurrency: info.native,
             rpcUrls: [info.publicRpcUrl],
             blockExplorerUrls: [info.explorer],
-            iconUrls: [info.logoUrl],
-          },
-        ],
+            iconUrls: [info.logoUrl]
+          }
+        ]
       });
     } else throw error;
   }
@@ -304,40 +374,68 @@ export async function estimateGasPrice(
   percentiles: number[] = [10, 50, 90],
   length: number = 5,
   w3?: Web3,
-  timeoutMillis: number = 1000
+  timeoutMillis: number = 1000,
+  supportEIP1559: boolean = true
 ): Promise<{
   slow: { max: BN; tip: BN };
   med: { max: BN; tip: BN };
   fast: { max: BN; tip: BN };
   baseFeePerGas: BN;
-  pendingBlockNumber: number;
-  pendingBlockTimestamp: number;
+  blockNumber: number;
+  blockTimestamp: number;
 }> {
   if (process.env.NETWORK_URL && !w3) w3 = new Web3(process.env.NETWORK_URL);
   w3 = w3 || web3();
 
   return await keepTrying(
     async () => {
-      const chain = network(await chainId(w3));
-      const [block, history] = await Promise.all([
-        w3!.eth.getBlock("latest"),
-        !!w3!.eth.getFeeHistory ? w3!.eth.getFeeHistory(length, "latest", percentiles) : Promise.resolve({ reward: [] }),
-      ]);
 
-      const baseFeePerGas = BN(block.baseFeePerGas || 0);
+      if (supportEIP1559) {
 
-      const slow = BN.max(1, median(_.map(history.reward, (r) => BN(r[0], 16))));
-      const med = BN.max(1, median(_.map(history.reward, (r) => BN(r[1], 16))));
-      const fast = BN.max(1, median(_.map(history.reward, (r) => BN(r[2], 16))));
+        const [block, history] = await Promise.all([
+          w3!.eth.getBlock("latest"),
+          !!w3!.eth.getFeeHistory ? w3!.eth.getFeeHistory(length, "latest", percentiles) : Promise.resolve({ reward: [] })
+        ]);
 
-      return {
-        slow: { max: baseFeePerGas.times(1).plus(slow).integerValue(), tip: slow.integerValue() },
-        med: { max: baseFeePerGas.times(1.1).plus(med).integerValue(), tip: med.integerValue() },
-        fast: { max: baseFeePerGas.times(1.25).plus(fast).integerValue(), tip: fast.integerValue() },
-        baseFeePerGas,
-        pendingBlockNumber: block.number,
-        pendingBlockTimestamp: BN(block.timestamp).toNumber(),
-      };
+        const baseFeePerGas = BN(block.baseFeePerGas || 0);
+
+        const slow = BN.max(1, median(_.map(history.reward, (r) => BN(r[0], 16))));
+        const med = BN.max(1, median(_.map(history.reward, (r) => BN(r[1], 16))));
+        const fast = BN.max(1, median(_.map(history.reward, (r) => BN(r[2], 16))));
+
+        return {
+          slow: { max: baseFeePerGas.times(1).plus(slow).integerValue(), tip: slow.integerValue() },
+          med: { max: baseFeePerGas.times(1.1).plus(med).integerValue(), tip: med.integerValue() },
+          fast: { max: baseFeePerGas.times(1.25).plus(fast).integerValue(), tip: fast.integerValue() },
+          baseFeePerGas,
+          blockNumber: block.number,
+          blockTimestamp: BN(block.timestamp).toNumber()
+        };
+
+      } else {
+
+        const [block, price] = await Promise.all([
+          w3!.eth.getBlock("latest"),
+          w3!.eth.getGasPrice()
+        ]);
+
+        const priceBN = new BN(price);
+
+        let slow = priceBN.times(1).integerValue();
+        let med = priceBN.times(1.1).integerValue();
+        let fast = priceBN.times(1.25).integerValue();
+
+        return {
+          slow: { max: slow, tip: slow },
+          med: { max: med, tip: med },
+          fast: { max: fast, tip: fast },
+          baseFeePerGas: priceBN,
+          blockNumber: block.number,
+          blockTimestamp: BN(block.timestamp).toNumber()
+        };
+
+      }
+
     },
     3,
     timeoutMillis
@@ -396,7 +494,7 @@ export async function getPastEvents(params: {
     params.contract.getPastEvents((params.eventName === "all" ? undefined : params.eventName) as any, {
       filter: params.filter,
       fromBlock: params.fromBlock,
-      toBlock: params.toBlock,
+      toBlock: params.toBlock
     });
 
   if (!params.maxDistanceBlocks || distance <= params.maxDistanceBlocks) {
@@ -445,7 +543,7 @@ export async function signAsync(method: "eth_signTypedData_v4" | "eth_signTypedD
         id: 1,
         method,
         params: [signer, typeof payload === "string" ? payload : JSON.stringify(payload)],
-        from: signer,
+        from: signer
       },
       (e: any, r: any) => {
         if (e || !r?.result) return reject(e);
