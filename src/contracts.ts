@@ -121,7 +121,7 @@ export async function sendAndWaitForConfirmations<T extends Contract | Receipt =
   }
 
   if (!receipt) {
-    return undefined;
+    throw new Error("Transaction failed");
   }
 
   if (confirmations > 1) {
