@@ -6,7 +6,7 @@ import type { BlockTransactionString } from "web3-eth";
 import type { NonPayableTransactionObject, PayableTransactionObject } from "./abi/types";
 import BN from "bignumber.js";
 import { bn } from "./utils";
-import _ from "lodash";
+import _, { result } from "lodash";
 import { chainId, estimateGasPrice, network, networks, web3 } from "./network";
 import Web3 from "web3";
 
@@ -101,19 +101,21 @@ export async function sendAndWaitForConfirmations<T extends Contract | Receipt =
   const promiEvent = tx ? tx.send(options) : web3().eth.sendTransaction(options);
 
   let sentBlock = Number.POSITIVE_INFINITY;
+  let result: any;
 
   promiEvent.once("transactionHash", (r) => {
     callback?.onTxHash?.(r);
   });
   promiEvent.once("receipt", (r) => {
     sentBlock = r.blockNumber;
+    result = r;
     callback?.onTxReceipt?.(r);
   });
 
   debug(`waiting for ${confirmations} confirmations...`);
-  const result = await promiEvent;
+  // const result = await promiEvent;
 
-  while ((await web3().eth.getTransactionCount(opts.from)) === nonce || (await web3().eth.getBlockNumber()) < sentBlock + confirmations) {
+  while (!result || (await web3().eth.getTransactionCount(opts.from)) === nonce || (await web3().eth.getBlockNumber()) < sentBlock + confirmations) {
     await new Promise((r) => setTimeout(r, 1000));
   }
 
