@@ -101,7 +101,7 @@ export async function sendAndWaitForConfirmations<T extends Contract | Receipt =
   const promiEvent = tx ? tx.send(options) : web3().eth.sendTransaction(options);
 
   let sentBlock = Number.POSITIVE_INFINITY;
-  let receipt;
+  let receipt: any;
   let txHash = "";
 
   promiEvent.once("transactionHash", (r) => {
