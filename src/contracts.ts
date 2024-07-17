@@ -125,7 +125,7 @@ export async function sendAndWaitForConfirmations<T extends Contract | Receipt =
   }
 
   if (confirmations > 1) {
-    while ((await web3().eth.getTransactionCount(opts.from)) === nonce || (await web3().eth.getBlockNumber()) < sentBlock + confirmations) {
+    while ((await web3().eth.getTransactionCount(opts.from)) === nonce || (await web3().eth.getBlockNumber()) < (receipt as any).blockNumber + confirmations) {
       await new Promise((r) => setTimeout(r, 1000));
     }
   }
