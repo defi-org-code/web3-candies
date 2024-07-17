@@ -101,23 +101,51 @@ export async function sendAndWaitForConfirmations<T extends Contract | Receipt =
   const promiEvent = tx ? tx.send(options) : web3().eth.sendTransaction(options);
 
   let sentBlock = Number.POSITIVE_INFINITY;
-  let result: any;
+  let receipt;
+  let txHash = "";
 
   promiEvent.once("transactionHash", (r) => {
+    txHash = r;
     callback?.onTxHash?.(r);
   });
-  promiEvent.once("receipt", (r) => {
-    sentBlock = r.blockNumber;
-    result = r;
-    callback?.onTxReceipt?.(r);
-  });
-
-  debug(`waiting for ${confirmations} confirmations...`);
-  // const result = await promiEvent;
-
-  while (!result || (await web3().eth.getTransactionCount(opts.from)) === nonce || (await web3().eth.getBlockNumber()) < sentBlock + confirmations) {
-    await new Promise((r) => setTimeout(r, 1000));
+  try {
+    receipt = await promiEvent;
+  } catch (error) {
+    if (!(error as Error).message.toLowerCase().includes("failed to check for transaction receipt")) {
+      throw error;
+    }
   }
 
-  return result as T;
+  if (!receipt) {
+    receipt = await waitForReceipt(txHash);
+  }
+
+  if (!receipt) {
+    return undefined;
+  }
+
+  if (confirmations > 1) {
+    while ((await web3().eth.getTransactionCount(opts.from)) === nonce || (await web3().eth.getBlockNumber()) < sentBlock + confirmations) {
+      await new Promise((r) => setTimeout(r, 1000));
+    }
+  }
+
+  return receipt;
+}
+
+export function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+async function waitForReceipt(txHash: string) {
+  for (let i = 0; i < 30; ++i) {
+    await delay(3_000);
+    try {
+      const receipt = await web3().eth.getTransactionReceipt(txHash);
+      if (receipt) {
+        return receipt;
+      }
+    } catch (error: any) {
+      console.error("waitForReceipt error", error);
+    }
+  }
 }
