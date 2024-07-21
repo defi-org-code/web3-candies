@@ -13,7 +13,6 @@
   },
   "homepage": "https://github.com/defi-org-code/web3-candies#readme",
   "main": "dist/index.js",
-  "type": "module",
   "files": [
     "dist"
   ],

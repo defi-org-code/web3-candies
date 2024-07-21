@@ -127,7 +127,7 @@ export function delay(ms: number) {
 }
 async function waitForReceipt(txHash: string) {
   for (let i = 0; i < 30; ++i) {
-    await delay(3_000);
+    await delay(1000);
     try {
       const receipt = await web3().eth.getTransactionReceipt(txHash);
       if (receipt) {
