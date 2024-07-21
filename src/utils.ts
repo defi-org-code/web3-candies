@@ -77,19 +77,6 @@ export function eqIgnoreCase(a: string, b: string) {
   return a == b || a.toLowerCase() == b.toLowerCase();
 }
 
-export async function fetchWithTimeout(url: string, options: any = {}) {
-  const { timeout = 3000 } = options;
-
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeout);
-  const response = await fetch(url, {
-    ...options,
-    signal: controller.signal,
-  });
-  clearTimeout(id);
-  return response;
-}
-
 export function median(arr: BN.Value[]): BN {
   if (!arr.length) return zero;
 

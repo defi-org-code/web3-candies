@@ -1,47 +1,39 @@
-import type { BaseContract, BlockType } from "@typechain/web3-v1/static/types";
-import type { Contract as ContractOrig, ContractOptions, ContractSendMethod } from "web3-eth-contract";
+import type { ContractOptions, ContractSendMethod } from "web3-eth-contract";
 import type { EventLog, TransactionReceipt } from "web3-core";
 import type { AbiItem } from "web3-utils";
 import type { BlockTransactionString } from "web3-eth";
-import type { NonPayableTransactionObject, PayableTransactionObject } from "./abi/types";
 import BN from "bignumber.js";
 import { bn } from "./utils";
-import _, { result } from "lodash";
 import { chainId, estimateGasPrice, network, networks, web3 } from "./network";
 import Web3 from "web3";
 
-const debug = require("debug")("web3-candies");
-
-export type Contract = ContractOrig | BaseContract;
+export type Contract = any;
 export type Options = { from: string; maxPriorityFeePerGas?: BN.Value; maxFeePerGas?: BN.Value; value?: BN.Value };
-export type BlockNumber = BlockType;
+export type BlockNumber = any;
 export type BlockInfo = BlockTransactionString & { timestamp: number };
 export type Receipt = TransactionReceipt;
 export type Abi = AbiItem[];
 
 export function contract<T extends Contract>(abi: Abi, address: string, options?: ContractOptions, w3?: Web3): T {
   const c = new (w3 ?? web3()).eth.Contract(abi, address, options) as T;
-
-  c.handleRevert = false;
+  (c as any).handleRevert = false;
   return c;
 }
 
-export function parseEvents(receipt: Receipt, contractOrAbi: Contract | Abi): EventLog[] {
-  const abi = _.get(contractOrAbi, ["options", "jsonInterface"], contractOrAbi) as Abi;
+export function parseEvents(receipt: any, contractOrAbi: any): EventLog[] {
+  const abi = contractOrAbi?.options?.jsonInterface || contractOrAbi;
   const abiCoder = web3().eth.abi;
-  const abiEvents = _(abi)
-    .filter((desc) => desc.type === "event")
-    .map((desc) => ({
+  const abiEvents = abi.filter((desc :any) => desc.type === "event").map(
+    (desc: any) => ({
       name: desc.name || "",
       inputs: desc.inputs || [],
       signature: abiCoder.encodeEventSignature(desc),
-    }))
-    .value();
-
+    })
+  );
   const result: EventLog[] = [];
 
-  _.forEach(receipt.events, (e) => {
-    const abiEvent = abiEvents.find((desc) => desc.signature === e.raw?.topics[0]);
+  receipt?.events?.forEach((e:any) => {
+    const abiEvent = abiEvents.find((desc:any) => desc.signature === e.raw?.topics[0]);
     if (abiEvent)
       result.push({
         ...e,
@@ -49,8 +41,8 @@ export function parseEvents(receipt: Receipt, contractOrAbi: Contract | Abi): Ev
         returnValues: abiCoder.decodeLog(abiEvent.inputs, e.raw?.data || "", e.raw?.topics.slice(1) || []),
       });
   });
-  _.forEach(receipt.logs, (log) => {
-    const abiEvent = abiEvents.find((desc) => desc.signature === log.topics[0]);
+  receipt?.logs?.forEach((log:any) => {
+    const abiEvent = abiEvents.find((desc:any) => desc.signature === log.topics[0]);
     if (abiEvent)
       result.push({
         event: abiEvent.name,
@@ -61,7 +53,7 @@ export function parseEvents(receipt: Receipt, contractOrAbi: Contract | Abi): Ev
   return result;
 }
 export async function sendAndWaitForConfirmations<T extends Contract | Receipt = Receipt>(
-  tx: NonPayableTransactionObject<any> | PayableTransactionObject<any> | ContractSendMethod | null,
+  tx: any,
   opts: Options & { to?: string },
   confirmations: number = 0,
   autoGas?: "fast" | "med" | "slow",
@@ -92,19 +84,16 @@ export async function sendAndWaitForConfirmations<T extends Contract | Receipt =
     delete options.maxPriorityFeePerGas;
   }
 
-  debug(`estimating gas...`);
   const estimated = await (tx?.estimateGas({ ...options }) || web3().eth.estimateGas({ ...options }));
-  debug(`estimated gas: ${estimated} +20% buffer`);
   options.gas = Math.floor(estimated * 1.2);
 
-  debug(`sending tx...`, JSON.stringify(options));
   const promiEvent = tx ? tx.send(options) : web3().eth.sendTransaction(options);
 
   let sentBlock = Number.POSITIVE_INFINITY;
   let receipt: any;
   let txHash = "";
 
-  promiEvent.once("transactionHash", (r) => {
+  promiEvent.once("transactionHash", (r: any) => {
     txHash = r;
     callback?.onTxHash?.(r);
   });

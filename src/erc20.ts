@@ -1,7 +1,5 @@
 import BN from "bignumber.js";
-import _ from "lodash";
 import Web3 from "web3";
-import type { ERC20, IWETH } from "./abi";
 import { Abi, Contract, contract } from "./contracts";
 import { bne, bnm, convertDecimals, parsebn } from "./utils";
 
@@ -9,40 +7,6 @@ export const erc20abi = require("./abi/ERC20.json") as Abi;
 export const iwethabi = require("./abi/IWETH.json") as Abi;
 
 export type TokenData = { symbol: string; address: string; decimals: number };
-
-export type Token = ERC20 & {
-  /**
-   * human-readable name / symbol
-   */
-  name: string;
-  /**
-   * alias for token.options.address
-   */
-  address: string;
-  /**
-   * alias for token.options.jsonInterface
-   */
-  abi: Abi;
-  /**
-   * memoized version of methods.decimals
-   */
-  decimals: () => Promise<number>;
-  /**
-   * @param fmt formatted, significant digits, float, human-readable, ie 123.456
-   * @returns amount in wei
-   */
-  amount: (fmt: BN.Value) => Promise<BN>;
-  /**
-   * @param amount in token amount
-   * @returns mantissa with decimals
-   */
-  mantissa: (amount: BN.Value) => Promise<BN>;
-  /**
-   * @param amount in token amount
-   * @returns amount in 18 decimals
-   */
-  to18: (amount: BN.Value) => Promise<BN>;
-};
 
 export const erc20sData = {
   eth: {
@@ -240,9 +204,14 @@ export const erc20sData = {
  *  erc20 instances of common base assets
  *  extend: `const myerc20s = _.merge(erc20s, { eth: ...})`
  */
-export const erc20s: { [network: string]: { [symbol: string]: () => Token & IWETH } } = _.mapValues(erc20sData, (tokens) =>
-  _.mapValues(tokens, (t: TokenData) => () => erc20<IWETH>(t.symbol, t.address, t.decimals, (t as any).weth ? iwethabi : undefined))
-);
+export const erc20s = Object.keys(erc20sData).reduce((result:any, key:string) => {
+  result[key] = Object.keys((erc20sData as any)[key]).reduce((innerResult, innerKey) => {
+    const t = (erc20sData as any)[key][innerKey];
+    (innerResult  as any)[innerKey] = () => erc20<any>(t.symbol, t.address, t.decimals, t.weth ? iwethabi : undefined);
+    return innerResult;
+  }, {});
+  return result;
+}, {});
 
 export function erc20FromData(token: TokenData) {
   return erc20(token.symbol, token.address, token.decimals);
@@ -250,17 +219,16 @@ export function erc20FromData(token: TokenData) {
 
 export function iweth(chainId: number) {
   const wToken = require("./network").network(chainId).wToken;
-  return erc20<IWETH>(wToken.symbol, wToken.address, wToken.decimals, iwethabi);
+  return erc20(wToken.symbol, wToken.address, wToken.decimals, iwethabi);
 }
 
-export function erc20<T>(name: string, address: string, decimals?: number, extendAbi?: Abi, w3?: Web3): Token & T {
+export function erc20<T>(name: string, address: string, decimals?: number, extendAbi?: Abi, w3?: Web3) {
   if (!w3) w3 = require("./network").web3();
 
   const abi = extendAbi ? [...erc20abi, ...extendAbi] : erc20abi;
   address = Web3.utils.toChecksumAddress(address);
-  const result = contract<Token & T>(abi, address, undefined, w3);
+  const result = contract<any>(abi, address, undefined, w3);
   wrapToken(result, name, address, decimals, abi);
-  tryTag(address, name);
   return result;
 }
 
@@ -271,7 +239,7 @@ export async function fetchErc20(address: string): Promise<TokenData> {
 }
 
 export function wrapToken(token: Contract, name: string, address: string, decimals: number = 0, abi: Abi) {
-  const t = token as Token;
+  const t = token;
   t.name = name;
   t.address = address;
   t.abi = abi;
@@ -285,7 +253,7 @@ export function wrapToken(token: Contract, name: string, address: string, decima
           .decimals()
           .call()
           .then(parseInt)
-          .then((d) => {
+          .then((d:any) => {
             decimalsCache.set(address, d);
             return d;
           });
@@ -298,9 +266,3 @@ export function wrapToken(token: Contract, name: string, address: string, decima
 }
 
 const decimalsCache = new Map<string, number>();
-
-export function tryTag(address: string, name: string) {
-  try {
-    if (process.env.NODE) eval("require")("./hardhat").tag(address, name);
-  } catch (ignore) {}
-}

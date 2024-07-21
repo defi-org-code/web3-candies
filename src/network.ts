@@ -1,23 +1,16 @@
 import { _TypedDataEncoder } from "@ethersproject/hash";
 import { recoverPublicKey } from "@ethersproject/signing-key";
 import { computeAddress } from "@ethersproject/transactions";
-import { MaxAllowanceExpiration, MaxAllowanceTransferAmount, PERMIT2_ADDRESS } from "@uniswap/permit2-sdk";
-import { PermitData } from "@uniswap/permit2-sdk/dist/domain";
 import BN from "bignumber.js";
-import _ from "lodash";
 import Web3 from "web3";
-import type { EventData } from "web3-eth-contract";
-import type { IPermit2 } from "./abi/IPermit2";
 import opOracle from "./abi/opOracle.json";
 import permit2Abi from "./abi/IPermit2.json";
 import { BlockInfo, BlockNumber, contract, Contract } from "./contracts";
-import { erc20sData, TokenData, tryTag } from "./erc20";
+import { erc20sData, TokenData } from "./erc20";
 import { keepTrying, timeout } from "./timing";
 import { eqIgnoreCase, median, zeroAddress } from "./utils";
 
 export { joinSignature, splitSignature, zeroPad } from "@ethersproject/bytes";
-
-const debug = require("debug")("web3-candies");
 
 /**
  * to extend: `const mynetworks = _.merge({}, networks, { eth: { foo: 123 }})`
@@ -254,9 +247,6 @@ export const networks = {
  */
 export function web3(): Web3 {
   if (web3Instance) return web3Instance;
-  try {
-    if (process.env.NODE) web3Instance = eval("require")("hardhat").web3;
-  } catch (ignore) {}
   if (!web3Instance) throw new Error(`web3 undefined! call "setWeb3Instance" or install optional HardHat dependency`);
   return web3Instance;
 }
@@ -276,13 +266,10 @@ export function hasWeb3Instance() {
 }
 
 export function network(chainId: number) {
-  return _.find(networks, (n) => n.id === chainId)!;
+  return Object.values(networks).find((n:any) => n.id === chainId)!;
 }
 
 export async function chainId(w3?: Web3) {
-  if (process.env.NETWORK) {
-    return _.find(networks, (n) => n.shortname === process.env.NETWORK?.toLowerCase())!.id;
-  }
   return await (w3 || web3()).eth.getChainId();
 }
 
@@ -308,17 +295,6 @@ export async function findBlock(timestamp: number): Promise<BlockInfo> {
 
   let candidate = await block(currentBlock.number - 10_000);
   const avgBlockDurationSec = Math.max(0.1, (currentBlock.timestamp - candidate.timestamp) / 10_000);
-  debug(
-    "searching for blocknumber at",
-    new Date(timestamp).toString(),
-    "current block",
-    currentBlock.number,
-    "average block duration",
-    avgBlockDurationSec,
-    "seconds",
-    "starting at block",
-    candidate.number
-  );
 
   let closestDistance = Number.POSITIVE_INFINITY;
   while (Math.abs(candidate.timestamp - targetTimestampSecs) >= avgBlockDurationSec) {
@@ -329,11 +305,9 @@ export async function findBlock(timestamp: number): Promise<BlockInfo> {
     closestDistance = Math.abs(estDistanceInBlocks);
     const targeting = candidate.number - estDistanceInBlocks;
     if (targeting < 0) throw new Error("findBlock: target block is before the genesis block");
-    debug({ distanceInSeconds, estDistanceInBlocks, targeting });
     candidate = await block(targeting);
   }
 
-  debug("result", candidate.number, new Date(candidate.timestamp * 1000).toString());
   return candidate;
 }
 
@@ -397,9 +371,9 @@ export async function estimateGasPrice(
 
         const baseFeePerGas = BN(block.baseFeePerGas || 0);
 
-        const slow = BN.max(1, median(_.map(history.reward, (r) => BN(r[0], 16))));
-        const med = BN.max(1, median(_.map(history.reward, (r) => BN(r[1], 16))));
-        const fast = BN.max(1, median(_.map(history.reward, (r) => BN(r[2], 16))));
+        const slow = BN.max(1, median(history.reward.map((r: any) => BN(r[0], 16))));
+        const med = BN.max(1, median(history.reward.map((r:any) => BN(r[1], 16))));
+        const fast = BN.max(1, median(history.reward.map((r:any) => BN(r[2], 16))));
 
         return {
           slow: { max: baseFeePerGas.times(1).plus(slow).integerValue(), tip: slow.integerValue() },
@@ -456,7 +430,7 @@ export async function estimateL1GasPrice(txData: string = "0x00", w3?: Web3) {
 
   const ORACLE = "0x420000000000000000000000000000000000000F";
 
-  const c = contract(opOracle as any, ORACLE, undefined, w3);
+  const c = contract<any>(opOracle as any, ORACLE, undefined, w3);
   return c.methods.getL1Fee(txData).call();
 }
 
@@ -470,7 +444,7 @@ export async function getPastEvents(params: {
   maxDistanceBlocks?: number;
   latestBlock?: number;
   iterationTimeoutMs?: number;
-}): Promise<EventData[]> {
+}): Promise<any[]> {
   params.toBlock = params.toBlock || Number.MAX_VALUE;
   params.maxDistanceBlocks = params.maxDistanceBlocks || Number.MAX_VALUE;
   params.minDistanceBlocks = Math.min(params.minDistanceBlocks || 1000, params.maxDistanceBlocks);
@@ -479,7 +453,6 @@ export async function getPastEvents(params: {
   params.fromBlock = params.fromBlock < 0 ? params.latestBlock! + params.fromBlock : params.fromBlock;
   params.toBlock = Math.min(params.latestBlock!, params.toBlock);
   const distance = params.toBlock - params.fromBlock;
-  debug(`getPastEvents ${params.eventName} ${params.fromBlock} - ${params.toBlock} (${distance})`);
 
   const call = () =>
     params.contract.getPastEvents((params.eventName === "all" ? undefined : params.eventName) as any, {
@@ -492,7 +465,6 @@ export async function getPastEvents(params: {
     try {
       return await timeout(call, distance > params.minDistanceBlocks ? params.iterationTimeoutMs : 5 * 60 * 1000);
     } catch (e: any) {
-      debug(e?.message);
     }
   }
 
@@ -508,17 +480,15 @@ export async function getPastEvents(params: {
 /**
  * signs with EIP-712 falling back to eth_sign
  */
-export async function signEIP712(signer: string, data: PermitData) {
+export async function signEIP712(signer: string, data: any) {
   // Populate any ENS names (in-place)
   const populated = await _TypedDataEncoder.resolveNames(data.domain, data.types, data.values, async (name: string) => web3().eth.ens.getAddress(name));
   const typedDataMessage = _TypedDataEncoder.getPayload(populated.domain, data.types, populated.value);
 
   try {
-    debug("🔐🔐🔐 eth_signTypedData_v4", signer);
     return await signAsync("eth_signTypedData_v4", signer, typedDataMessage);
   } catch (e: any) {
     try {
-      debug("🔐🔐 eth_signTypedData", signer, e?.message);
       return await signAsync("eth_signTypedData", signer, typedDataMessage);
     } catch (e: any) {
       throw e;
@@ -526,7 +496,7 @@ export async function signEIP712(signer: string, data: PermitData) {
   }
 }
 
-export async function signAsync(method: "eth_signTypedData_v4" | "eth_signTypedData", signer: string, payload: string | PermitData) {
+export async function signAsync(method: "eth_signTypedData_v4" | "eth_signTypedData", signer: string, payload: string | any) {
   const provider: any = (web3().currentProvider as any).send ? web3().currentProvider : (web3() as any)._provider;
   return await new Promise<string>((resolve, reject) => {
     provider.send(
@@ -538,31 +508,28 @@ export async function signAsync(method: "eth_signTypedData_v4" | "eth_signTypedD
       },
       (e: any, r: any) => {
         if (e || !r?.result) return reject(e);
-        debug("🔏", r.result);
         return resolve(r.result);
       }
     );
   });
 }
 
-export function recoverEIP712Signer(signature: string, data: PermitData) {
+export function recoverEIP712Signer(signature: string, data: any) {
   const hash = _TypedDataEncoder.hash(data.domain, data.types, data.values);
   return computeAddress(recoverPublicKey(hash, signature));
 }
 
-export const permit2Address = PERMIT2_ADDRESS;
+export const permit2Address = "0x000000000022D473030F116dDEE9F6B43aC78BA3";
 
 export function permit2Approve(
   token: TokenData,
   spender: string,
-  amount: BN.Value = MaxAllowanceTransferAmount.toString(),
-  deadline: BN.Value = MaxAllowanceExpiration.toString()
+  amount: BN.Value = "0xffffffffffffffffffffffffffffffffffffffff",
+  deadline: BN.Value = "0xffffffffffff"
 ) {
-  tryTag(permit2Address, "Permit2");
-  return contract<IPermit2>(permit2Abi as any, permit2Address).methods.approve(token.address, spender, BN(amount).toFixed(0), BN(deadline).toFixed(0));
+  return contract<any>(permit2Abi as any, permit2Address).methods.approve(token.address, spender, BN(amount).toFixed(0), BN(deadline).toFixed(0));
 }
 
 export function permit2TransferFrom(from: string, to: string, amount: BN.Value, token: TokenData) {
-  tryTag(permit2Address, "Permit2");
-  return contract(permit2Abi as any, permit2Address).methods.transferFrom(from, to, BN(amount).toFixed(0), token.address);
+  return contract<any>(permit2Abi as any, permit2Address).methods.transferFrom(from, to, BN(amount).toFixed(0), token.address);
 }
