@@ -80,6 +80,22 @@ export const networks = {
     explorer: "https://arbiscan.io",
     eip1559: true,
   },
+  sei: {
+    id: 1329,
+    name: "Sei",
+    shortname: "sei",
+    native: {
+      address: zeroAddress,
+      symbol: "SEI",
+      decimals: 18,
+      logoUrl: "https://assets.coingecko.com/coins/images/28205/standard/Sei_Logo_-_Transparent.png",
+    },
+    wToken: erc20sData.sei.WSEI,
+    publicRpcUrl: "https://evm-rpc.sei-apis.com",
+    logoUrl: "https://assets.coingecko.com/coins/images/28205/standard/Sei_Logo_-_Transparent.png",
+    explorer: "https://seitrace.com",
+    eip1559: true,
+  },
   avax: {
     id: 43114,
     name: "Avalanche",

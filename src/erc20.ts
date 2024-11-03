@@ -74,6 +74,18 @@ export const erc20sData = {
     FRAX: { symbol: "FRAX", address: "0x17FC002b466eEc40DaE837Fc4bE5c67993ddBd6F", decimals: 18 },
     TUSD: { symbol: "TUSD", address: "0x4D15a3A2286D883AF0AA1B3f21367843FAc63E07", decimals: 18 },
   },
+  sei: {
+    WETH: {
+      symbol: "WETH",
+      address: "0x160345fC359604fC6e70E3c5fAcbdE5F7A9342d8",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+    },
+    WSEI: { symbol: "WSEI", address: "0xE30feDd158A2e3b13e9badaeABaFc5516e95e8C7", decimals: 18 },
+    USDC: { symbol: "USDC", address: "0x3894085Ef7Ff0f0aeDf52E2A2704928d1Ec074F1", decimals: 6 },
+    USDT: { symbol: "USDT", address: "0xB75D0B03c06A926e488e2659DF1A861F860bD3d1", decimals: 6 }
+  },
   avax: {
     WAVAX: {
       symbol: "WAVAX",
