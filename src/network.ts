@@ -94,7 +94,7 @@ export const networks = {
     publicRpcUrl: "https://evm-rpc.sei-apis.com",
     logoUrl: "https://assets.coingecko.com/coins/images/28205/standard/Sei_Logo_-_Transparent.png",
     explorer: "https://seitrace.com",
-    eip1559: true,
+    eip1559: false,
   },
   avax: {
     id: 43114,
