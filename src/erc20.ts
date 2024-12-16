@@ -210,6 +210,15 @@ export const erc20sData = {
     },
     USDB: { symbol: "USDB", address: "0x4300000000000000000000000000000000000003", decimals: 18 },
   },
+  sonic: {
+    WS: {
+      symbol: "WS",
+      address: "0x039e2fB66102314Ce7b64Ce5Ce3E5183bc94aD38",
+      decimals: 18,
+      weth: false,
+      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_sonic",
+    },
+  },
 };
 
 /*

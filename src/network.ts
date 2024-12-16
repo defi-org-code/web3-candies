@@ -256,6 +256,22 @@ export const networks = {
     explorer: "https://blastscan.io/",
     eip1559: true,
   },
+  sonic: {
+    id: 146,
+    name: "sonic",
+    shortname: "sonic",
+    native: {
+      address: zeroAddress,
+      symbol: "S",
+      decimals: 18,
+      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_sonic",
+    },
+    wToken: erc20sData.sonic.WS,
+    publicRpcUrl: "https://rpc.soniclabs.com",
+    logoUrl: "https://icons.llamao.fi/icons/chains/rsz_sonic",
+    explorer: "https://www.sonicscan.org/",
+    eip1559: true,
+  },
 };
 
 /**
