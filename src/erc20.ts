@@ -208,17 +208,23 @@ export const erc20sData = {
       weth: true,
       logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
     },
-    USDB: { symbol: "USDB", address: "0x4300000000000000000000000000000000000003", decimals: 18 },
+    USDB: { symbol: "USDB", address: "0x4300000000000000000000000000000000000003", decimals: 18 }
   },
   sonic: {
     WS: {
       symbol: "WS",
       address: "0x039e2fB66102314Ce7b64Ce5Ce3E5183bc94aD38",
       decimals: 18,
-      weth: false,
-      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_sonic",
+      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_sonic"
     },
-  },
+    WETH: {
+      symbol: "WETH",
+      address: "0x309C92261178fA0CF748A855e90Ae73FDb79EBc7",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+    }
+  }
 };
 
 /*
