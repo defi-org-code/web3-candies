@@ -272,6 +272,22 @@ export const networks = {
     explorer: "https://www.sonicscan.org/",
     eip1559: true,
   },
+  cronoszkevm: {
+    id: 388,
+    name: "cronoszkevm",
+    shortname: "cronoszkevm",
+    native: {
+      address: zeroAddress,
+      symbol: "zkCRO",
+      decimals: 18,
+      logoUrl: "https://cryptologos.cc/logos/cronos-cro-logo.png?v=040",
+    },
+    wToken: erc20sData.cronoszkevm.wzkCRO,
+    publicRpcUrl: "https://rpc.soniclabs.com",
+    logoUrl: "https://cryptologos.cc/logos/cronos-cro-logo.png?v=040",
+    explorer: "https://explorer.zkevm.cronos.org/",
+    eip1559: true,
+  },
 };
 
 /**
