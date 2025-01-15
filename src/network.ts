@@ -272,6 +272,22 @@ export const networks = {
     explorer: "https://www.sonicscan.org/",
     eip1559: true,
   },
+  scroll: {
+    id: 534352,
+    name: "scroll",
+    shortname: "scroll",
+    native: {
+      address: zeroAddress,
+      symbol: "ETH",
+      decimals: 18,
+      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_scroll",
+    },
+    wToken: erc20sData.scroll.WETH,
+    publicRpcUrl: "https://scroll-rpc.publicnode.com",
+    logoUrl: "https://icons.llamao.fi/icons/chains/rsz_scroll",
+    explorer: "https://scrollscan.com/",
+    eip1559: true,
+  },
   cronoszkevm: {
     id: 388,
     name: "cronoszkevm",

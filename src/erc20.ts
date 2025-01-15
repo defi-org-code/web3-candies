@@ -225,6 +225,20 @@ export const erc20sData = {
       logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
     }
   },
+  scroll: {
+    WETH: {
+      symbol: "WETH",
+      address: "0x5300000000000000000000000000000000000004",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+    },
+    USDT: {
+      symbol: "USDT",
+      address: "0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df",
+      decimals: 6
+    }
+  },
   cronoszkevm: {
     zkCRO: {
       symbol: "zkCRO",
