@@ -304,6 +304,22 @@ export const networks = {
     explorer: "https://explorer.zkevm.cronos.org/",
     eip1559: true,
   },
+  flare: {
+    id: 14,
+    name: "flare",
+    shortname: "flare",
+    native: {
+      address: zeroAddress,
+      symbol: "FLR",
+      decimals: 18,
+      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_flare?w=48&h=48",
+    },
+    wToken: erc20sData.flare.WFLR,
+    publicRpcUrl: "https://flare.network",
+    logoUrl: "https://icons.llamao.fi/icons/chains/rsz_flare?w=48&h=48",
+    explorer: "https://flarescan.com",
+    eip1559: true,
+  },
 };
 
 /**

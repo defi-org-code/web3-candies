@@ -1,7 +1,7 @@
 import BN from "bignumber.js";
 import Web3 from "web3";
-import { Abi, Contract, contract } from "./contracts";
-import { bne, bnm, convertDecimals, parsebn } from "./utils";
+import {Abi, Contract, contract} from "./contracts";
+import {bne, bnm, convertDecimals, parsebn} from "./utils";
 
 export const erc20abi = require("./abi/ERC20.json") as Abi;
 export const iwethabi = require("./abi/IWETH.json") as Abi;
@@ -236,6 +236,25 @@ export const erc20sData = {
     USDT: {
       symbol: "USDT",
       address: "0xf55BEC9cafDbE8730f096Aa55dad6D22d44099Df",
+      decimals: 6
+    }
+  },
+  flare: {
+    WFLR: {
+      symbol: "WFLR",
+      address: "0x1D80c49BbBCd1C0911346656B529DF9E5c2F783d",
+      decimals: 18
+    },
+    WETH: {
+      symbol: "WETH",
+      address: "0x1502FA4be69d526124D453619276FacCab275d3D",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+    },
+    USDT: {
+      symbol: "USDT",
+      address: "0x0B38e83B86d491735fEaa0a791F65c2B99535396",
       decimals: 6
     }
   },
