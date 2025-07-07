@@ -258,6 +258,30 @@ export const erc20sData = {
       decimals: 6
     }
   },
+  katana: {
+    WETH: {
+      symbol: "WETH",
+      address: "0x4200000000000000000000000000000000000006",
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+      decimals: 18
+    },
+    KAT: {
+      symbol: "KAT",
+      address: "0x7F1f4b4b29f5058fA32CC7a97141b8D7e5ABDC2d",
+      decimals: 18,
+    },
+    USDC: {
+      symbol: "USDC",
+      address: "0x203A662b0BD271A6ed5a60EdFbd04bFce608FD36",
+      decimals: 6,
+    },
+    USDT: {
+      symbol: "USDT",
+      address: "0x2DCa96907fde857dd3D816880A0df407eeB2D2F2",
+      decimals: 6
+    }
+  },
   cronoszkevm: {
     zkCRO: {
       symbol: "zkCRO",

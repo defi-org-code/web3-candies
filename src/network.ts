@@ -320,6 +320,22 @@ export const networks = {
     explorer: "https://flarescan.com",
     eip1559: true,
   },
+  katana: {
+    id: 747474,
+    name: "katana",
+    shortname: "katana",
+    native: {
+      address: zeroAddress,
+      symbol: "ETH",
+      decimals: 18,
+      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_katana?w=48&h=48",
+    },
+    wToken: erc20sData.katana.WETH,
+    publicRpcUrl: "https://flare.network",
+    logoUrl: "https://icons.llamao.fi/icons/chains/rsz_katana?w=48&h=48",
+    explorer: "https://explorer.katanarpc.com",
+    eip1559: true,
+  },
 };
 
 /**
