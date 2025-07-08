@@ -261,7 +261,7 @@ export const erc20sData = {
   katana: {
     WETH: {
       symbol: "WETH",
-      address: "0x4200000000000000000000000000000000000006",
+      address: "0xEE7D8BCFb72bC1880D0Cf19822eB0A2e6577aB62",
       weth: true,
       logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
       decimals: 18
