@@ -336,6 +336,22 @@ export const networks = {
     explorer: "https://explorer.katanarpc.com",
     eip1559: true,
   },
+  hyperevm: {
+    id: 999,
+    name: "hyperevm",
+    shortname: "hyper",
+    native: {
+      address: zeroAddress,
+      symbol: "HYPE",
+      decimals: 18,
+      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_hyperevm?w=48&h=48",
+    },
+    wToken: erc20sData.hyperevm.WHYPE,
+    publicRpcUrl: "https://rpc.hypurrscan.io",
+    logoUrl: "https://icons.llamao.fi/icons/chains/rsz_hyperevm?w=48&h=48",
+    explorer: "https://hyperevmscan.io",
+    eip1559: true,
+  },
 };
 
 /**

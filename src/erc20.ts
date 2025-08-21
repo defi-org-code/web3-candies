@@ -258,6 +258,30 @@ export const erc20sData = {
       decimals: 6
     }
   },
+  hyperevm: {
+    UETH: {
+      symbol: "UETH",
+      address: "0xBe6727B535545C67d5cAa73dEa54865B92CF7907",
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+      decimals: 18
+    },
+    WHYPE: {
+      symbol: "WHYPE",
+      address: "0x5555555555555555555555555555555555555555",
+      decimals: 18,
+    },
+    hbUSDT: {
+      symbol: "hbUSDT",
+      address: "0x5e105266db42f78FA814322Bce7f388B4C2e61eb",
+      decimals: 6,
+    },
+    USDT0: {
+      symbol: "USDT0",
+      address: "0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb",
+      decimals: 6
+    }
+  },
   katana: {
     WETH: {
       symbol: "WETH",
