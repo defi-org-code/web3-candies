@@ -274,7 +274,7 @@ export const erc20sData = {
     hbUSDT: {
       symbol: "hbUSDT",
       address: "0x5e105266db42f78FA814322Bce7f388B4C2e61eb",
-      decimals: 6,
+      decimals: 18,
     },
     USDT0: {
       symbol: "USDT0",
