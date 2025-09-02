@@ -336,6 +336,22 @@ export const networks = {
     explorer: "https://explorer.katanarpc.com",
     eip1559: true,
   },
+  berachain: {
+    id: 80094,
+    name: "berachain",
+    shortname: "berachain",
+    native: {
+      address: zeroAddress,
+      symbol: "ETH",
+      decimals: 18,
+      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_berachain?w=48&h=48",
+    },
+    wToken: erc20sData.berachain.WBERA,
+    publicRpcUrl: "https://rpc.berachain.com",
+    logoUrl: "https://icons.llamao.fi/icons/chains/rsz_berachain?w=48&h=48",
+    explorer: "https://berascan.com",
+    eip1559: true,
+  },
   hyperevm: {
     id: 999,
     name: "hyperevm",

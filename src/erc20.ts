@@ -306,6 +306,32 @@ export const erc20sData = {
       decimals: 6
     }
   },
+  berachain: {
+    WBERA: {
+      symbol: "WBERA",
+      address: "0x6969696969696969696969696969696969696969",
+      weth: true,
+      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_berachain?w=48&h=48",
+      decimals: 18
+    },
+    WETH: {
+      symbol: "WETH",
+      address: "0x2F6F07CDcf3588944Bf4C42aC74ff24bF56e7590",
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+      decimals: 18
+    },
+    USDC: {
+      symbol: "USDC",
+      address: "0x549943e04f40284185054145c6E4e9568C1D3241",
+      decimals: 6,
+    },
+    USDT: {
+      symbol: "USDT",
+      address: "0x779Ded0c9e1022225f8E0630b35a9b54bE713736",
+      decimals: 6
+    }
+  },
   cronoszkevm: {
     zkCRO: {
       symbol: "zkCRO",
