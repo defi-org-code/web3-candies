@@ -69,6 +69,7 @@ export async function sendAndWaitForConfirmations<T extends Contract | Receipt =
   const maxPriorityFeePerGas = BN.max(autoGas ? price?.[autoGas]?.tip || 0 : 0, bn(opts.maxPriorityFeePerGas || 0), 0);
 
   const options = {
+        ...opts,
     value: opts.value ? bn(opts.value).toFixed(0) : 0,
     from: opts.from,
     to: opts.to,
