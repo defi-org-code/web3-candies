@@ -317,7 +317,6 @@ export const erc20sData = {
     WETH: {
       symbol: "WETH",
       address: "0x2F6F07CDcf3588944Bf4C42aC74ff24bF56e7590",
-      weth: true,
       logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
       decimals: 18
     },
