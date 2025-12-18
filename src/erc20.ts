@@ -332,6 +332,32 @@ export const erc20sData = {
       decimals: 6
     }
   },
+  monad: {
+    WMON: {
+      symbol: "WMON",
+      address: "0x3bd359C1119dA7Da1D913D1C4D2B7c461115433A",
+      weth: true,
+      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_monad?w=48&h=48",
+      decimals: 18
+    },
+    WETH: {
+      symbol: "WETH",
+      address: "0xEE8c0E9f1BFFb4Eb878d8f15f368A02a35481242",
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png",
+      decimals: 18
+    },
+    USDC: {
+      symbol: "USDC",
+      address: "0x754704Bc059F8C67012fEd69BC8A327a5aafb603",
+      decimals: 6,
+    },
+    USDT: {
+      symbol: "USDT",
+      address: "0xe7cd86e13AC4309349F30B3435a9d337750fC82D",
+      decimals: 6
+    }
+  },
   cronoszkevm: {
     zkCRO: {
       symbol: "zkCRO",

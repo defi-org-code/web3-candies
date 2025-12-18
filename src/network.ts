@@ -352,6 +352,22 @@ export const networks = {
     explorer: "https://berascan.com",
     eip1559: true,
   },
+  monad: {
+    id: 143,
+    name: "monad",
+    shortname: "monad",
+    native: {
+      address: zeroAddress,
+      symbol: "MON",
+      decimals: 18,
+      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_monad?w=48&h=48",
+    },
+    wToken: erc20sData.monad.WMON,
+    publicRpcUrl: "https://monad-mainnet-rpc.spidernode.net",
+    logoUrl: "https://icons.llamao.fi/icons/chains/rsz_monad?w=48&h=48",
+    explorer: "https://monadvision.com",
+    eip1559: true,
+  },
   hyperevm: {
     id: 999,
     name: "hyperevm",
