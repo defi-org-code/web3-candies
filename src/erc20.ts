@@ -383,17 +383,6 @@ export const erc20sData = {
       address: "0xaa5b845F8C9c047779bEDf64829601d8B264076c",
       decimals: 6
     }
-  },
-  optimism: {
-    WETH: {
-      symbol: "WETH",
-      address: "0x4200000000000000000000000000000000000006",
-      decimals: 18,
-      weth: true,
-      logoUrl: "https://tokens-data.1inch.io/images/0x4200000000000000000000000000000000000006.png"
-    },
-    USDC: { symbol: "USDC", address: "0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85", decimals: 6 },
-    USDT: { symbol: "USDT", address: "0x94b008aA00579c1307B0EF2c499aD98a8ce58e58", decimals: 6 },
   }
 };
 
