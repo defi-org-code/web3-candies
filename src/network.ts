@@ -384,6 +384,22 @@ export const networks = {
     explorer: "https://hyperevmscan.io",
     eip1559: true,
   },
+  optimism: {
+    id: 10,
+    name: "optimism",
+    shortname: "op",
+    native: {
+      address: zeroAddress,
+      symbol: "ETH",
+      decimals: 18,
+      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_optimism?w=48&h=48",
+    },
+    wToken: erc20sData.optimism.WETH,
+    publicRpcUrl: "https://mainnet.optimism.io",
+    logoUrl: "https://icons.llamao.fi/icons/chains/rsz_optimism?w=48&h=48",
+    explorer: "https://optimistic.etherscan.io",
+    eip1559: true,
+  }
 };
 
 /**
