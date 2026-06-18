@@ -156,6 +156,36 @@ export const erc20sData = {
     USDC: { symbol: "USDC", address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", decimals: 6 },
     DAI: { symbol: "DAI", address: "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb", decimals: 18 }
   },
+  megaeth: {
+    WETH: {
+      symbol: "WETH",
+      address: "0x4200000000000000000000000000000000000006",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+    },
+    USDT: { symbol: "USDT", address: "0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb", decimals: 6 }
+  },
+  unichain: {
+    WETH: {
+      symbol: "WETH",
+      address: "0x4200000000000000000000000000000000000006",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+    },
+    USDT: { symbol: "USDT", address: "0x9151434b16b9763660705744891fA906F660EcC5", decimals: 6 }
+  },
+  xlayer: {
+    WETH: {
+      symbol: "WETH",
+      address: "0x5a77f1443d16ee5761d310e38b62f77f726bc71c",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+    },
+    USDT: { symbol: "USDT", address: "0x779ded0c9e1022225f8e0630b35a9b54be713736", decimals: 6 }
+  },
   linea: {
     WETH: {
       symbol: "WETH",
