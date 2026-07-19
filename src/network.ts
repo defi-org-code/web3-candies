@@ -390,12 +390,12 @@ export const networks = {
     shortname: "megaeth",
     native: {
       address: zeroAddress,
-      symbol: "MEGA",
+      symbol: "ETH",
       decimals: 18,
       logoUrl: "https://icons.llamao.fi/icons/chains/rsz_megaeth?w=48&h=48",
     },
     wToken: erc20sData.megaeth.WETH,
-    publicRpcUrl: "https://rpc.hypurrscan.io",
+    publicRpcUrl: "https://mainnet.megaeth.com/rpc",
     logoUrl: "https://icons.llamao.fi/icons/chains/rsz_megaeth?w=48&h=48",
     explorer: "https://mega.etherscan.io",
     eip1559: true,
@@ -406,7 +406,7 @@ export const networks = {
     shortname: "unichain",
     native: {
       address: zeroAddress,
-      symbol: "MEGA",
+      symbol: "ETH",
       decimals: 18,
       logoUrl: "https://icons.llamao.fi/icons/chains/rsz_unichain?w=48&h=48",
     },
