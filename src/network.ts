@@ -432,6 +432,22 @@ export const networks = {
     explorer: "https://www.oklink.com",
     eip1559: true,
   },
+  robinhood: {
+    id: 4663,
+    name: "robinhood",
+    shortname: "robinhood",
+    native: {
+      address: zeroAddress,
+      symbol: "ETH",
+      decimals: 18,
+      logoUrl: "https://icons.llamao.fi/icons/chains/rsz_robinhood?w=48&h=48",
+    },
+    wToken: erc20sData.robinhood.WETH,
+    publicRpcUrl: "https://rpc.mainnet.chain.robinhood.com",
+    logoUrl: "https://icons.llamao.fi/icons/chains/rsz_robinhood?w=48&h=48",
+    explorer: "https://robinhoodchain.blockscout.com",
+    eip1559: true,
+  },
 };
 
 /**

@@ -191,6 +191,16 @@ export const erc20sData = {
     },
     USDT: { symbol: "USDT", address: "0x779ded0c9e1022225f8e0630b35a9b54be713736", decimals: 6 }
   },
+  robinhood: {
+    WETH: {
+      symbol: "WETH",
+      address: "0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73",
+      decimals: 18,
+      weth: true,
+      logoUrl: "https://tokens-data.1inch.io/images/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png"
+    },
+    USDG: { symbol: "USDG", address: "0x5fc5360d0400a0fd4f2af552add042d716f1d168", decimals: 6 }
+  },
   linea: {
     WETH: {
       symbol: "WETH",
